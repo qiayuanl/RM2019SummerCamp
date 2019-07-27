@@ -2,7 +2,7 @@
 All the codes for the robomaster 2019 high school summer camp
 Our Process：
 
-mermaid
+```mermaid
 graph LR
     start[开始] --> input[输入A,B,C]
     input --> conditionA{A是否大于B}
@@ -15,6 +15,7 @@ graph LR
     printA --> stop[结束]
     printC --> stop
     printB --> stop
+```
 
  ***
 Staffing table:
