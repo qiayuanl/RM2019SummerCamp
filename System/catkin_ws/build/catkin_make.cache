@@ -1,0 +1,2 @@
+openworld
+-DCMAKE_BUILD_TYPE=Debug -DCATKIN_DEVEL_PREFIX=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/install -G Unix Makefiles

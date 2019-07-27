@@ -1,0 +1,8 @@
+prefix=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/install
+
+Name: openworld
+Description: Description of openworld
+Version: 0.0.0
+Cflags: -I/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/install/include
+Libs: -L/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/install/lib 
+Requires: 

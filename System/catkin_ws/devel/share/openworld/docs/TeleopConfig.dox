@@ -1,0 +1,8 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~MaxX" : \b [double] Max Linear X Speed (m/s) min: 0.0, default: 1.0, max: 10.0
+- \b "~MaxY" : \b [double] Max Linear Y Speed (m/s) min: 0.0, default: 1.0, max: 10.0
+- \b "~MaxW" : \b [double] Max Angular Speed (rad/s) min: 0.0, default: 6.28318530718, max: 18.8495559215
+
