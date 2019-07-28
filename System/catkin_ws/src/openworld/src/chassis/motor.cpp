@@ -122,11 +122,11 @@ double MotorController::readVelocitySetpoint(int id) {
 }
 
 double MotorController::readVelocity(int id) {
-	return motors[id].speed_rpm * CHASSIS_RPM_TO_METERS;
+	return motors[id].speed_rpm * CHASSIS_RPM_TO_RAD_PER_SEC;
 }
 
 double MotorController::readPosition(int id) {
-	return motors[id].total_angle * CHASSIS_TICK_TO_METERS;
+	return motors[id].total_angle * CHASSIS_TICK_TO_RAD;
 }
 
 void MotorController::update() {

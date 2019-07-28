@@ -2,8 +2,9 @@
 
 Reads and maintains the following parameters on the ROS server
 
-- \b "~Kp" : \b [double] Motor Controller Kp min: -100.0, default: 1.0, max: 100.0
-- \b "~Ki" : \b [double] Motor Controller Ki min: -100.0, default: 0.0, max: 100.0
-- \b "~Kd" : \b [double] Motor Controller Kd min: -100.0, default: 0.0, max: 100.0
-- \b "~KmaxI" : \b [double] Motor Controller KmaxI min: -5000.0, default: 1000.0, max: 5000.0
+- \b "~Kp" : \b [double] Motor Controller Kp min: 0.0, default: 1.0, max: 100.0
+- \b "~Ki" : \b [double] Motor Controller Ki min: 0.0, default: 0.0, max: 100.0
+- \b "~Kd" : \b [double] Motor Controller Kd min: 0.0, default: 0.0, max: 100.0
+- \b "~KmaxI" : \b [double] Motor Controller KmaxI min: 0.0, default: 1000.0, max: 5000.0
+- \b "~MaxVel" : \b [double] Motor Max Speed (rad/s) min: 0.0, default: 0.0, max: 314.159265359
 

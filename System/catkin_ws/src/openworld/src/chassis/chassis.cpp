@@ -36,6 +36,7 @@ class Chassis {
 			Config
 		*/
 		bool Config_IsDebug;
+		double Config_MaxVel;
 
 		/*
 			Handles
@@ -62,7 +63,8 @@ class Chassis {
 		/*
 		 * Debug
 		 */
-		ros::Publisher debug_pub;
+		ros::Publisher dbg_spd_setpoint_pub;
+		ros::Publisher dbg_spd_real_pub;
 		dynamic_reconfigure::Server<one_bot::ChassisConfig>               debug_server;
 		dynamic_reconfigure::Server<one_bot::ChassisConfig>::CallbackType debug_f;
 };
@@ -80,6 +82,7 @@ Chassis::Chassis() {
 	node_priv.param<double>("Ki", _Ki, 0.0);
 	node_priv.param<double>("Kd", _Kd, 0.0);
 	node_priv.param<double>("KmaxI", _KmaxI, 1000.0);
+	node_priv.param<double>("MaxVel", Config_MaxVel, 10.0 * M_PI);
 
 	//Create Motor Controller
 	motors.setCoefficients(_Kp, _Ki, _Kd, _KmaxI);
@@ -97,7 +100,8 @@ Chassis::Chassis() {
 	//Debug Config
 	node_priv.param<bool>("IsDebug", Config_IsDebug, true);
 	if(Config_IsDebug) {
-		debug_pub = nh.advertise<std_msgs::Float64MultiArray>("debug", 50);
+		dbg_spd_setpoint_pub = nh.advertise<std_msgs::Float64MultiArray>("dbg_set_spd", 50);
+		dbg_spd_real_pub     = nh.advertise<std_msgs::Float64MultiArray>("dbg_real_spd", 50);
 
 		debug_f = boost::bind(&Chassis::callback_debug, this, _1, _2);
 		debug_server.setCallback(debug_f);
@@ -183,10 +187,25 @@ void Chassis::callback_velocity( const geometry_msgs::Twist::ConstPtr& twist ) {
 	double vw = twist->angular.z;
 
 	double a = CHASSIS_LENGTH_A + CHASSIS_LENGTH_B;
-	motors.setVelocity(0,  (-a * vw + vx - vy) / CHASSIS_WHEEL_R   );
-	motors.setVelocity(1, -(( a * vw + vx + vy) / CHASSIS_WHEEL_R) );
-	motors.setVelocity(2,  (-a * vw + vx + vy) / CHASSIS_WHEEL_R   );
-	motors.setVelocity(3, -(( a * vw + vx - vy) / CHASSIS_WHEEL_R) );
+
+	double w[4] = {
+		 (-a * vw + vx - vy) / CHASSIS_WHEEL_R,
+		-(( a * vw + vx + vy) / CHASSIS_WHEEL_R),
+		 (-a * vw + vx + vy) / CHASSIS_WHEEL_R,
+		-(( a * vw + vx - vy) / CHASSIS_WHEEL_R)
+	};
+
+	//Velocity Limitation
+	double maxVel = 0.0;
+	for(int i = 0; i < 4; i++) maxVel = std::max(maxVel, std::abs(w[i]));
+
+	if(maxVel > Config_MaxVel) {
+		double factor = Config_MaxVel / maxVel;
+		for(int i = 0; i < 4; i++) w[i] *= factor;
+	}
+
+	//Send Velocity
+	for(int i = 0; i < 4; i++) motors.setVelocity(i, w[i]);
 }
 
 void Chassis::update_callback_velocity_watchdog() {
@@ -202,20 +221,24 @@ void Chassis::update_callback_velocity_watchdog() {
 
 void Chassis::callback_debug(one_bot::ChassisConfig &config, uint32_t level) {
 	motors.setCoefficients(config.Kp, config.Ki, config.Kd, config.KmaxI);
+	Config_MaxVel = config.MaxVel;
 
-	ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, KmaxI = %lf]", 
-		config.Kp, config.Ki, config.Kd, config.KmaxI
+	ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, KmaxI = %lf, MaxVel = %lf]", 
+		config.Kp, config.Ki, config.Kd, config.KmaxI, config.MaxVel
 	);
 }
 
 void Chassis::update_debug() {
-	std_msgs::Float64MultiArray motorError;
+	std_msgs::Float64MultiArray motorSetpoint;
+	std_msgs::Float64MultiArray motorReal;
 
 	for(int i = 0; i < 4; i++) {
-		motorError.data.push_back( motors.readVelocity(i) - motors.readVelocitySetpoint(i) );
+		motorSetpoint.data.push_back ( motors.readVelocitySetpoint(i) );
+		motorReal.data.push_back     ( motors.readVelocity(i)         );
 	}
 
-	debug_pub.publish(motorError);
+	dbg_spd_setpoint_pub.publish(motorSetpoint);
+	dbg_spd_real_pub.publish(motorReal);
 }
 
 int main(int argc, char **argv)

@@ -226,6 +226,21 @@ std_msgs_generate_messages_lisp/fast:
 .PHONY : std_msgs_generate_messages_lisp/fast
 
 # Convenience name for target.
+openworld/CMakeFiles/localization.dir/rule:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 openworld/CMakeFiles/localization.dir/rule
+.PHONY : openworld/CMakeFiles/localization.dir/rule
+
+# Convenience name for target.
+localization: openworld/CMakeFiles/localization.dir/rule
+
+.PHONY : localization
+
+# fast build rule for target.
+localization/fast:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/build
+.PHONY : localization/fast
+
+# Convenience name for target.
 openworld/CMakeFiles/roscpp_generate_messages_cpp.dir/rule:
 	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 openworld/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
 .PHONY : openworld/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
@@ -675,6 +690,33 @@ src/chassis/motor.cpp.s:
 	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/motor.cpp.s
 .PHONY : src/chassis/motor.cpp.s
 
+src/localization/localization.o: src/localization/localization.cpp.o
+
+.PHONY : src/localization/localization.o
+
+# target to build an object file
+src/localization/localization.cpp.o:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/src/localization/localization.cpp.o
+.PHONY : src/localization/localization.cpp.o
+
+src/localization/localization.i: src/localization/localization.cpp.i
+
+.PHONY : src/localization/localization.i
+
+# target to preprocess a source file
+src/localization/localization.cpp.i:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/src/localization/localization.cpp.i
+.PHONY : src/localization/localization.cpp.i
+
+src/localization/localization.s: src/localization/localization.cpp.s
+
+.PHONY : src/localization/localization.s
+
+# target to generate assembly for a file
+src/localization/localization.cpp.s:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/src/localization/localization.cpp.s
+.PHONY : src/localization/localization.cpp.s
+
 src/opmode/teleop.o: src/opmode/teleop.cpp.o
 
 .PHONY : src/opmode/teleop.o
@@ -744,6 +786,7 @@ help:
 	@echo "... testop"
 	@echo "... chassis"
 	@echo "... std_msgs_generate_messages_lisp"
+	@echo "... localization"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... edit_cache"
 	@echo "... dynamic_reconfigure_gencfg"
@@ -782,6 +825,9 @@ help:
 	@echo "... src/chassis/motor.o"
 	@echo "... src/chassis/motor.i"
 	@echo "... src/chassis/motor.s"
+	@echo "... src/localization/localization.o"
+	@echo "... src/localization/localization.i"
+	@echo "... src/localization/localization.s"
 	@echo "... src/opmode/teleop.o"
 	@echo "... src/opmode/teleop.i"
 	@echo "... src/opmode/teleop.s"

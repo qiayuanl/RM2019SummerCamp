@@ -335,6 +335,19 @@ std_msgs_generate_messages_lisp/fast:
 .PHONY : std_msgs_generate_messages_lisp/fast
 
 #=============================================================================
+# Target rules for targets named localization
+
+# Build rule for target.
+localization: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 localization
+.PHONY : localization
+
+# fast build rule for target.
+localization/fast:
+	$(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/build
+.PHONY : localization/fast
+
+#=============================================================================
 # Target rules for targets named roscpp_generate_messages_cpp
 
 # Build rule for target.
@@ -633,6 +646,7 @@ help:
 	@echo "... testop"
 	@echo "... chassis"
 	@echo "... std_msgs_generate_messages_lisp"
+	@echo "... localization"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... dynamic_reconfigure_gencfg"
 	@echo "... std_msgs_generate_messages_nodejs"

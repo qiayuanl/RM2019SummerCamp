@@ -393,6 +393,7 @@ clean: gtest/gtest/CMakeFiles/gtest_main.dir/clean
 openworld/all: openworld/CMakeFiles/teleop.dir/all
 openworld/all: openworld/CMakeFiles/testop.dir/all
 openworld/all: openworld/CMakeFiles/chassis.dir/all
+openworld/all: openworld/CMakeFiles/localization.dir/all
 openworld/all: openworld/CMakeFiles/openworld_gencfg.dir/all
 
 .PHONY : openworld/all
@@ -402,6 +403,7 @@ openworld/clean: openworld/CMakeFiles/teleop.dir/clean
 openworld/clean: openworld/CMakeFiles/testop.dir/clean
 openworld/clean: openworld/CMakeFiles/chassis.dir/clean
 openworld/clean: openworld/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
+openworld/clean: openworld/CMakeFiles/localization.dir/clean
 openworld/clean: openworld/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
 openworld/clean: openworld/CMakeFiles/dynamic_reconfigure_gencfg.dir/clean
 openworld/clean: openworld/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
@@ -438,7 +440,7 @@ openworld/preinstall:
 openworld/CMakeFiles/teleop.dir/all: openworld/CMakeFiles/openworld_gencfg.dir/all
 	$(MAKE) -f openworld/CMakeFiles/teleop.dir/build.make openworld/CMakeFiles/teleop.dir/depend
 	$(MAKE) -f openworld/CMakeFiles/teleop.dir/build.make openworld/CMakeFiles/teleop.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles --progress-num=20,21 "Built target teleop"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles --progress-num=22,23 "Built target teleop"
 .PHONY : openworld/CMakeFiles/teleop.dir/all
 
 # Include target in all.
@@ -475,7 +477,7 @@ clean: openworld/CMakeFiles/teleop.dir/clean
 openworld/CMakeFiles/testop.dir/all:
 	$(MAKE) -f openworld/CMakeFiles/testop.dir/build.make openworld/CMakeFiles/testop.dir/depend
 	$(MAKE) -f openworld/CMakeFiles/testop.dir/build.make openworld/CMakeFiles/testop.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles --progress-num=22,23 "Built target testop"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles --progress-num=24,25 "Built target testop"
 .PHONY : openworld/CMakeFiles/testop.dir/all
 
 # Include target in all.
@@ -571,6 +573,43 @@ openworld/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean:
 
 # clean rule for target.
 clean: openworld/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target openworld/CMakeFiles/localization.dir
+
+# All Build rule for target.
+openworld/CMakeFiles/localization.dir/all:
+	$(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/depend
+	$(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles --progress-num=18,19 "Built target localization"
+.PHONY : openworld/CMakeFiles/localization.dir/all
+
+# Include target in all.
+all: openworld/CMakeFiles/localization.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+openworld/CMakeFiles/localization.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 openworld/CMakeFiles/localization.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles 0
+.PHONY : openworld/CMakeFiles/localization.dir/rule
+
+# Convenience name for target.
+localization: openworld/CMakeFiles/localization.dir/rule
+
+.PHONY : localization
+
+# clean rule for target.
+openworld/CMakeFiles/localization.dir/clean:
+	$(MAKE) -f openworld/CMakeFiles/localization.dir/build.make openworld/CMakeFiles/localization.dir/clean
+.PHONY : openworld/CMakeFiles/localization.dir/clean
+
+# clean rule for target.
+clean: openworld/CMakeFiles/localization.dir/clean
 
 .PHONY : clean
 
@@ -1221,7 +1260,7 @@ clean: openworld/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
 openworld/CMakeFiles/openworld_gencfg.dir/all:
 	$(MAKE) -f openworld/CMakeFiles/openworld_gencfg.dir/build.make openworld/CMakeFiles/openworld_gencfg.dir/depend
 	$(MAKE) -f openworld/CMakeFiles/openworld_gencfg.dir/build.make openworld/CMakeFiles/openworld_gencfg.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles --progress-num=18,19 "Built target openworld_gencfg"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/CMakeFiles --progress-num=20,21 "Built target openworld_gencfg"
 .PHONY : openworld/CMakeFiles/openworld_gencfg.dir/all
 
 # Include target in all.

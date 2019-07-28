@@ -240,6 +240,7 @@ class DEFAULT
         if("Ki"==(*_i)->name){Ki = boost::any_cast<double>(val);}
         if("Kd"==(*_i)->name){Kd = boost::any_cast<double>(val);}
         if("KmaxI"==(*_i)->name){KmaxI = boost::any_cast<double>(val);}
+        if("MaxVel"==(*_i)->name){MaxVel = boost::any_cast<double>(val);}
       }
     }
 
@@ -247,6 +248,7 @@ class DEFAULT
 double Ki;
 double Kd;
 double KmaxI;
+double MaxVel;
 
     bool state;
     std::string name;
@@ -264,6 +266,8 @@ double KmaxI;
       double Kd;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       double KmaxI;
+//#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
+      double MaxVel;
 //#line 228 "/opt/ros/kinetic/share/dynamic_reconfigure/cmake/../templates/ConfigType.h.template"
 
     bool __fromMessage__(dynamic_reconfigure::Config &msg)
@@ -403,7 +407,7 @@ double KmaxI;
     {
 ChassisConfig::GroupDescription<ChassisConfig::DEFAULT, ChassisConfig> Default("Default", "", 0, 0, true, &ChassisConfig::groups);
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
-      __min__.Kp = -100.0;
+      __min__.Kp = 0.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __max__.Kp = 100.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
@@ -413,7 +417,7 @@ ChassisConfig::GroupDescription<ChassisConfig::DEFAULT, ChassisConfig> Default("
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __param_descriptions__.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("Kp", "double", 0, "Motor Controller Kp", "", &ChassisConfig::Kp)));
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
-      __min__.Ki = -100.0;
+      __min__.Ki = 0.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __max__.Ki = 100.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
@@ -423,7 +427,7 @@ ChassisConfig::GroupDescription<ChassisConfig::DEFAULT, ChassisConfig> Default("
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __param_descriptions__.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("Ki", "double", 0, "Motor Controller Ki", "", &ChassisConfig::Ki)));
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
-      __min__.Kd = -100.0;
+      __min__.Kd = 0.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __max__.Kd = 100.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
@@ -433,7 +437,7 @@ ChassisConfig::GroupDescription<ChassisConfig::DEFAULT, ChassisConfig> Default("
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __param_descriptions__.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("Kd", "double", 0, "Motor Controller Kd", "", &ChassisConfig::Kd)));
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
-      __min__.KmaxI = -5000.0;
+      __min__.KmaxI = 0.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __max__.KmaxI = 5000.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
@@ -442,6 +446,16 @@ ChassisConfig::GroupDescription<ChassisConfig::DEFAULT, ChassisConfig> Default("
       Default.abstract_parameters.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("KmaxI", "double", 0, "Motor Controller KmaxI", "", &ChassisConfig::KmaxI)));
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __param_descriptions__.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("KmaxI", "double", 0, "Motor Controller KmaxI", "", &ChassisConfig::KmaxI)));
+//#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
+      __min__.MaxVel = 0.0;
+//#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
+      __max__.MaxVel = 314.159265359;
+//#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
+      __default__.MaxVel = 0.0;
+//#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
+      Default.abstract_parameters.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("MaxVel", "double", 31.4159265359, "Motor Max Speed (rad/s)", "", &ChassisConfig::MaxVel)));
+//#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
+      __param_descriptions__.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("MaxVel", "double", 31.4159265359, "Motor Max Speed (rad/s)", "", &ChassisConfig::MaxVel)));
 //#line 245 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       Default.convertParams();
 //#line 245 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"

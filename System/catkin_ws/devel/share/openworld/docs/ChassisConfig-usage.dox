@@ -5,6 +5,7 @@
   <param name="Ki" type="double" value="0.0" />
   <param name="Kd" type="double" value="0.0" />
   <param name="KmaxI" type="double" value="1000.0" />
+  <param name="MaxVel" type="double" value="0.0" />
 </node>
 \endverbatim
 
