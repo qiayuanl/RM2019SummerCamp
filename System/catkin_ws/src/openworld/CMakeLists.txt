@@ -159,11 +159,12 @@ include_directories(
 add_compile_options(-Wall -Wextra -Wconversion)
 
 #chassis
-#AUX_SOURCE_DIRECTORY(src/chassis CHASSIS_SOURCES)
-#add_executable(chassis ${CHASSIS_SOURCES})
+AUX_SOURCE_DIRECTORY(src/chassis CHASSIS_SOURCES)
+AUX_SOURCE_DIRECTORY(src/chassis/libcan CHASSIS_LIBCAN_SOURCES)
 
-#target_link_libraries(chassis ${catkin_LIBRARIES} -lwiringPi)
-#add_dependencies(chassis ${PROJECT_NAME}_gencfg)
+add_executable(chassis ${CHASSIS_SOURCES} ${CHASSIS_LIBCAN_SOURCES})
+target_link_libraries(chassis ${catkin_LIBRARIES})
+add_dependencies(chassis ${PROJECT_NAME}_gencfg)
 
 #opmode - testop
 add_executable(testop src/opmode/testop.cpp)

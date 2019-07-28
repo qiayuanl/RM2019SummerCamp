@@ -35,6 +35,7 @@
 /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/openworld/CMakeFiles/teleop.dir
 /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/openworld/CMakeFiles/test.dir
 /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/openworld/CMakeFiles/testop.dir
+/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/openworld/CMakeFiles/chassis.dir
 /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/openworld/CMakeFiles/std_msgs_generate_messages_lisp.dir
 /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/openworld/CMakeFiles/roscpp_generate_messages_cpp.dir
 /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build/openworld/CMakeFiles/edit_cache.dir

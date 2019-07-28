@@ -1,16 +1,83 @@
 #include "motor.h"
 
+/////////////////////////////Hardware Level//////////////////////////////
+void MotorController::HWUpdateOffset(moto_measure_t *ptr, can_frame_t* frame) {
+    ptr->last_angle = ptr->angle;
+    ptr->angle = (uint16_t)(frame->data[0] << 8 | frame->data[1]);
+    ptr->real_current  = (int16_t)(frame->data[2]<<8 | frame->data[3]);
+    ptr->speed_rpm = ptr->real_current;
+    ptr->given_current = (int16_t)(frame->data[4]<<8 | frame->data[5]) / - 5;
+    ptr->hall = frame->data[6];
+
+    if(ptr->angle - ptr->last_angle > 4096)
+        ptr->round_cnt --;
+    else if (ptr->angle - ptr->last_angle < -4096)
+        ptr->round_cnt ++;
+
+    ptr->total_angle = ptr->round_cnt * 8192 + ptr->angle - ptr->offset_angle;
+}
+
+void MotorController::HWUpdateTotalAngle(moto_measure_t *p) {
+    int res1, res2, delta;
+    if(p->angle < p->last_angle) {
+        res1 = p->angle + 8192 - p->last_angle;
+        res2 = p->angle - p->last_angle;
+    }
+    else {
+        res1 = p->angle - 8192 - p->last_angle;
+        res2 = p->angle - p->last_angle;
+    }
+
+    if(abs(res1) < abs(res2))
+        delta = res1;
+    else
+        delta = res2;
+
+    p->total_angle += delta;
+    p->last_angle = p->angle;
+}
+
+void MotorController::HWReceiveFrame(can_frame_t *frame) {
+    switch(frame->can_id)
+    {
+        case CAN_3510Moto1_ID:
+        case CAN_3510Moto2_ID:
+        case CAN_3510Moto3_ID:
+        case CAN_3510Moto4_ID:
+        case CAN_3510Moto5_ID:
+        case CAN_3510Moto6_ID:
+        case CAN_3510Moto7_ID:
+        case CAN_3510Moto8_ID:
+        {
+                uint8_t idx = frame->can_id - CAN_3510Moto1_ID;
+                HWUpdateOffset(&motors[idx], frame);
+				HWUpdateTotalAngle(&motors[idx]);
+                break;
+        }
+
+		/*
+        case SINGLE_GYRO_ID:
+        {
+            single_gyro.angle = 0.001f * ((int32_t)( (frame->data[0] << 24) | (frame->data[1] << 16) | (frame->data[2] << 8) | (frame->data[3]) ) );
+            single_gyro.gyro = 0.001f *  ((int32_t)( (frame->data[4] << 24) | (frame->data[5] << 16) | (frame->data[6] << 8) | (frame->data[7]) ) );
+
+            break;
+        }
+		*/
+    }
+}
+
+void ReceiveHandlerProxy(can_frame_t *frame, void *ptr) {
+	((MotorController *)ptr)->HWReceiveFrame(frame);
+}
+/////////////////////////////////////////////////////////////////////////
+
 MotorController::MotorController() {
 	//Initialize Time
 	last_looptime = ros::Time(0);
 
 	//Initialize Motors
-	power.resize(MOTOR_COUNT);
-	encoder.resize(MOTOR_COUNT);
-	last_encoder.resize(MOTOR_COUNT);
-
-	real_vel.resize(MOTOR_COUNT);
-	set_vel.resize(MOTOR_COUNT);
+	motors.resize(MOTOR_COUNT);
 
 	//Initialize PID
 	Kp = 0;
@@ -23,10 +90,18 @@ MotorController::MotorController() {
 	VError_Derivative.resize(MOTOR_COUNT);
 	VError_Derivative_Filtered.resize(MOTOR_COUNT);
 	VError_Intergral.resize(MOTOR_COUNT);
+
+	//Initialize Hardware
+	adapter = new SocketCAN();
+	adapter->reception_handler = &ReceiveHandlerProxy;
+	adapter->reception_handler_data = this;
+
+    adapter->open(CHASSIS_CAN_ID);
 }
 
 MotorController::~MotorController() {
-	I2CClose();
+	adapter->close();
+	delete adapter;
 }
 
 void MotorController::setCoefficients(double _Kp, double _Ki, double _Kd, double _KmaxI) {
@@ -37,19 +112,19 @@ void MotorController::setCoefficients(double _Kp, double _Ki, double _Kd, double
 }
 
 void MotorController::setVelocity(int id, double vel) {
-	set_vel[id] = vel;
-}
-
-double MotorController::readVelocity(int id) {
-	return real_vel[id];
+	motors[id].set_vel = vel;
 }
 
 double MotorController::readVelocitySetpoint(int id) {
-	return set_vel[id];
+	return motors[id].set_vel;
+}
+
+double MotorController::readVelocity(int id) {
+	return motors[id].speed_rpm * CHASSIS_RPM_TO_METERS;
 }
 
 double MotorController::readPosition(int id) {
-	return encoder[id] * MOTOR_TICKS_TO_RADIANS;
+	return (motors[id].total_angle / 8192.0 * 2.0 * M_PI) * CHASSIS_WHEEL_R;
 }
 
 void MotorController::update() {
@@ -68,19 +143,13 @@ void MotorController::update() {
 		return;
 	}
 
-	//calculate velocity
-	for(int id = 0; id < MOTOR_COUNT; id++) {
-		real_vel[id] = (encoder[id] - last_encoder[id]) * MOTOR_TICKS_TO_RADIANS / dt;
-		last_encoder[id] = encoder[id];
-	}
-
 	//PID Closeloop
 	//Reference: https://bitbucket.org/AndyZe/pid
 	double c_ = 1.0; //filter error paramter 1/4 sampling rate
 
 	for(int id = 0; id < MOTOR_COUNT; id++) {
 		//Calculate Error
-		double error = set_vel[id] - real_vel[id];
+		double error = readVelocitySetpoint(id) - readVelocity(id);
 	
 		VError[id].value[2] = VError[id].value[1];
 		VError[id].value[1] = VError[id].value[0];
@@ -118,9 +187,26 @@ void MotorController::update() {
 					+ Ki * VError_Intergral[id] 
 					+ Kd * VError_Derivative_Filtered[id].value[0];
 
-		power[id] = output * MOTOR_PWM_RESOLUTION;
+		int power = output * MOTOR_PWM_RESOLUTION;
 
-		if(power[id] >  MOTOR_PWM_RESOLUTION)  power[id] =  MOTOR_PWM_RESOLUTION;
-		if(power[id] < -MOTOR_PWM_RESOLUTION)  power[id] = -MOTOR_PWM_RESOLUTION;
+		if(power >  MOTOR_PWM_RESOLUTION)  power =  MOTOR_PWM_RESOLUTION;
+		if(power < -MOTOR_PWM_RESOLUTION)  power = -MOTOR_PWM_RESOLUTION;
+
+		motors[id].power = power;
 	}
+
+	//Send Motor Power
+	can_frame_t frame;
+
+    frame.can_id = CHASSIS_CAN_MOTOR_ID;
+    frame.can_dlc = 2 * MOTOR_COUNT;
+
+	for(int id = 0; id < MOTOR_COUNT; id++) {
+		int16_t power = motors[id].power;
+
+		frame.data[2 * id] =     (uint8_t)(power >> 8);
+		frame.data[2 * id + 1] = (uint8_t)(power);
+	}
+
+	adapter->transmit(&frame);
 }

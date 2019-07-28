@@ -8,8 +8,8 @@
 #define CAN_ADAPTER_H
 
 #include <unistd.h>
-#include <libcan/CANFrame.h>
-#include <libcan/CANFrameParser.h>
+#include "CANFrame.h"
+#include "CANFrameParser.h"
 
 
 /**
@@ -26,7 +26,7 @@ typedef enum
 /**
  * How a frame reception handler should look like
  */
-typedef void (*reception_handler_t)(can_frame_t*);
+typedef void (*reception_handler_t)(can_frame_t*, void*);
 
 
 /**
@@ -42,6 +42,8 @@ class CANAdapter
      * Pointer to a function which shall be called
      * when frames are being received from the CAN bus
      */
+    void* reception_handler_data;
+
     reception_handler_t reception_handler;
 
     /**

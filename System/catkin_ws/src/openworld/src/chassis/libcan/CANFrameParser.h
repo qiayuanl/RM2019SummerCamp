@@ -2,7 +2,7 @@
 #ifndef CAN_FRAME_PARSER
 #define CAN_FRAME_PARSER
 
-#include <libcan/CANFrame.h>
+#include "CANFrame.h"
 
 
 class CANFrameParser

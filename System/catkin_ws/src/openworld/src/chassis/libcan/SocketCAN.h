@@ -7,8 +7,9 @@
 #if (!defined(SOCKETCAN_H)) && (!defined(MINGW))
 #define SOCKETCAN_H
 
-#include <libcan/CANAdapter.h>
-#include <libcan/CANFrame.h>
+#include "CANAdapter.h"
+#include "CANFrame.h"
+
 #include <stdbool.h>
 // IFNAMSIZ, ifreq
 #include <net/if.h>

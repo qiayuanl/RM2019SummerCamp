@@ -6,7 +6,7 @@
 
 #ifndef MINGW
 
-#include <libcan/SocketCAN.h>
+#include "SocketCAN.h"
 #include <stdio.h>
 // strncpy
 #include <string.h>
@@ -175,7 +175,7 @@ static void* socketcan_receiver_thread(void* argv)
 
             if (sock->reception_handler != NULL)
             {
-                sock->reception_handler(&rx_frame);
+                sock->reception_handler(&rx_frame, sock->reception_handler_data);
             }
 
             if (sock->parser != NULL)

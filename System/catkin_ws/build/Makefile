@@ -309,6 +309,19 @@ testop/fast:
 .PHONY : testop/fast
 
 #=============================================================================
+# Target rules for targets named chassis
+
+# Build rule for target.
+chassis: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 chassis
+.PHONY : chassis
+
+# fast build rule for target.
+chassis/fast:
+	$(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/build
+.PHONY : chassis/fast
+
+#=============================================================================
 # Target rules for targets named std_msgs_generate_messages_lisp
 
 # Build rule for target.
@@ -618,6 +631,7 @@ help:
 	@echo "... gtest_main"
 	@echo "... teleop"
 	@echo "... testop"
+	@echo "... chassis"
 	@echo "... std_msgs_generate_messages_lisp"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... dynamic_reconfigure_gencfg"

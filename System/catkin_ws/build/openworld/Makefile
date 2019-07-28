@@ -196,6 +196,21 @@ testop/fast:
 .PHONY : testop/fast
 
 # Convenience name for target.
+openworld/CMakeFiles/chassis.dir/rule:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 openworld/CMakeFiles/chassis.dir/rule
+.PHONY : openworld/CMakeFiles/chassis.dir/rule
+
+# Convenience name for target.
+chassis: openworld/CMakeFiles/chassis.dir/rule
+
+.PHONY : chassis
+
+# fast build rule for target.
+chassis/fast:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/build
+.PHONY : chassis/fast
+
+# Convenience name for target.
 openworld/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule:
 	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 openworld/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
 .PHONY : openworld/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
@@ -525,6 +540,141 @@ openworld_gencfg/fast:
 	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/openworld_gencfg.dir/build.make openworld/CMakeFiles/openworld_gencfg.dir/build
 .PHONY : openworld_gencfg/fast
 
+src/chassis/chassis.o: src/chassis/chassis.cpp.o
+
+.PHONY : src/chassis/chassis.o
+
+# target to build an object file
+src/chassis/chassis.cpp.o:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/chassis.cpp.o
+.PHONY : src/chassis/chassis.cpp.o
+
+src/chassis/chassis.i: src/chassis/chassis.cpp.i
+
+.PHONY : src/chassis/chassis.i
+
+# target to preprocess a source file
+src/chassis/chassis.cpp.i:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/chassis.cpp.i
+.PHONY : src/chassis/chassis.cpp.i
+
+src/chassis/chassis.s: src/chassis/chassis.cpp.s
+
+.PHONY : src/chassis/chassis.s
+
+# target to generate assembly for a file
+src/chassis/chassis.cpp.s:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/chassis.cpp.s
+.PHONY : src/chassis/chassis.cpp.s
+
+src/chassis/libcan/CANAdapter.o: src/chassis/libcan/CANAdapter.cpp.o
+
+.PHONY : src/chassis/libcan/CANAdapter.o
+
+# target to build an object file
+src/chassis/libcan/CANAdapter.cpp.o:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/CANAdapter.cpp.o
+.PHONY : src/chassis/libcan/CANAdapter.cpp.o
+
+src/chassis/libcan/CANAdapter.i: src/chassis/libcan/CANAdapter.cpp.i
+
+.PHONY : src/chassis/libcan/CANAdapter.i
+
+# target to preprocess a source file
+src/chassis/libcan/CANAdapter.cpp.i:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/CANAdapter.cpp.i
+.PHONY : src/chassis/libcan/CANAdapter.cpp.i
+
+src/chassis/libcan/CANAdapter.s: src/chassis/libcan/CANAdapter.cpp.s
+
+.PHONY : src/chassis/libcan/CANAdapter.s
+
+# target to generate assembly for a file
+src/chassis/libcan/CANAdapter.cpp.s:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/CANAdapter.cpp.s
+.PHONY : src/chassis/libcan/CANAdapter.cpp.s
+
+src/chassis/libcan/CANFrameParser.o: src/chassis/libcan/CANFrameParser.cpp.o
+
+.PHONY : src/chassis/libcan/CANFrameParser.o
+
+# target to build an object file
+src/chassis/libcan/CANFrameParser.cpp.o:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/CANFrameParser.cpp.o
+.PHONY : src/chassis/libcan/CANFrameParser.cpp.o
+
+src/chassis/libcan/CANFrameParser.i: src/chassis/libcan/CANFrameParser.cpp.i
+
+.PHONY : src/chassis/libcan/CANFrameParser.i
+
+# target to preprocess a source file
+src/chassis/libcan/CANFrameParser.cpp.i:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/CANFrameParser.cpp.i
+.PHONY : src/chassis/libcan/CANFrameParser.cpp.i
+
+src/chassis/libcan/CANFrameParser.s: src/chassis/libcan/CANFrameParser.cpp.s
+
+.PHONY : src/chassis/libcan/CANFrameParser.s
+
+# target to generate assembly for a file
+src/chassis/libcan/CANFrameParser.cpp.s:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/CANFrameParser.cpp.s
+.PHONY : src/chassis/libcan/CANFrameParser.cpp.s
+
+src/chassis/libcan/SocketCAN.o: src/chassis/libcan/SocketCAN.cpp.o
+
+.PHONY : src/chassis/libcan/SocketCAN.o
+
+# target to build an object file
+src/chassis/libcan/SocketCAN.cpp.o:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/SocketCAN.cpp.o
+.PHONY : src/chassis/libcan/SocketCAN.cpp.o
+
+src/chassis/libcan/SocketCAN.i: src/chassis/libcan/SocketCAN.cpp.i
+
+.PHONY : src/chassis/libcan/SocketCAN.i
+
+# target to preprocess a source file
+src/chassis/libcan/SocketCAN.cpp.i:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/SocketCAN.cpp.i
+.PHONY : src/chassis/libcan/SocketCAN.cpp.i
+
+src/chassis/libcan/SocketCAN.s: src/chassis/libcan/SocketCAN.cpp.s
+
+.PHONY : src/chassis/libcan/SocketCAN.s
+
+# target to generate assembly for a file
+src/chassis/libcan/SocketCAN.cpp.s:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/libcan/SocketCAN.cpp.s
+.PHONY : src/chassis/libcan/SocketCAN.cpp.s
+
+src/chassis/motor.o: src/chassis/motor.cpp.o
+
+.PHONY : src/chassis/motor.o
+
+# target to build an object file
+src/chassis/motor.cpp.o:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/motor.cpp.o
+.PHONY : src/chassis/motor.cpp.o
+
+src/chassis/motor.i: src/chassis/motor.cpp.i
+
+.PHONY : src/chassis/motor.i
+
+# target to preprocess a source file
+src/chassis/motor.cpp.i:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/motor.cpp.i
+.PHONY : src/chassis/motor.cpp.i
+
+src/chassis/motor.s: src/chassis/motor.cpp.s
+
+.PHONY : src/chassis/motor.s
+
+# target to generate assembly for a file
+src/chassis/motor.cpp.s:
+	cd /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/build && $(MAKE) -f openworld/CMakeFiles/chassis.dir/build.make openworld/CMakeFiles/chassis.dir/src/chassis/motor.cpp.s
+.PHONY : src/chassis/motor.cpp.s
+
 src/opmode/teleop.o: src/opmode/teleop.cpp.o
 
 .PHONY : src/opmode/teleop.o
@@ -592,6 +742,7 @@ help:
 	@echo "... teleop"
 	@echo "... test"
 	@echo "... testop"
+	@echo "... chassis"
 	@echo "... std_msgs_generate_messages_lisp"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... edit_cache"
@@ -616,6 +767,21 @@ help:
 	@echo "... rosgraph_msgs_generate_messages_lisp"
 	@echo "... rosgraph_msgs_generate_messages_nodejs"
 	@echo "... openworld_gencfg"
+	@echo "... src/chassis/chassis.o"
+	@echo "... src/chassis/chassis.i"
+	@echo "... src/chassis/chassis.s"
+	@echo "... src/chassis/libcan/CANAdapter.o"
+	@echo "... src/chassis/libcan/CANAdapter.i"
+	@echo "... src/chassis/libcan/CANAdapter.s"
+	@echo "... src/chassis/libcan/CANFrameParser.o"
+	@echo "... src/chassis/libcan/CANFrameParser.i"
+	@echo "... src/chassis/libcan/CANFrameParser.s"
+	@echo "... src/chassis/libcan/SocketCAN.o"
+	@echo "... src/chassis/libcan/SocketCAN.i"
+	@echo "... src/chassis/libcan/SocketCAN.s"
+	@echo "... src/chassis/motor.o"
+	@echo "... src/chassis/motor.i"
+	@echo "... src/chassis/motor.s"
 	@echo "... src/opmode/teleop.o"
 	@echo "... src/opmode/teleop.i"
 	@echo "... src/opmode/teleop.s"
