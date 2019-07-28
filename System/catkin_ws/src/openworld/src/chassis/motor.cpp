@@ -52,6 +52,8 @@ void MotorController::HWReceiveFrame(can_frame_t *frame) {
                 uint8_t idx = frame->can_id - CAN_3510Moto1_ID;
                 HWUpdateOffset(&motors[idx], frame);
 				HWUpdateTotalAngle(&motors[idx]);
+
+				motors[idx].msg_cnt++;
                 break;
         }
 
@@ -94,7 +96,7 @@ MotorController::MotorController() {
 	//Initialize Hardware
 	adapter = new SocketCAN();
 	adapter->reception_handler = &ReceiveHandlerProxy;
-	adapter->reception_handler_data = this;
+	adapter->reception_handler_data = (void *)this;
 
     adapter->open(CHASSIS_CAN_ID);
 }
@@ -124,7 +126,7 @@ double MotorController::readVelocity(int id) {
 }
 
 double MotorController::readPosition(int id) {
-	return (motors[id].total_angle / 8192.0 * 2.0 * M_PI) * CHASSIS_WHEEL_R;
+	return motors[id].total_angle * CHASSIS_TICK_TO_METERS;
 }
 
 void MotorController::update() {
@@ -184,10 +186,10 @@ void MotorController::update() {
 
 		//output power
 		double output = Kp * VError_Filtered[id].value[0]
-					+ Ki * VError_Intergral[id] 
-					+ Kd * VError_Derivative_Filtered[id].value[0];
+					  + Ki * VError_Intergral[id] 
+					  + Kd * VError_Derivative_Filtered[id].value[0];
 
-		int power = output * MOTOR_PWM_RESOLUTION;
+		int power = (int)(output * MOTOR_PWM_RESOLUTION);
 
 		if(power >  MOTOR_PWM_RESOLUTION)  power =  MOTOR_PWM_RESOLUTION;
 		if(power < -MOTOR_PWM_RESOLUTION)  power = -MOTOR_PWM_RESOLUTION;
@@ -196,17 +198,35 @@ void MotorController::update() {
 	}
 
 	//Send Motor Power
-	can_frame_t frame;
+	if(adapter->is_open()) {
+		can_frame_t frame;
 
-    frame.can_id = CHASSIS_CAN_MOTOR_ID;
-    frame.can_dlc = 2 * MOTOR_COUNT;
+		//Transmit Frame 1
+		frame.can_id = CHASSIS_CAN_MOTOR_ID_1;
+		frame.can_dlc = 8;
 
-	for(int id = 0; id < MOTOR_COUNT; id++) {
-		int16_t power = motors[id].power;
+		for(int id = 0; id < std::min(MOTOR_COUNT, 4); id++) {
+			int16_t power = (int16_t)motors[id].power;
 
-		frame.data[2 * id] =     (uint8_t)(power >> 8);
-		frame.data[2 * id + 1] = (uint8_t)(power);
+			frame.data[2 * id] =     (uint8_t)(power >> 8);
+			frame.data[2 * id + 1] = (uint8_t)(power);
+		}
+
+		adapter->transmit(&frame);
+
+		//Transmit Frame 2
+		if(MOTOR_COUNT > 4) {
+			frame.can_id = CHASSIS_CAN_MOTOR_ID_2;
+			frame.can_dlc = 8;
+
+			for(int id = 4; id < MOTOR_COUNT; id++) {
+				int16_t power = (int16_t)motors[id].power;
+
+				frame.data[2 * id] =     (uint8_t)(power >> 8);
+				frame.data[2 * id + 1] = (uint8_t)(power);
+			}
+
+			adapter->transmit(&frame);
+		}
 	}
-
-	adapter->transmit(&frame);
 }

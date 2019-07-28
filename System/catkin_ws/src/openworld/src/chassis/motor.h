@@ -49,8 +49,6 @@ typedef enum
     SINGLE_GYRO_ID = 0x401,
 } CAN_Message_ID;
 
-#define FILTER_BUF_LEN		5
-
 /*接收到的云台电机的参数结构体*/
 
 typedef struct
@@ -62,6 +60,7 @@ typedef struct
     uint16_t 	last_angle;
     uint16_t	offset_angle;
     uint8_t  	hall;
+
     int32_t		round_cnt;
     int32_t		total_angle;
     uint32_t	msg_cnt;
