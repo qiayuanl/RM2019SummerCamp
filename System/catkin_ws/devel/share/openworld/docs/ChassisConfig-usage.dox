@@ -1,7 +1,7 @@
 \subsubsection usage Usage
 \verbatim
 <node name="chassis" pkg="one_bot" type="chassis">
-  <param name="Kp" type="double" value="1.0" />
+  <param name="Kp" type="double" value="0.0" />
   <param name="Ki" type="double" value="0.0" />
   <param name="Kd" type="double" value="0.0" />
   <param name="KmaxI" type="double" value="1000.0" />

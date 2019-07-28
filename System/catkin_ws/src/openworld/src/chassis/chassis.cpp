@@ -78,7 +78,7 @@ Chassis::Chassis() {
 	//Motor Controller Config
 	double _Kp, _Ki, _Kd, _KmaxI;
 
-	node_priv.param<double>("Kp", _Kp, 1.0);
+	node_priv.param<double>("Kp", _Kp, 0.0);
 	node_priv.param<double>("Ki", _Ki, 0.0);
 	node_priv.param<double>("Kd", _Kd, 0.0);
 	node_priv.param<double>("KmaxI", _KmaxI, 1000.0);

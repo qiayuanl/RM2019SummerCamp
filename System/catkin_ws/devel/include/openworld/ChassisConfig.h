@@ -411,7 +411,7 @@ ChassisConfig::GroupDescription<ChassisConfig::DEFAULT, ChassisConfig> Default("
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __max__.Kp = 100.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
-      __default__.Kp = 1.0;
+      __default__.Kp = 0.0;
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       Default.abstract_parameters.push_back(ChassisConfig::AbstractParamDescriptionConstPtr(new ChassisConfig::ParamDescription<double>("Kp", "double", 0, "Motor Controller Kp", "", &ChassisConfig::Kp)));
 //#line 290 "/opt/ros/kinetic/lib/python2.7/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
