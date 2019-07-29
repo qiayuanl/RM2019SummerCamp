@@ -1,11 +1,10 @@
-#ifndef __MOTOR_H__
-#define __MOTOR_H__
-
-#include "config.h"
+#ifndef __HARDWARE_H__
+#define __HARDWARE_H__
 
 #include <ros/ros.h>
 #include <vector>
 #include "libcan/SocketCAN.h"
+#include "config.h"
 
 ////////////////////Hardware Level//////////////////////////
 
@@ -65,53 +64,39 @@ typedef struct
     int32_t		total_angle;
     uint32_t	msg_cnt;
 
-    double set_vel;
-    int    power;
+    int16_t power;
 } moto_measure_t;
 
 //////////////////////////////////////////////////////////////////
 
-struct ErrorList {
-    double value[3];
-};
+class RobotHardware {
+public:
+    RobotHardware();
+    ~RobotHardware();
 
-class MotorController {
-  public:
-    MotorController();
-    ~MotorController();
+    /* HW Interface */
+    moto_measure_t motors[HW_MOTOR_COUNT];
+    single_gyro_t  gyro;
 
+    /* HW Receiver */
+    void CAN_ReceiveFrame(can_frame_t *frame);
+
+    /* HW Update */
     void update();
 
-    void setVelocity(int id, double vel);
-    double readVelocity(int id);
-    double readVelocitySetpoint(int id);
-    double readPosition(int id);
+private:
+    /* HW Adapter */
+    SocketCAN adapter;
 
-    void setCoefficients(double _Kp, double _Ki, double _Kd, double _KmaxI);
-
-    void HWReceiveFrame(can_frame_t *frame);
-
-  private:
-    /* Time */
-    ros::Time last_looptime;
-
-    /* Motors */
-    std::vector<moto_measure_t> motors;
-
-    /* PID */
-    double Kp, Ki, Kd, KmaxI;
-
-    std::vector<ErrorList> VError;
-    std::vector<ErrorList> VError_Filtered;
-    std::vector<ErrorList> VError_Derivative;
-    std::vector<ErrorList> VError_Derivative_Filtered;
-    std::vector<double> VError_Intergral;
-
-    /* Hardware */
-    SocketCAN* adapter;
-
-    void HWUpdateTotalAngle(moto_measure_t *p);
-    void HWUpdateOffset(moto_measure_t *ptr, can_frame_t* frame);
+    /* Motor */
+    void Motor_UpdateOffset(moto_measure_t *ptr, can_frame_t* frame);
+    void Motor_UpdateTotalAngle(moto_measure_t *p);
+    void CAN_Motor_Update();
 };
+
+//////////////////////////////Global Hardware Handle////////////////////////////////////
+
+RobotHardware* Hardware();
+void ReleaseHardware();
 
 #endif

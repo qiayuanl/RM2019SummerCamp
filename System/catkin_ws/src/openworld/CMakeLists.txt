@@ -158,13 +158,13 @@ include_directories(
 
 add_compile_options(-Wall -Wextra -Wconversion)
 
-#chassis
-AUX_SOURCE_DIRECTORY(src/chassis CHASSIS_SOURCES)
-AUX_SOURCE_DIRECTORY(src/chassis/libcan CHASSIS_LIBCAN_SOURCES)
+#robot
+AUX_SOURCE_DIRECTORY(src/robot        ROBOT_SOURCES)
+AUX_SOURCE_DIRECTORY(src/robot/libcan ROBOT_LIBCAN_SOURCES)
 
-add_executable(chassis ${CHASSIS_SOURCES} ${CHASSIS_LIBCAN_SOURCES})
-target_link_libraries(chassis ${catkin_LIBRARIES})
-add_dependencies(chassis ${PROJECT_NAME}_gencfg)
+add_executable(robot ${ROBOT_SOURCES} ${ROBOT_LIBCAN_SOURCES})
+target_link_libraries(robot ${catkin_LIBRARIES})
+add_dependencies(robot ${PROJECT_NAME}_gencfg)
 
 #localization
 find_package( OpenCV REQUIRED )
