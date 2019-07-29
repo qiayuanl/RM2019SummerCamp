@@ -1,2 +1,5 @@
-System/catkin_ws/build/
-System/catkin_ws/devel/
+**/build/
+*.obj
+*.o
+*.swp
+
