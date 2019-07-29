@@ -99,6 +99,7 @@ void SocketCAN::open(char* interface)
 void SocketCAN::close()
 {
     terminate_receiver_thread = true;
+    while(receiver_thread_running);
 
     if (!is_open())
         return;
@@ -150,6 +151,9 @@ static void* socketcan_receiver_thread(void* argv)
     // Buffer to store incoming frame
     can_frame_t rx_frame;
 
+    // Set running flag
+    sock->receiver_thread_running = true;
+
     // Run until termination signal received
     while (!sock->terminate_receiver_thread)
     {
@@ -197,6 +201,8 @@ static void* socketcan_receiver_thread(void* argv)
     printf("Receiver thread terminated.\n");
 
     // Thread terminates
+    sock->receiver_thread_running = false;
+
     return NULL;
 }
 

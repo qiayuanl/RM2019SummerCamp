@@ -51,6 +51,8 @@ class SocketCAN: public CANAdapter
      */
     bool terminate_receiver_thread = false;
 
+    bool receiver_thread_running = false;
+
     /** Constructor */
     SocketCAN();
     /** Destructor */

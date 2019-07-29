@@ -23,6 +23,6 @@ const int MOTOR_PWM_RESOLUTION = 10000;
 
 #define CHASSIS_CAN_MOTOR_ID_1 0x200
 #define CHASSIS_CAN_MOTOR_ID_2 0x1FF
-#define CHASSIS_CAN_ID "can0"
+#define CHASSIS_CAN_ID "can1"
 
 #endif
