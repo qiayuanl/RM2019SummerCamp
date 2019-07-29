@@ -37,6 +37,13 @@ Chassis::Chassis() {
 	}
 }
 
+void Chassis::~Chassis() {
+	//Free Motors
+	for(int i = 0; i < 4; i++) {
+		delete motors[i];
+	}
+}
+
 void Chassis::update() {
 	//Update Motors
 	for(int i = 0; i < 4; i++) {

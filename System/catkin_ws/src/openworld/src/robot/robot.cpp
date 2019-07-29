@@ -5,10 +5,10 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "chassis");
 
-	ros::Rate loop_rate(1000);
-
 	//Create Nodes
 	Chassis chassis;
+
+	ros::Rate loop_rate(1000);
 
 	//Process Jobs
 	while (ros::ok())
