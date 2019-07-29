@@ -1,0 +1,16 @@
+L 1 "App\Mecanum_Wheel.c"
+N#include "Mecanum_Wheel.h"
+L 1 "App\Mecanum_Wheel.h" 1
+N#ifndef _MECANUM_WHEEL_H_
+N#define _MECANUM_WHEEL_H_
+Nvoid Set_Speed(float speed_x,float speed_y,float speed_w);
+Nvoid Speed_To_Wheel(float vx_set, float vy_set,float wz_set,float wheel_speed[4]);
+N#endif
+L 2 "App\Mecanum_Wheel.c" 2
+Nvoid Speed_To_Wheel(float vx_set, float vy_set,float wz_set,float wheel_speed[4])
+N{
+N	  wheel_speed[0] = (float)(+vx_set - vy_set + wz_set*1.1053f);
+N    wheel_speed[1] = (float)(+vx_set + vy_set + wz_set*1.1053f);
+N    wheel_speed[2] = (float)(-vx_set + vy_set + wz_set*1.1053f);
+N    wheel_speed[3] = (float)(-vx_set - vy_set + wz_set*1.1053f);
+N}
