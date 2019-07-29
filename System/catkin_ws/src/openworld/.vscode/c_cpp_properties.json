@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/include",
+                "/usr/include/**",
+                "/usr/local/include/**",
+                "/opt/ros/kinetic/include/**",
+                "/usr/lib/gcc/x86_64-linux-gnu/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
