@@ -58,10 +58,7 @@
   <exec_depend>dynamic_reconfigure</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-<<<<<<< HEAD
   <build_depend>roslaunch</build_depend>
-=======
->>>>>>> 986ebf915af5b334c1205139c4900151e5fc12bb
 
 
   <!-- The export tag contains other, unspecified, tags -->
