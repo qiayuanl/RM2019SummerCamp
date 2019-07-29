@@ -1,4 +1,30 @@
 #include "User.h"
+TIM_HandleTypeDef TIM14_Handler;      //定时器句柄 
+uint32_t RTOS_Tick_Counter=0;
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if(htim==(&TIM14_Handler))
+    {
+        RTOS_Tick_Counter++;
+    }
+}
+void TIM14_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&TIM14_Handler);
+}
+void Init_Trace_Timer(void)
+{
+		__HAL_RCC_TIM14_CLK_ENABLE();            //使能TIM14时钟
+		HAL_NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn,0,0);    //设置中断优先级，抢占优先级1，子优先级3
+		HAL_NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);          //开启ITM3中断   
+		TIM14_Handler.Instance=TIM14;                          //通用定时器3
+    TIM14_Handler.Init.Prescaler=179;                     //分频系数
+    TIM14_Handler.Init.CounterMode=TIM_COUNTERMODE_UP;    //向上计数器
+    TIM14_Handler.Init.Period=4;                        //自动装载值
+    TIM14_Handler.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;//时钟分频因子
+    HAL_TIM_Base_Init(&TIM14_Handler);
+    HAL_TIM_Base_Start_IT(&TIM14_Handler); //使能定时器3和定时器3更新中断：TIM_IT_UPDATE   
+}
 //设置向量表偏移地址
 //NVIC_VectTab:基址
 //Offset:偏移量		 

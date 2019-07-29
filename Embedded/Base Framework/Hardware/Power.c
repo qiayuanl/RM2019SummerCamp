@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_POWER == 1)
+
 void Power_Init(void)
 {
 	GPIO_InitTypeDef TypeDefPower;
@@ -13,3 +16,5 @@ void Power_Init(void)
 	PHout(4)=0;
 	PHout(5)=0;
 }
+
+#endif	//#if(POWER == 1)

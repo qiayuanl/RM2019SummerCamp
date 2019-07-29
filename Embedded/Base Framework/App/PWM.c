@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_PWM == 1)
+
 void PWM_Init(void)
 {
 	MX_TIM2_Init();
@@ -40,3 +43,5 @@ void PWM_SetDuty(TIM_HandleTypeDef *tim,uint32_t tim_channel,float duty)
 		break;
 	}
 }
+
+#endif	//#if(USING_PWM == 1)

@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_USART == 1)
+
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 USART_Receve USART2_Receve_Handler;
@@ -179,3 +182,5 @@ void USART3_IRQHandler(void)
 	 if(timeout>maxDelay) break;	
 	}
 }
+
+#endif	//#if(USING_USART == 1)

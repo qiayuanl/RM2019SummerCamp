@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_PID == 1)
+
 PID_Structure PID1;
 PID_Structure PID2;
 PID_Structure PID3;
@@ -30,3 +33,5 @@ void PID_Calculate(void* pvParameters)
 		vTaskDelay(PID_Time);
 	}
 }
+
+#endif	//#if(USING_PID == 1)

@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_MANIFOLD == 1)
+
 Manifold_Receve_Struct Manifold;
 extern UART_HandleTypeDef USART3_Handler;
 unsigned char Last_Possition_X,Last_Possition_Y;
@@ -21,3 +24,5 @@ void Manifold_Send(Manifold_Send_Struct send)
 	Manifold_Buffer[1]=0x40|((send.Possition_Col&0x03)<<4)|send.Set_Disable<<3|send.Enemy<<2|send.Get<<1|send.Teminal;
 	HAL_UART_Transmit(&USART3_Handler,Manifold_Buffer,sizeof(Manifold_Buffer),1000);
 }
+
+#endif	//#if(USING_MANIFOLD == 1)

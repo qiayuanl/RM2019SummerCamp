@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_MOTOR == 1)
+
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 single_gyro_t single_gyro;
@@ -149,3 +152,5 @@ void set_moto_current(CAN_HandleTypeDef* hcan, s16 iq1, s16 iq2, s16 iq3, s16 iq
 	hcan->pTxMsg->Data[7] = iq4;
 	HAL_CAN_Transmit(hcan, 1000);
 }	
+
+#endif	//#if(USING_MOTOR == 1)

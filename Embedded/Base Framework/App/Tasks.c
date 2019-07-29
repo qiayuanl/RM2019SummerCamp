@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_TASK == 1)
+
 void Renew_PID(void)         //更新PID值
 {
 	PID1.Collect[1]=PID1.Collect[0];
@@ -51,3 +54,5 @@ void Remote_Control(void* pvParameters)              //周期处理遥控器接收值
 		vTaskDelay(1);
 	}
 }
+
+#endif	//#if(USING_TASK == 1)
