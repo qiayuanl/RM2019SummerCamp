@@ -1,4 +1,8 @@
 #include "dac.h"
+#include "User.h"
+
+#if(USING_DAC == 1)
+
 DAC_HandleTypeDef DAC1_Handler;//DAC句柄
 DAC_HandleTypeDef DAC2_Handler;//DAC句柄
 void DAC1_Init(void)
@@ -51,3 +55,5 @@ void DAC2_Set(u16 vol)
 	temp=temp*4096/3.3;
   HAL_DAC_SetValue(&DAC2_Handler,DAC_CHANNEL_2,DAC_ALIGN_12B_R,temp);//12位右对齐数据格式设置DAC值
 }
+
+#endif	//#if(USING_DAC == 1)

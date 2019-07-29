@@ -1,6 +1,6 @@
 #ifndef _VAR_H_
 #define _VAR_H_
-#define PID_Time 5               //PID运算时间5ms/次
+#define PID_Time 5               //PID运算时间5ms/次 200Hz
 #define USART3_Priority 1
 #define USART3_Receve_Length 2  //USART3接收缓冲区大小
 #define UART_RX_DMA_SIZE (1024)		//串口1，DMA2长度

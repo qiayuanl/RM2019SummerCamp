@@ -1,5 +1,6 @@
 #ifndef _USER_H_
 #define _USER_H_
+#include "user_config.h"
 #include "Tasks.h"
 #include "Machine_Arm.h"
 #include "Manifold.h"

@@ -6,4 +6,4 @@ Staffing table:
 
 Embedded System|Algorithm|Mechanics
 ---|:--:|---:
-Liao Qiayuan |Wang Guan|Chen Wenxiao
+Liao Qiayuan, Zhang Hisen |Wang Guan|Chen Wenxiao

@@ -4,4 +4,4 @@
 *.o
 *.pyc
 *.swp
-`
+**/.DS_Store

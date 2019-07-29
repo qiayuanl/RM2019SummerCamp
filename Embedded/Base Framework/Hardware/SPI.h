@@ -1,6 +1,7 @@
 #ifndef __spi_H
 #define __spi_H
 #include "System_Config.h"
+
 #define SPI4_NSS PEout(4)
 extern SPI_HandleTypeDef SPI4_Handler;  //SPI¾ä±ú
 void SPI4_Init(void);

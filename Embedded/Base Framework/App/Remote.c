@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_REMOTE == 1)
+
 uint8_t  dbus_buf[DBUS_BUFLEN];
 rc_info_t Remote;
 static int uart_receive_dma_no_it(UART_HandleTypeDef* huart, uint8_t* pData, uint32_t Size)
@@ -77,3 +80,5 @@ void Remote_Init(void)
 	__HAL_UART_ENABLE_IT(&DBUS_HUART, UART_IT_IDLE);
 	uart_receive_dma_no_it(&DBUS_HUART, dbus_buf, DBUS_MAX_LEN);
 }
+
+#endif	//#if(USING_REMOTE == 1)

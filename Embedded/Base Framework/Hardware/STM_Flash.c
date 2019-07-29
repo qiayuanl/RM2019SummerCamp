@@ -1,4 +1,8 @@
 #include "STM_Flash.h"
+#include "User.h"
+
+#if(USING_STM_FLASH == 1)
+
 //读取指定地址的字(32位数据) 
 //faddr:读地址 
 //返回值:对应数据.
@@ -114,3 +118,5 @@ void Test_Write(u32 WriteAddr,u32 WriteData)
 {
 	STMFLASH_Write(WriteAddr,&WriteData,1);//写入一个字 
 }
+
+#endif	//#if(USING_STM_FLASH == 1)

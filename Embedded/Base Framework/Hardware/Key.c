@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_KEY == 1)
+
 void Key_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -38,3 +41,5 @@ unsigned char Read_Key(void)
 		return 'D';
 	return 'N';
 }
+
+#endif	//USING_KEY
