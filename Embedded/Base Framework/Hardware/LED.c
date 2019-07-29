@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_LED == 1)
+
 void LED_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -31,3 +34,5 @@ void LED_Flash(void* pvParameters)
 		vTaskDelay(500);
 	}
 }
+
+#endif	//#if(USING_LED == 1)

@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "System_Config.h"
+#include "User.h"
+
+#if(USING_OLED == 1)
+
 /**
  * OLED flash Addr:
  * [0]0 1 2 3 ... 127
@@ -422,4 +426,4 @@ void oled_init(void)
     oled_set_pos(0, 0);
 }
 
-
+#endif	//#if(USING_OLED == 1)

@@ -39,7 +39,7 @@ task.h is included from an application file. */
 #include "task.h"
 #include "timers.h"
 #include "stack_macros.h"
-
+#include "System_Config.h"
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
 because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
 for the header files above, but not in this file, in order to generate the
@@ -128,7 +128,6 @@ configIDLE_TASK_NAME in FreeRTOSConfig.h. */
 #ifndef configIDLE_TASK_NAME
 	#define configIDLE_TASK_NAME "IDLE"
 #endif
-
 #if ( configUSE_PORT_OPTIMISED_TASK_SELECTION == 0 )
 
 	/* If configUSE_PORT_OPTIMISED_TASK_SELECTION is 0 then task selection is
@@ -5102,8 +5101,6 @@ when performing module tests). */
 #ifdef FREERTOS_MODULE_TEST
 	#include "tasks_test_access_functions.h"
 #endif
-
-
 #if( configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H == 1 )
 
 	#include "freertos_tasks_c_additions.h"

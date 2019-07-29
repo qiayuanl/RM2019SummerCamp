@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_TIM == 1)
+
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim5;
@@ -203,3 +206,5 @@ void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* tim_pwmHandle)
     __HAL_RCC_TIM8_CLK_DISABLE();
   }
 } 
+
+#endif	//#if(USING_TIM == 1)

@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_LASER == 1)
+
 void Laser_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -9,3 +12,5 @@ void Laser_Init(void)
 	HAL_GPIO_Init(GPIOG,&GPIO_InitStructure);
 	LASER=1;  //´ò¿ª¼¤¹â
 }
+
+#endif	//#if(USING_LASER == 1)

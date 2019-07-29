@@ -1,4 +1,8 @@
 #include "SPI.h"
+#include "User.h"
+
+#if(USING_SPI == 1)
+
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef SPI4_Handler;  //SPI¾ä±ú
 void SPI4_Init(void)
@@ -92,3 +96,5 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     HAL_GPIO_DeInit(GPIOF, GPIO_PIN_7|GPIO_PIN_9|GPIO_PIN_8);
   }
 } 
+
+#endif	//#if(USING_SPI == 1)

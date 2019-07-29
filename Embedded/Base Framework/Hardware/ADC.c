@@ -1,4 +1,8 @@
 #include "adc.h"
+#include "User.h"
+
+#if(USING_ADC == 1)
+
 ADC_HandleTypeDef ADC1_Handler;//ADC¾ä±ú
 void ADC1_Init(void)
 {
@@ -70,3 +74,5 @@ short Get_Temprate(void)
 	result=temperate*=100;					//À©´ó100±¶.
 	return result;
 }
+
+#endif	//#if(USING_ADC == 1)

@@ -1,4 +1,8 @@
 #include "Random.h"
+#include "User.h"
+
+#if(USING_RANDOM == 1)
+
 RNG_HandleTypeDef RNG_Handler;  //RNG¾ä±ú
 u8 Random_Init(void)
 {
@@ -25,3 +29,5 @@ int Get_RandomRange(int min,int max)
 { 
    return HAL_RNG_GetRandomNumber(&RNG_Handler)%(max-min+1) +min;
 }
+
+#endif	//#if(USING_RANDOM == 1)

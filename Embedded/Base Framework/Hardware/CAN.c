@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_CAN == 1)
+
 CAN_HandleTypeDef hcan1;
 CAN_HandleTypeDef hcan2;
 void MX_CAN1_Init(void)
@@ -89,3 +92,5 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
     HAL_NVIC_DisableIRQ(CAN2_RX0_IRQn);
   }
 } 
+
+#endif	//#if(USING_CAN == 1)

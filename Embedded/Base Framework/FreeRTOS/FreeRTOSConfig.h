@@ -1,5 +1,8 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
+extern uint32_t RTOS_Tick_Counter;
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() Init_Trace_Timer()
+#define portGET_RUN_TIME_COUNTER_VALUE() RTOS_Tick_Counter
 #define configUSE_STATS_FORMATTING_FUNCTIONS 1
 #define configUSE_PREEMPTION			1
 #define configUSE_IDLE_HOOK				0
@@ -20,7 +23,7 @@
 #define configUSE_MALLOC_FAILED_HOOK	0
 #define configUSE_APPLICATION_TASK_TAG	0
 #define configUSE_COUNTING_SEMAPHORES	1
-#define configGENERATE_RUN_TIME_STATS	0
+#define configGENERATE_RUN_TIME_STATS	1
 #define configUSE_CO_ROUTINES 		0
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 #define configUSE_TIMERS				1

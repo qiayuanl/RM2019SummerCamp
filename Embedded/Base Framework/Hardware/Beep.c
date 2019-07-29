@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_BEEP == 1)
+
 TIM_HandleTypeDef TIM12_Handler;
 TIM_OC_InitTypeDef TIM12_CH1Handler;
 u32 Compare1=0;
@@ -65,3 +68,5 @@ void Beep_Off(void)
 {
 	HAL_TIM_PWM_Stop(&TIM12_Handler,TIM_CHANNEL_1);
 }
+
+#endif //#if(USING_BEEP == 1)

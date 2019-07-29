@@ -1,4 +1,7 @@
 #include "User.h"
+
+#if(USING_IIC_2 == 1)
+
 void IIC2_Init(void)
 {
     GPIO_InitTypeDef GPIO_Initure;
@@ -118,3 +121,5 @@ u8 IIC2_Read_Byte(unsigned char ack)
         IIC2_Ack(); //·¢ËÍACK   
     return receive;
 }
+
+#endif	//#if(USING_IIC_2 == 1)
