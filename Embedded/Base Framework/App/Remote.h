@@ -2,6 +2,14 @@
 #define __BSP_UART_H__
 #define DBUS_HUART huart1 /* for dji remote controler reciever */
 #include "System_Config.h"
+
+#define Left_H 1
+#define Left_M 3
+#define Left_L 2
+#define Right_H 1
+#define Right_M 3
+#define Right_L 2
+
 typedef __packed struct
 {
   /* rocker channel information */
@@ -13,6 +21,7 @@ typedef __packed struct
   uint8_t sw1;
   uint8_t sw2;
 } rc_info_t;
+
 extern rc_info_t Remote;
 uint16_t dma_current_data_counter(DMA_Stream_TypeDef *dma_stream);
 void uart_receive_handler(UART_HandleTypeDef *huart);

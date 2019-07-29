@@ -10,6 +10,7 @@ typedef struct
 	float I_Sum;       //积分项累加值
 	float User;        //用户设定值
 	float Result;      //运算结果
+	float I_Limit;     //积分分离阈值
 }PID_Structure;
 void PID_Calculate(void* pvParameters);
 float PID_Get_Result(PID_Structure* PID_Handler);

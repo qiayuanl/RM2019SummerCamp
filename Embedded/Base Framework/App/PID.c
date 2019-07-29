@@ -10,7 +10,8 @@ PID_Structure PID8;
 float PID_Get_Result(PID_Structure* PID_Handler)
 {
 			float Error=(PID_Handler->User-PID_Handler->Collect[0]);    //计算误差
-			PID_Handler->I_Sum=PID_Handler->I_Sum+(float)0.5*(float)(Error+PID_Handler->User-PID_Handler->Collect[1]);  //梯形积分
+			if(fabs(Error) < PID_Handler->I_Limit)
+				PID_Handler->I_Sum=PID_Handler->I_Sum+(float)0.5*(float)(Error+PID_Handler->User-PID_Handler->Collect[1]);  //梯形积分
 			PID_Handler->Result = (PID_Handler->Kp)*Error
 														+ (PID_Handler->Ki * PID_Handler->I_Sum)
 														+ (PID_Handler->Kd * (Error + PID_Handler->User-PID_Handler->Collect[1]))
