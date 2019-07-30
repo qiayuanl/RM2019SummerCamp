@@ -67,14 +67,14 @@ set(openworld_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("TRUE" STREQUAL "TRUE")
-  set(openworld_SOURCE_PREFIX /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/src/openworld)
-  set(openworld_DEVEL_PREFIX /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel)
+  set(openworld_SOURCE_PREFIX /home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/src/openworld)
+  set(openworld_DEVEL_PREFIX /home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel)
   set(openworld_INSTALL_PREFIX "")
   set(openworld_PREFIX ${openworld_DEVEL_PREFIX})
 else()
   set(openworld_SOURCE_PREFIX "")
   set(openworld_DEVEL_PREFIX "")
-  set(openworld_INSTALL_PREFIX /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/install)
+  set(openworld_INSTALL_PREFIX /home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/install)
   set(openworld_PREFIX ${openworld_INSTALL_PREFIX})
 endif()
 
@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(openworld_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/include " STREQUAL " ")
+if(NOT "/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel/include " STREQUAL " ")
   set(openworld_INCLUDE_DIRS "")
-  set(_include_dirs "/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/include")
+  set(_include_dirs "/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel/include")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")
@@ -110,7 +110,7 @@ if(NOT "/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/inclu
         message(FATAL_ERROR "Project 'openworld' specifies '${idir}' as an include dir, which is not found.  It does not exist in '${include}'.  ${_report}")
       endif()
     else()
-      message(FATAL_ERROR "Project 'openworld' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/src/openworld/${idir}'.  ${_report}")
+      message(FATAL_ERROR "Project 'openworld' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/src/openworld/${idir}'.  ${_report}")
     endif()
     _list_append_unique(openworld_INCLUDE_DIRS ${include})
   endforeach()
@@ -131,7 +131,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/lib;/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/lib;/opt/ros/kinetic/lib)
+    foreach(path /home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel/lib;/home/qiayuanliao/Project/sc_localization_ws/devel_isolated/usb_cam/lib;/home/qiayuanliao/Project/sc_localization_ws/devel_isolated/apriltag_ros/lib;/opt/ros/kinetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

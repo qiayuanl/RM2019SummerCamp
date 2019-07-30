@@ -1,8 +1,8 @@
-prefix=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel
+prefix=/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel
 
 Name: openworld
 Description: Description of openworld
 Version: 0.0.0
-Cflags: -I/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/include
-Libs: -L/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/lib 
+Cflags: -I/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel/include
+Libs: -L/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel/lib 
 Requires: 
