@@ -34,20 +34,33 @@ struct MotorPreset {
 /*
  * Different Motor Presets
  */
-const MotorPreset MOTOR_CHASSIS(
+const MotorPreset MOTOR_GM2006(
     10000,                               //PWM Resolution
     (1.0 / 60.0) * 2.0 * M_PI / 36.0,    //RPM To rad/s
     (1.0 / 8192.0) * 2.0 * M_PI / 36.0   //TICK to Meters
+);
+
+const MotorPreset MOTOR_GM3510(
+    29000,
+    (1.0 / 60.0) * 2.0 * M_PI,
+    (1.0 / 8192.0) * 2.0 * M_PI
 );
 
 /*
  * Chassis Paramters (SI Unit)
  */
 
+#define MOTOR_CHASSIS MOTOR_GM2006
+
 const double CHASSIS_WATCHDOG_TIMEOUT = 1.0;
 
 const double CHASSIS_WHEEL_R = 0.038;
 const double CHASSIS_LENGTH_A = 0.25;
 const double CHASSIS_LENGTH_B = 0.25;
+
+/*
+ * Motion Paramters
+ */
+#define MOTION_MOTOR_COUNT 4
 
 #endif

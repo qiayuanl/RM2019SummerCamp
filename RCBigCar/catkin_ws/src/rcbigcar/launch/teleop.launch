@@ -1,5 +1,5 @@
 <launch>
-    <node pkg="key_teleop" type="key_teleop.py" name="key_teleop" output="screen">
-        <remap from="key_vel" to="velocity" />
+    <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard" output="screen">
+        <remap from="cmd_vel" to="velocity" />
     </node>
 </launch>

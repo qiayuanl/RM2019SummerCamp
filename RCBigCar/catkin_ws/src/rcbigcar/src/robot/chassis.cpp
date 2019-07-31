@@ -1,7 +1,7 @@
 #include "chassis.h"
 
 Chassis::Chassis() {
-	ros::NodeHandle node_priv("~");
+	ros::NodeHandle node_priv;
 
 	//Setup Variables
 	//Setup Motors
@@ -17,8 +17,8 @@ Chassis::Chassis() {
 	DynamicParamServer.setCallback(DynamicParamFunc);
 
 	//Setup Comm
-	twist_sub   = nh.subscribe<geometry_msgs::Twist>("velocity", 10, &Chassis::CallbackVelocity, this);
-	odom_pub	= nh.advertise<nav_msgs::Odometry>("odom", 50);
+	twist_sub   = node_priv.subscribe<geometry_msgs::Twist>("velocity", 10, &Chassis::CallbackVelocity, this);
+	odom_pub	= node_priv.advertise<nav_msgs::Odometry>("odom", 50);
 
 	//Setup Odom
 	x = y = theta = 0;
@@ -33,8 +33,8 @@ Chassis::Chassis() {
 
 	//Setup Debug
 	if(Config_IsDebug) {
-		dbg_spd_setpoint_pub = nh.advertise<std_msgs::Float64MultiArray>("dbg_set_spd", 50);
-		dbg_spd_real_pub     = nh.advertise<std_msgs::Float64MultiArray>("dbg_real_spd", 50);
+		dbg_spd_setpoint_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_set_spd", 50);
+		dbg_spd_real_pub     = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_real_spd", 50);
 	}
 }
 
