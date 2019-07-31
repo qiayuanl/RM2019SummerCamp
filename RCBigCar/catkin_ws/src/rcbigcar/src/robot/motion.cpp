@@ -15,8 +15,8 @@ Motion::Motion() {
 	DynamicParamServer.setCallback( boost::bind(&Motion::CallbackDynamicParam, this, _1, _2) );
 
     //Setup Comm
-	motor_sub   = node_priv.subscribe<std_msgs::Float64MultiArray>("motor", 10, &Motion::CallbackSetpoint, this);
-	status_pub	= node_priv.advertise<std_msgs::Float64MultiArray>("motorstatus", 50);
+	motor_sub   = node_priv.subscribe<std_msgs::Float64MultiArray>("motor", 100, &Motion::CallbackSetpoint, this);
+	status_pub	= node_priv.advertise<std_msgs::Float64MultiArray>("motorstatus", 100);
 
 	//Setup Watchdog
 	motionWatchdog = ros::Time::now();

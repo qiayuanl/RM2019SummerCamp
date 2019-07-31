@@ -35,6 +35,7 @@ public:
     /* Callback Funcs */
     void CallbackDynamicParam( rcbigcar::ChassisConfig &config, uint32_t level );
     void CallbackVelocity(     const geometry_msgs::Twist::ConstPtr& twist    );
+    void CallbackVLocalization( const geometry_msgs::Twist::ConstPtr& twist    );
 private:
     /*
      * Config
@@ -46,7 +47,8 @@ private:
     /*
      * Handles
     */
-    ros::Publisher	odom_pub;
+    ros::Publisher	pos_pub;
+    ros::Subscriber vloc_sub;
     ros::Subscriber twist_sub;
 
     /* 

@@ -18,8 +18,9 @@ Chassis::Chassis() {
 	DynamicParamServer.setCallback( boost::bind(&Chassis::CallbackDynamicParam, this, _1, _2) );
 
 	//Setup Comm
-	twist_sub   = node_priv.subscribe<geometry_msgs::Twist>("velocity", 10, &Chassis::CallbackVelocity, this);
-	odom_pub	= node_priv.advertise<nav_msgs::Odometry>  ("odom", 50);
+	twist_sub   = node_priv.subscribe<geometry_msgs::Twist>("velocity", 100, &Chassis::CallbackVelocity, this);
+	vloc_sub    = node_priv.subscribe<geometry_msgs::Pose>("vloc", 100, &Chassis::CallbackVLocalization, this);
+	odom_pub	= node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
 
 	//Setup Odom
 	x = y = theta = 0;
