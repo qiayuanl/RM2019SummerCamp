@@ -41,7 +41,7 @@ void Motion::UpdateWatchdog() {
 
 		//Zero motor powers
 		for(int i = 0; i < MOTION_MOTOR_COUNT; i++) {
-			motors[i]->Setpoint = 0;
+			if(motors[i]->CloseloopType == CLOSELOOP_VELOCITY) motors[i]->Setpoint = 0;
 		}
 	}
 }
