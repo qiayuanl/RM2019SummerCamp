@@ -166,14 +166,6 @@ add_executable(robot ${ROBOT_SOURCES} ${ROBOT_LIBCAN_SOURCES})
 target_link_libraries(robot ${catkin_LIBRARIES})
 add_dependencies(robot ${PROJECT_NAME}_gencfg)
 
-#localization
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-
-AUX_SOURCE_DIRECTORY(src/localization LOCALIZATION_SOURCES)
-
-add_executable(localization ${LOCALIZATION_SOURCES} ${APRILTAG_SOURCES})
-target_link_libraries(localization ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 #opmode - testop
 add_executable(testop src/opmode/testop.cpp)
