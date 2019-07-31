@@ -40,7 +40,7 @@
   </group>
 
   <!-- Set static loaction of tags-->
-<node pkg="tf2_ros" type="static_transform_publisher" name="baselink_cam" args="0.2 0 0 -1.57 0 -1.57 gimbal usb_cam" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_12" args="0 0 0 0 0 0 map tag_12" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="base2cam" args="0.2 0 0 -1.57 0 -1.57 base usb_cam" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="map2tag_12" args="0 0 0 0 0 0 map tag_12" />
 
 </launch>
