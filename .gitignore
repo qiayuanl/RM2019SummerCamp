@@ -7,3 +7,4 @@
 **/build_isolated/
 **/devel_isolated/
 .DS_Store
+RCBigCar/catkin_ws/src/CMakeLists.txt
