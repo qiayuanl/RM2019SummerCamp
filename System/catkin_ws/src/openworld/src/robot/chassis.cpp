@@ -3,6 +3,12 @@
 Chassis::Chassis() {
 	ros::NodeHandle node_priv("~");
 
+	//Setup Variables
+	//Setup Motors
+	for(int i = 0; i < 4; i++) {
+		motors[i] = new Motor(i, &MOTOR_CHASSIS);
+	}
+
 	//Setup Paramters
 	node_priv.param<bool>("IsDebug", Config_IsDebug, true);
 
@@ -13,11 +19,6 @@ Chassis::Chassis() {
 	//Setup Comm
 	twist_sub   = nh.subscribe<geometry_msgs::Twist>("velocity", 10, &Chassis::CallbackVelocity, this);
 	odom_pub	= nh.advertise<nav_msgs::Odometry>("odom", 50);
-
-	//Setup Motors
-	for(int i = 0; i < 4; i++) {
-		motors[i] = new Motor(i, &MOTOR_CHASSIS);
-	}
 
 	//Setup Odom
 	x = y = theta = 0;
@@ -37,7 +38,7 @@ Chassis::Chassis() {
 	}
 }
 
-void Chassis::~Chassis() {
+Chassis::~Chassis() {
 	//Free Motors
 	for(int i = 0; i < 4; i++) {
 		delete motors[i];

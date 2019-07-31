@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 	//Create Nodes
 	Chassis chassis;
 
-	ros::Rate loop_rate(1000);
+	ros::Rate loop_rate(200);
 
 	//Process Jobs
 	while (ros::ok())

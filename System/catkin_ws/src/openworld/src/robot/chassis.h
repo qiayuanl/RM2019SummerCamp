@@ -21,6 +21,7 @@
 class Chassis {
 public:
     Chassis();
+    ~Chassis();
 
     /* Update Funcs */
     void update();
