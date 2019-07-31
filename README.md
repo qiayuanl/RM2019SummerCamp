@@ -1,9 +1,14 @@
 # RM2019SummerCamp
-All the codes for the robomaster 2019 high school summer camp
+RM2019 Summer Camp Group No.7 (RC BIG CAR) Full Opensource Code
 
- ***
+Use Manifold 2 as Microcontroller
+
+Directory Structure:
+
+ - RCBigCar: ROS catkin workspace
+
 Staffing table:
 
 Embedded System|Algorithm|Mechanics
 ---|:--:|---:
-Liao Qiayuan, Zhang Hisen, Zheng Yuxin |Wang Guan|Chen Wenxiao
+Liao Qiayuan, Zheng Yuxin , Zhang Hisen|Wang Guan|Chen Wenxiao

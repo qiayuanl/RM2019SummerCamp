@@ -75,7 +75,8 @@ void Chassis::UpdateOdometry() {
 	x += dx * cos(theta) - dy * sin(theta);
 	y += dx * sin(theta) + dy * cos(theta);
 
-	theta += dtheta;
+	//theta += dtheta;
+	theta = Hardware()->gyro.angle;
 	theta = fmod(theta, 2 * M_PI);
 
 	PublishOdometry();
