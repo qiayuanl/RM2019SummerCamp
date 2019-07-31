@@ -99,11 +99,11 @@ void Motor::update() {
 					+ Ki * VError_Intergral 
 					+ Kd * VError_Derivative_Filtered.value[0];
 
-	int pwm_resolution = Preset->PWMResolution;
-	int out_power = (int)(output * pwm_resolution);
+	int pwm_max_value = Preset->PWMMaxValue;
+	int out_power = (int)(output * pwm_max_value);
 
-	if(out_power >  pwm_resolution) out_power =  pwm_resolution;
-	if(out_power < -pwm_resolution) out_power = -pwm_resolution;
+	if(out_power >  pwm_max_value) out_power =  pwm_max_value;
+	if(out_power < -pwm_max_value) out_power = -pwm_max_value;
 
 	Hardware()->motors[ID].power = out_power;
 }

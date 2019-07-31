@@ -12,7 +12,7 @@ enum MotorCloseloopType {
 };
 
 struct MotorPreset {
-    int PWMResolution;
+    int PWMMaxValue;
     double RPMToRad;
     double TickToRad;
 };
@@ -36,9 +36,15 @@ struct MotionMotor {
  * Different Motor Presets
  */
 const MotorPreset MOTOR_GM2006 = {
-    10000,                               //PWM Resolution
+    10000,                               //PWM Max Value
     (1.0 / 60.0) * 2.0 * M_PI / 36.0,    //RPM To rad/s
     (1.0 / 8192.0) * 2.0 * M_PI / 36.0   //TICK to Meters
+};
+
+const MotorPreset MOTOR_GM3508 = {
+    29000,
+    (1.0 / 60.0) * 2.0 * M_PI,
+    (1.0 / 8192.0) * 2.0 * M_PI
 };
 
 const MotorPreset MOTOR_GM3510 = {

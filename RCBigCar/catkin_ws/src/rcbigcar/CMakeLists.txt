@@ -172,6 +172,10 @@ add_dependencies(robot ${PROJECT_NAME}_gencfg)
 add_executable(testop src/opmode/testop.cpp)
 target_link_libraries(testop ${catkin_LIBRARIES})
 
+#opmode - testpid
+add_executable(testpid src/opmode/testpid.cpp)
+target_link_libraries(testpid ${catkin_LIBRARIES})
+
 #opmode - teleop
 add_executable(teleop src/opmode/teleop.cpp)
 target_link_libraries(teleop ${catkin_LIBRARIES})
