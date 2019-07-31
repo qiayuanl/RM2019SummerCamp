@@ -48,5 +48,9 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "utility": "cpp"
-    }
+    },
+    "python.autoComplete.extraPaths": [
+        "/home/dji/Documents/RM2019SummerCamp/RCBigCar/catkin_ws/devel/lib/python2.7/dist-packages",
+        "/opt/ros/kinetic/lib/python2.7/dist-packages"
+    ]
 }

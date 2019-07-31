@@ -6,20 +6,21 @@
 /* 
  * Preset Types
  */
+enum MotorCloseloopType {
+    CLOSELOOP_VELOCITY,
+    CLOSELOOP_POSITION
+};
+
 struct MotorPreset {
     int PWMResolution;
     double RPMToRad;
     double TickToRad;
+};
 
-    MotorPreset(
-        int _PWMResolution,
-        double _RPMToRad,
-        double _TickToRad
-    ) {
-        PWMResolution = _PWMResolution;
-        RPMToRad      = _RPMToRad;
-        TickToRad     = _TickToRad;
-    }
+struct MotionMotor {
+    int ID;
+    MotorCloseloopType CloseloopType;
+    const MotorPreset* Preset;
 };
 
 /* 
@@ -34,17 +35,17 @@ struct MotorPreset {
 /*
  * Different Motor Presets
  */
-const MotorPreset MOTOR_GM2006(
+const MotorPreset MOTOR_GM2006 = {
     10000,                               //PWM Resolution
     (1.0 / 60.0) * 2.0 * M_PI / 36.0,    //RPM To rad/s
     (1.0 / 8192.0) * 2.0 * M_PI / 36.0   //TICK to Meters
-);
+};
 
-const MotorPreset MOTOR_GM3510(
+const MotorPreset MOTOR_GM3510 = {
     29000,
     (1.0 / 60.0) * 2.0 * M_PI,
     (1.0 / 8192.0) * 2.0 * M_PI
-);
+};
 
 /*
  * Chassis Paramters (SI Unit)
@@ -61,6 +62,15 @@ const double CHASSIS_LENGTH_B = 0.25;
 /*
  * Motion Paramters
  */
-#define MOTION_MOTOR_COUNT 4
+#define MOTION_MOTOR_COUNT 1
+const double MOTION_WATCHDOG_TIMEOUT = 1.0;
+
+const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
+    {
+        5,
+        CLOSELOOP_POSITION,
+        &MOTOR_GM3510
+    }
+};
 
 #endif

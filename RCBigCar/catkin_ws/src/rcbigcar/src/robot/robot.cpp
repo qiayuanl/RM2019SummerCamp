@@ -1,14 +1,16 @@
 #include "chassis.h"
+#include "motion.h"
 #include "hardware.h"
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "chassis");
+	ros::init(argc, argv, "robot");
 
 	ros::NodeHandle nh;
 
 	//Create Nodes
 	Chassis chassis;
+	Motion motion;
 
 	ros::Rate loop_rate(200);
 
@@ -17,6 +19,7 @@ int main(int argc, char **argv)
 	{
 		//Update Subnodes
 		chassis.update();
+		motion.update();
 
 		//Update Hardware
 		Hardware()->update();

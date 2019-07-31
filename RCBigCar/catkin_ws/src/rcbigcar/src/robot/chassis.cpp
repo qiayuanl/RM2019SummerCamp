@@ -6,19 +6,20 @@ Chassis::Chassis() {
 	//Setup Variables
 	//Setup Motors
 	for(int i = 0; i < 4; i++) {
-		motors[i] = new Motor(i, &MOTOR_CHASSIS);
+		motors[i] = new Motor(i, &MOTOR_CHASSIS, CLOSELOOP_VELOCITY);
 	}
 
 	//Setup Paramters
 	node_priv.param<bool>("IsDebug", Config_IsDebug, true);
 
 	//Setup Reconfigurable Paramters
-	DynamicParamFunc = boost::bind(&Chassis::CallbackDynamicParam, this, _1, _2);
-	DynamicParamServer.setCallback(DynamicParamFunc);
+    static ros::NodeHandle DynamicParamNodeHandle("~/chassis");
+    static dynamic_reconfigure::Server<rcbigcar::ChassisConfig> DynamicParamServer(DynamicParamNodeHandle);
+	DynamicParamServer.setCallback( boost::bind(&Chassis::CallbackDynamicParam, this, _1, _2) );
 
 	//Setup Comm
 	twist_sub   = node_priv.subscribe<geometry_msgs::Twist>("velocity", 10, &Chassis::CallbackVelocity, this);
-	odom_pub	= node_priv.advertise<nav_msgs::Odometry>("odom", 50);
+	odom_pub	= node_priv.advertise<nav_msgs::Odometry>  ("odom", 50);
 
 	//Setup Odom
 	x = y = theta = 0;
@@ -144,7 +145,7 @@ void Chassis::CallbackVelocity( const geometry_msgs::Twist::ConstPtr& twist ) {
 	}
 
 	//Send Velocity
-	for(int i = 0; i < 4; i++) motors[i]->SetVelocity = w[i];
+	for(int i = 0; i < 4; i++) motors[i]->Setpoint = w[i];
 }
 
 void Chassis::UpdateWatchdog() {
@@ -153,12 +154,12 @@ void Chassis::UpdateWatchdog() {
 
 		//Zero motor powers
 		for(int i = 0; i < 4; i++) {
-			motors[i]->SetVelocity = 0;
+			motors[i]->Setpoint = 0;
 		}
 	}
 }
 
-void Chassis::CallbackDynamicParam(one_bot::ChassisConfig &config, uint32_t level) {
+void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t level) {
 	//Dynamic Params
 	Dyn_Config_MaxVel = config.MaxVel;
 
@@ -179,7 +180,7 @@ void Chassis::UpdateDebug() {
 	std_msgs::Float64MultiArray motorReal;
 
 	for(int i = 0; i < 4; i++) {
-		motorSetpoint.data.push_back ( motors[i]->SetVelocity   );
+		motorSetpoint.data.push_back ( motors[i]->Setpoint   );
 		motorReal.data.push_back     ( motors[i]->getVelocity() );
 	}
 
