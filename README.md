@@ -10,5 +10,18 @@ Using Manifold 2 as microcontroller, this project eliminates involvement of embe
  - RCBigCar: ROS catkin workspace
 
 ## About
----|:--:|---:
-Liao Qiayuan, Zheng Yuxin, Zhang Hisen | Wang Guan | Chen Wenxiao
+
+### Members (7)
+
+#### Embedded
+- Liao Qiayuan
+- Zheng Yuxin
+- Zhang Zhemin 
+
+#### Algorithm
+- Wang Guan
+
+#### Mechanics
+- Chen Wenxiao
+- Sun Chenghao
+- Qin Yuqin
