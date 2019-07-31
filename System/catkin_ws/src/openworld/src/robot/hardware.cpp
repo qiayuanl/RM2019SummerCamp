@@ -35,8 +35,8 @@ void ReceiveHandlerProxy(can_frame_t *frame, void *ptr) {
 
 RobotHardware::RobotHardware() {
     //Initialize HW
+    adapter.reception_handler_data = (void *)this;
 	adapter.reception_handler = &ReceiveHandlerProxy;
-	adapter.reception_handler_data = (void *)this;
 
     adapter.open(HW_CAN_ID);
 }
@@ -133,16 +133,16 @@ void RobotHardware::CAN_Motor_Update() {
 
     adapter.transmit(&frame);
 
-    //Transmit Frame 2
     if(HW_MOTOR_COUNT > 4) {
+        //Transmit Frame 2
         frame.can_id = HW_CAN_MOTOR_ID_2;
         frame.can_dlc = 8;
 
         for(int id = 4; id < HW_MOTOR_COUNT; id++) {
             int16_t power = (int16_t)motors[id].power;
 
-            frame.data[2 * id] =     (uint8_t)(power >> 8);
-            frame.data[2 * id + 1] = (uint8_t)(power);
+            frame.data[2 * (id - 4)    ] = (uint8_t)(power >> 8);
+            frame.data[2 * (id - 4) + 1] = (uint8_t)(power);
         }
 
         adapter.transmit(&frame);

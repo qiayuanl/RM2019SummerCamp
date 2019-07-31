@@ -1,0 +1,9 @@
+\subsubsection usage Usage
+\verbatim
+<node name="teleop" pkg="one_bot" type="teleop">
+  <param name="MaxX" type="double" value="1.0" />
+  <param name="MaxY" type="double" value="1.0" />
+  <param name="MaxW" type="double" value="6.28318530718" />
+</node>
+\endverbatim
+

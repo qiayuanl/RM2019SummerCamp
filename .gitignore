@@ -5,3 +5,5 @@
 *.pyc
 *.swp
 **/.DS_Store
+**/build_isolated
+**/devel_isolated
