@@ -1,0 +1,2 @@
+apriltag:apriltag_ros/apriltag_ros:openworld:usb_cam
+-G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/qiayuanliao/Project/RM2019SummerCamp/System/catkin_ws/install_isolated

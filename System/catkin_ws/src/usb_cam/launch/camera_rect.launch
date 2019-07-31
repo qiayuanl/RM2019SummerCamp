@@ -1,0 +1,23 @@
+<launch>
+  <!-- Define Arguments of Launch File -->
+  <arg name="debug" default="false"/>
+  <arg name="device" default="/dev/video0" />
+  
+  <!-- Activate Image Processing Node -->
+  <!-- refer to: http://wiki.ros.org/image_proc  -->
+  <node ns="usb_cam" pkg="image_proc" type="image_proc" name="image_proc"/>  
+
+  <!-- Activate Camera Driver Node -->
+  <include file="$(find usb_cam)/launch/camera.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="device" value="$(arg device)" />
+  </include>
+
+  <!-- show image for debug -->
+  <group  if="$(arg debug)">
+    <node pkg="image_view" type="image_view" name="image_rect" if="$(arg debug)">
+		<remap from="image" to="/usb_cam/image_rect_color" />
+		<param name="autosize" type="bool" value="true" />
+	</node>
+  </group>
+</launch>
