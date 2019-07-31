@@ -34,6 +34,7 @@ void ReceiveHandlerProxy(can_frame_t *frame, void *ptr) {
 }
 
 RobotHardware::RobotHardware() {
+    //Initialize HW
 	adapter.reception_handler = &ReceiveHandlerProxy;
 	adapter.reception_handler_data = (void *)this;
 

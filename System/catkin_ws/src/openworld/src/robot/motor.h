@@ -35,11 +35,11 @@ private:
     double Kp, Ki, Kd, Kf, KmaxI;
 
     /* PID Variables */
-    ErrorList VError;
-    ErrorList VError_Filtered;
-    ErrorList VError_Derivative;
-    ErrorList VError_Derivative_Filtered;
-    double    VError_Intergral;
+    ErrorList VError = {{0}};
+    ErrorList VError_Filtered = {{0}};
+    ErrorList VError_Derivative = {{0}};
+    ErrorList VError_Derivative_Filtered = {{0}};
+    double    VError_Intergral = 0;
 };
 
 #endif
