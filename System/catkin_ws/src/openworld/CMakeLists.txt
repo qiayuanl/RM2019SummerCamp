@@ -156,7 +156,7 @@ include_directories(
 # )
 
 
-add_compile_options(-Wall -Wextra -Wconversion)
+add_compile_options(-Wall -Wextra -Wconversion -g)
 
 #robot
 AUX_SOURCE_DIRECTORY(src/robot        ROBOT_SOURCES)
