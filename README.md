@@ -1,14 +1,18 @@
 # RM2019SummerCamp
-RM2019 Summer Camp Group No.7 (RC BIG CAR) Full Opensource Code
+RM2019 Summer Camp Group No.7 (RC BIG CAR) Source Code
 
-Use Manifold 2 as Microcontroller
+## Overview 
 
-Directory Structure:
+Using Manifold 2 as microcontroller, this project eliminates involvement of embedded MCU programming; instead, fully depending on ROS with Real-time patched linux kernel offers a simple yet elegent method to implement the entire project.
+
+## Project Structure
 
  - RCBigCar: ROS catkin workspace
 
-Staffing table:
+## About
+
+### Members
 
 Embedded System|Algorithm|Mechanics
 ---|:--:|---:
-Liao Qiayuan, Zheng Yuxin , Zhang Hisen|Wang Guan|Chen Wenxiao
+Liao Qiayuan, Zheng Yuxin, Zhang Hisen | Wang Guan | Chen Wenxiao
