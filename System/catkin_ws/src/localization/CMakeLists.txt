@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(openworld)
+project(localization)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -7,11 +7,7 @@ project(openworld)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  dynamic_reconfigure
-  roscpp
-  std_msgs
-)
+find_package(catkin REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -70,13 +66,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
+#   std_msgs  # Or other packages containing msgs
 # )
-
-generate_dynamic_reconfigure_options(
-  cfg/ChassisConfig.cfg
-  cfg/TeleopConfig.cfg
-)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -109,8 +100,8 @@ generate_dynamic_reconfigure_options(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES openworld
-#  CATKIN_DEPENDS dynamic_reconfigure roscpp std_msgs
+#  LIBRARIES localization
+#  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
 
@@ -121,13 +112,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
+# include
+# ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/openworld.cpp
+#   src/${PROJECT_NAME}/localization.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -138,7 +129,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/openworld_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/localization_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -154,27 +145,6 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-
-
-add_compile_options(-Wall -Wextra -Wconversion)
-
-#robot
-AUX_SOURCE_DIRECTORY(src/robot        ROBOT_SOURCES)
-AUX_SOURCE_DIRECTORY(src/robot/libcan ROBOT_LIBCAN_SOURCES)
-
-add_executable(robot ${ROBOT_SOURCES} ${ROBOT_LIBCAN_SOURCES})
-target_link_libraries(robot ${catkin_LIBRARIES})
-add_dependencies(robot ${PROJECT_NAME}_gencfg)
-
-
-#opmode - testop
-add_executable(testop src/opmode/testop.cpp)
-target_link_libraries(testop ${catkin_LIBRARIES})
-
-#opmode - teleop
-add_executable(teleop src/opmode/teleop.cpp)
-target_link_libraries(teleop ${catkin_LIBRARIES})
-add_dependencies(teleop ${PROJECT_NAME}_gencfg)
 
 #############
 ## Install ##
@@ -216,13 +186,10 @@ add_dependencies(teleop ${PROJECT_NAME}_gencfg)
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_openworld.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_localization.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-find_package(catkin REQUIRED COMPONENTS roslaunch)
-roslaunch_add_file_check(launch)
