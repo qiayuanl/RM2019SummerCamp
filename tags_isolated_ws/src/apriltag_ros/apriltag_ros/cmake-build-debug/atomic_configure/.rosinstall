@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/kevin/sc_localization_ws/src/apriltag_ros/apriltag_ros/cmake-build-debug/devel/setup.sh

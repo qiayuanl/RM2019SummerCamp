@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/qiayuanliao/Project/RM2019SummerCamp/locomotion_ws/devel_isolated/apriltag_ros/include",
+                "/opt/ros/kinetic/include",
+                "/home/qiayuanliao/Project/RM2019SummerCamp/locomotion_ws/src/apriltag_ros/apriltag_ros/include",
+                "/home/qiayuanliao/Project/RM2019SummerCamp/locomotion_ws/src/usb_cam/include",
+                "/usr/include"
+            ],
+            "name": "Linux",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
