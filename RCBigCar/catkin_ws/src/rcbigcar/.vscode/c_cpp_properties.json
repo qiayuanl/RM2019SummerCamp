@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel/include",
+                "/home/robomaster/Documents/RM2019SummerCamp/RCBigCar/catkin_ws/devel/include",
                 "/usr/include/**",
                 "/usr/local/include/**",
                 "/opt/ros/kinetic/include/**",
