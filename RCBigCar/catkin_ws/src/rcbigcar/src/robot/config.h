@@ -42,9 +42,9 @@ const MotorPreset MOTOR_GM2006 = {
 };
 
 const MotorPreset MOTOR_GM3508 = {
-    29000,
-    (1.0 / 60.0) * 2.0 * M_PI,
-    (1.0 / 8192.0) * 2.0 * M_PI
+    16384,
+    (1.0 / 60.0) * 2.0 * M_PI / (3591.0 / 187.0),
+    (1.0 / 8192.0) * 2.0 * M_PI / (3591.0 / 187.0)
 };
 
 const MotorPreset MOTOR_GM3510 = {
@@ -68,14 +68,19 @@ const double CHASSIS_LENGTH_B = 0.25;
 /*
  * Motion Paramters
  */
-#define MOTION_MOTOR_COUNT 1
+#define MOTION_MOTOR_COUNT 2
 const double MOTION_WATCHDOG_TIMEOUT = 1.0;
 
 const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
     {
-        5,
+        4,
         CLOSELOOP_POSITION,
         &MOTOR_GM3510
+    },
+    {
+        5,
+        CLOSELOOP_VELOCITY,
+        &MOTOR_GM3508
     }
 };
 
