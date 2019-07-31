@@ -5,6 +5,8 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "chassis");
 
+	ros::NodeHandle nh;
+
 	//Create Nodes
 	Chassis chassis;
 

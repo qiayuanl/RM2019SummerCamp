@@ -9,7 +9,7 @@ struct ErrorList {
 
 class Motor {
 public:
-    Motor(int _ID, const MotorPreset *_Preset);
+    Motor(int _ID, const MotorPreset *_Preset, int _SetType);
 
     void update();
 
@@ -19,7 +19,9 @@ public:
     double getPosition();
 
     /* Setpoint */
-    double SetVelocity;
+    int SetType;
+
+    double Setpoint;
 
 private:
     /* ID  */

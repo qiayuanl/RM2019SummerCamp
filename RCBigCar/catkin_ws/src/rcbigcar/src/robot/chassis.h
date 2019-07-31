@@ -52,8 +52,6 @@ private:
     /*
      * Handles
     */
-    ros::NodeHandle nh;
-
     ros::Publisher	odom_pub;
     ros::Subscriber twist_sub;
 

@@ -1,15 +1,16 @@
 #include "motor.h"
 
-Motor::Motor(int _ID, const MotorPreset *_Preset) {
+Motor::Motor(int _ID, const MotorPreset *_Preset, int _SetType) {
 	//Initialize Self
 	ID = _ID;
 	Preset = _Preset;
+	SetType = _SetType;
 
     //Initialize Time
 	last_looptime = ros::Time(0);
 
 	//Initialize Setpoint
-	SetVelocity = 0;
+	Setpoint = 0;
 
 	//Initialize PID
 	Kp = 0;
@@ -59,7 +60,8 @@ void Motor::update() {
 	double c_ = Kf; //filter error paramter 1/4 sampling rate
 
 	//Calculate Error
-	double error = SetVelocity - getVelocity();
+	double real = (SetType == 0) ? getVelocity() : getPosition();
+	double error = Setpoint - real;
 
 	VError.value[2] = VError.value[1];
 	VError.value[1] = VError.value[0];
