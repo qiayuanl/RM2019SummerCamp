@@ -5,13 +5,12 @@
 # It tries it's best to undo changes from a previously sourced setup file before.
 # Supported command line options:
 # --extend: skips the undoing of changes from a previously sourced setup file
-# --local: only considers this workspace but not the chained ones
-# In plain sh shell which doesn't support arguments for sourced scripts you can
-# set the environment variable `CATKIN_SETUP_UTIL_ARGS=--extend/--local` instead.
+#   (in plain sh shell which does't support arguments for sourced scripts you
+#   can set the environment variable `CATKIN_SETUP_UTIL_ARGS=--extend` instead)
 
 # since this file is sourced either use the provided _CATKIN_SETUP_DIR
 # or fall back to the destination set at configure time
-: ${_CATKIN_SETUP_DIR:=/home/robomaster/Documents/RM2019SummerCamp/System/catkin_ws/devel}
+: ${_CATKIN_SETUP_DIR:=/home/dji/RM2019SummerCamp/System/catkin_ws/devel}
 _SETUP_UTIL="$_CATKIN_SETUP_DIR/_setup_util.py"
 unset _CATKIN_SETUP_DIR
 
