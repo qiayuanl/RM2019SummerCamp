@@ -1,10 +1,10 @@
 #include "motor.h"
 
-Motor::Motor(int _ID, const MotorPreset *_Preset, int _SetType) {
+Motor::Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopType) {
 	//Initialize Self
 	ID = _ID;
 	Preset = _Preset;
-	SetType = _SetType;
+	CloseloopType = _CloseloopType;
 
     //Initialize Time
 	last_looptime = ros::Time(0);
@@ -60,7 +60,7 @@ void Motor::update() {
 	double c_ = Kf; //filter error paramter 1/4 sampling rate
 
 	//Calculate Error
-	double real = (SetType == 0) ? getVelocity() : getPosition();
+	double real = (CloseloopType == CLOSELOOP_VELOCITY) ? getVelocity() : getPosition();
 	double error = Setpoint - real;
 
 	VError.value[2] = VError.value[1];

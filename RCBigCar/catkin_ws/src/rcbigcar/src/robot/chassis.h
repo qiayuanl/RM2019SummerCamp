@@ -16,7 +16,7 @@
 #include <std_msgs/Float64MultiArray.h>
 
 #include <dynamic_reconfigure/server.h>
-#include "openworld/ChassisConfig.h"
+#include "rcbigcar/ChassisConfig.h"
 
 class Chassis {
 public:
@@ -33,7 +33,7 @@ public:
     void PublishOdometry();
 
     /* Callback Funcs */
-    void CallbackDynamicParam( one_bot::ChassisConfig &config, uint32_t level );
+    void CallbackDynamicParam( rcbigcar::ChassisConfig &config, uint32_t level );
     void CallbackVelocity(     const geometry_msgs::Twist::ConstPtr& twist    );
 private:
     /*
@@ -42,12 +42,6 @@ private:
     bool   Config_IsDebug;
 
     double Dyn_Config_MaxVel;
-
-    /*
-     * Dynamic Config
-     */
-    dynamic_reconfigure::Server<one_bot::ChassisConfig>               DynamicParamServer;
-    dynamic_reconfigure::Server<one_bot::ChassisConfig>::CallbackType DynamicParamFunc;
 
     /*
      * Handles

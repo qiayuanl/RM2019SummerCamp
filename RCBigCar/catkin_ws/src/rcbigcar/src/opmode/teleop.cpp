@@ -4,9 +4,9 @@
 #include <sensor_msgs/Joy.h>
 #include <dynamic_reconfigure/server.h>
 
-#include "openworld/TeleopConfig.h"
+#include "rcbigcar/TeleopConfig.h"
 
-one_bot::TeleopConfig config;
+rcbigcar::TeleopConfig config;
 
 ros::Publisher  twist_pub;
 ros::Subscriber joy_sub;
@@ -20,7 +20,7 @@ void callback_joy( const sensor_msgs::Joy::ConstPtr& joy ) {
     twist.linear.y = joy->axes[2] * config.MaxY;
 }
 
-void callback_param( one_bot::TeleopConfig &_config, uint32_t level ) {
+void callback_param( rcbigcar::TeleopConfig &_config, uint32_t level ) {
     config = _config;
 }
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 	nh.param<double>("MaxW", config.MaxW, 0.0);
 
     //dynamic reconfigure
-    dynamic_reconfigure::Server<one_bot::TeleopConfig>               param_server;
+    dynamic_reconfigure::Server<rcbigcar::TeleopConfig>               param_server;
     param_server.setCallback(callback_param);
 
 	ros::Rate loop_rate(200);
