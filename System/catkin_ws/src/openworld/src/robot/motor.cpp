@@ -8,12 +8,18 @@ Motor::Motor(int _ID, const MotorPreset *_Preset) {
     //Initialize Time
 	last_looptime = ros::Time(0);
 
+	//Initialize Setpoint
+	SetVelocity = 0;
+
 	//Initialize PID
 	Kp = 0;
 	Ki = 0;
 	Kd = 0;
     Kf = 1.0;
 	KmaxI = 1000;
+
+	//Initialize PID Variables
+	VError_Intergral = 0;
 }
 
 void Motor::setCoefficients(double _Kp, double _Ki, double _Kd, double _Kf, double _KmaxI) {

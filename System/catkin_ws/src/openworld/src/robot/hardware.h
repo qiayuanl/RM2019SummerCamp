@@ -75,8 +75,8 @@ public:
     ~RobotHardware();
 
     /* HW Interface */
-    moto_measure_t motors[HW_MOTOR_COUNT];
-    single_gyro_t  gyro;
+    moto_measure_t motors[HW_MOTOR_COUNT] = {{0}};
+    single_gyro_t  gyro = {0};
 
     /* HW Receiver */
     void CAN_ReceiveFrame(can_frame_t *frame);
