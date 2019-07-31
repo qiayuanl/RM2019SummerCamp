@@ -75,6 +75,9 @@ void Init_Task(void* pvParameters)
 	num++;
 	num=1;
 	oled_clear(Pen_Clear);
+	SPI5_Init();										//初始化SPI5
+	mpu_device_init();							//初始化MPU6500
+	init_quaternion();							//初始化四元数
 	USART2_Receve_Handler.Buffer_Counter=-1;
 	USART3_Receve_Handler.Buffer_Counter=-1;
 	PID_Init();                     //初始化PID参数

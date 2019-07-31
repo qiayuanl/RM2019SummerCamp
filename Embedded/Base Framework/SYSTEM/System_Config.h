@@ -111,7 +111,6 @@ typedef __I uint8_t vuc8;
 
 #define PKout(n)   BIT_ADDR(GPIOK_ODR_Addr,n)  // ‰≥ˆ 
 #define PKin(n)    BIT_ADDR(GPIOK_IDR_Addr,n)  // ‰»Î
-void Init_Trace_Timer(void);
 void DMA2_Init(void);
 void DMA1_Init(void);
 void HAL_Systick_Init(void);

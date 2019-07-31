@@ -2,6 +2,7 @@
 TaskHandle_t LED_Task_Handle;			//LED闪烁句柄
 TaskHandle_t PID_Calculate_Task;	//计算PID句柄
 TaskHandle_t Remote_Control_Task;	//遥控数据处理句柄
+TaskHandle_t MPU_Task_Handler;
 void User_Code(void)
 {
 	Power1_CTRL=1;   //打开1号电源开关
@@ -26,4 +27,10 @@ void User_Code(void)
 							(void *)NULL,
 							(UBaseType_t)4,
 							(TaskHandle_t *)Remote_Control_Task);
+	xTaskCreate((TaskFunction_t)MPU_task,
+							(const char *)"MPU_Result",
+							(uint16_t)128,
+							(void *)NULL,
+							(UBaseType_t)4,
+							(TaskHandle_t *)MPU_Task_Handler);
 }

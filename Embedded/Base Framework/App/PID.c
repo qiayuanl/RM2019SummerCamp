@@ -31,6 +31,7 @@ void PID_Calculate(void* pvParameters)
 		set_moto_current(&hcan1,PID_Get_Result(&PID1),PID_Get_Result(&PID2),PID_Get_Result(&PID3),PID_Get_Result(&PID4),ID_1_4);  //ID为1~4的电机
 		taskEXIT_CRITICAL();
 		vTaskDelay(PID_Time);
+		
 	}
 }
 
