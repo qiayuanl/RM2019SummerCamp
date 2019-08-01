@@ -75,6 +75,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 generate_dynamic_reconfigure_options(
   cfg/TeleopConfig.cfg
+  cfg/ControllerConfig.cfg
 )
 
 ################################################
@@ -155,6 +156,13 @@ include_directories(
 # )
 
 add_compile_options(-Wall -Wextra -Wconversion -g)
+
+#robot
+AUX_SOURCE_DIRECTORY(src/controller        CONTROLLER_SOURCES)
+
+add_executable(controller ${CONTROLLER_SOURCES})
+target_link_libraries(controller ${catkin_LIBRARIES})
+add_dependencies(controller ${PROJECT_NAME}_gencfg)
 
 #opmode - testop
 add_executable(testop src/opmode/testop.cpp)
