@@ -15,6 +15,26 @@
 #include <dynamic_reconfigure/server.h>
 #include "rcbigctl/ControllerConfig.h"
 
+struct RampFilter {
+    ros::Time last_time = ros::Time(0);
+    double last_value = 0;
+
+    double limit_abs(double x, double max_abs) {
+        double sign = (x < 0) ? -1 : 1;
+        return sign * std::min( std::abs(x), std::abs(max_abs) );
+    }
+    double filter(double set_value, double accel) {
+        double dt = (ros::Time::now() - last_time).toSec();
+        if(!dt) {
+            return set_value;
+        }
+
+        last_time = ros::Time::now();
+        last_value += limit_abs(set_value - last_value, accel * dt);
+        return last_value;
+    }
+};
+
 class PositionCtl {
 public:
     PositionCtl();
@@ -38,9 +58,9 @@ private:
     /*
      * Closeloop Paramters
      */
-    double Kp_X;
-    double Kp_Y;
-    double Kp_W;
+    double Kp_X, A_X;
+    double Kp_Y, A_Y;
+    double Kp_W, A_W;
 
     /*
      * Position
@@ -51,6 +71,8 @@ private:
      * Setpoint
      */
     double Set_X, Set_Y, Set_W;
+
+    RampFilter FoutX, FoutY, FoutW;
 };
 
 #endif
