@@ -36,7 +36,7 @@ PositionCtl::PositionCtl() {
 
 	//Setup Comm
 	pos_sub         = node_priv.subscribe<nav_msgs::Odometry>     ("odom",   100, &PositionCtl::CallbackPosition, this);
-	setpoint_sub    = node_priv.subscribe<geometry_msgs::Pose>    ("setpos", 100, &PositionCtl::CallbackSetpoint, this);
+	setpoint_sub    = node_priv.subscribe<geometry_msgs::PoseStamped>  ("move_base_simple/goal", 100, &PositionCtl::CallbackSetpoint, this);
 	twist_pub	    = node_priv.advertise<geometry_msgs::Twist>   ("velocity", 100);
 }
 
@@ -101,8 +101,8 @@ void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom) {
     UpdateCloseloop();
 }
 
-void PositionCtl::CallbackSetpoint(const geometry_msgs::Pose::ConstPtr& pose) {
-    Set_X = pose->position.x;
-    Set_Y = pose->position.y;
-    Set_W = fmod( YawFromQuaternion(pose->orientation), 2 * M_PI );
+void PositionCtl::CallbackSetpoint(const geometry_msgs::PoseStamped::ConstPtr& pose) {
+    Set_X = pose->pose.position.x;
+    Set_Y = pose->pose.position.y;
+    Set_W = fmod( YawFromQuaternion(pose->pose.orientation), 2 * M_PI );
 }
