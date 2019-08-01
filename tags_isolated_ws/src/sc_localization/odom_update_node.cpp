@@ -71,7 +71,7 @@ void aprilCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
         tag_base_r.getRotation(tag_base_q);
         tag_base_transform.setRotation(tag_base_q);
         tag_base_transform.setOrigin(tag_base_v);
-        br.sendTransform(tf::StampedTransform(tag_base_transform, ros::Time::now(), "tag_0", "base"));
+        br.sendTransform(tf::StampedTransform(tag_base_transform, ros::Time::now(), "tag_7", "base"));
         odom.position.x = tag_base_v.getX();
         odom.position.y = tag_base_v.getY();
         odom.orientation.x = tag_base_q.getX();
