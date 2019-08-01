@@ -69,23 +69,26 @@ void PositionCtl::UpdateCloseloop() {
     twist.angular.x = 0;
     twist.angular.y = 0;
 
-    tf::Stamped<tf::Vector3> vWorld;
-    vWorld.x = Kp_X * (Set_X - X);
-    vWorld.y = Kp_Y * (Set_Y - Y);
-    vWorld.z = 0;
+    geometry_msgs::Vector3Stamped vWorld;
+    vWorld.header.stamp = ros::Time();
+    vWorld.header.frame_id = "world";
+
+    vWorld.vector.x = Kp_X * (Set_X - X);
+    vWorld.vector.y = Kp_Y * (Set_Y - Y);
+    vWorld.vector.z = 0;
 
     //Transform World Velocity To Robot Velocity
-    tf::Stamped<tf::Vector3> vRobot;
+    geometry_msgs::Vector3Stamped vRobot;
     try {
-        tf_pos.transformVector("/base_link", ros::Time(0), vWorld, "/world", vRobot);
+        tf_pos.transformVector("base_link", vWorld, vRobot);
     }
     catch (tf::TransformException ex) {
         ROS_ERROR("%s",ex.what());
     }
 
-    twist.linear.x  = FoutX.filter( vRobot.x ,  A_X );
-    twist.linear.y  = FoutY.filter( vRobot.y ,  A_Y );
-    twist.angular.z = FoutW.filter( Kp_W * AngularMinus( W, Set_W ) , A_W );
+    twist.linear.x  = FoutX.filter( vRobot.vector.x ,  A_X );
+    twist.linear.y  = FoutY.filter( vRobot.vector.y ,  A_Y );
+    twist.angular.z = FoutW.filter( Kp_W * AngularMinus( Set_W, W ) , A_W );
 
     twist_pub.publish( twist );
 }
