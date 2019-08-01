@@ -6,52 +6,53 @@
 /* 
  * Preset Types
  */
-enum MotorCloseloopType {
+enum MotorCloseloopType
+{
     CLOSELOOP_VELOCITY,
     CLOSELOOP_POSITION
 };
 
-struct MotorPreset {
+struct MotorPreset
+{
     int PWMMaxValue;
     double RPMToRad;
     double TickToRad;
 };
 
-struct MotionMotor {
+struct MotionMotor
+{
     int ID;
     MotorCloseloopType CloseloopType;
-    const MotorPreset* Preset;
+    const MotorPreset *Preset;
 };
 
 /* 
  * Robot Hardware Config
  */
 
-#define HW_MOTOR_COUNT         8
-#define HW_CAN_MOTOR_ID_1      0x200
-#define HW_CAN_MOTOR_ID_2      0x1FF
-#define HW_CAN_ID              "can0"
+#define HW_MOTOR_COUNT 8
+#define HW_CAN_MOTOR_ID_1 0x200
+#define HW_CAN_MOTOR_ID_2 0x1FF
+#define HW_CAN_ID "can0"
 
 /*
  * Different Motor Presets
  */
 const MotorPreset MOTOR_GM2006 = {
-    10000,                               //PWM Max Value
-    (1.0 / 60.0) * 2.0 * M_PI / 36.0,    //RPM To rad/s
-    (1.0 / 8192.0) * 2.0 * M_PI / 36.0   //TICK to Meters
+    10000,                             //PWM Max Value
+    (1.0 / 60.0) * 2.0 * M_PI / 36.0,  //RPM To rad/s
+    (1.0 / 8192.0) * 2.0 * M_PI / 36.0 //TICK to Meters
 };
 
 const MotorPreset MOTOR_GM3508 = {
     16384,
     (1.0 / 60.0) * 2.0 * M_PI / (3591.0 / 187.0),
-    (1.0 / 8192.0) * 2.0 * M_PI / (3591.0 / 187.0)
-};
+    (1.0 / 8192.0) * 2.0 * M_PI / (3591.0 / 187.0)};
 
 const MotorPreset MOTOR_GM3510 = {
     29000,
     (1.0 / 60.0) * 2.0 * M_PI,
-    (1.0 / 8192.0) * 2.0 * M_PI
-};
+    (1.0 / 8192.0) * 2.0 * M_PI};
 
 /*
  * Chassis Paramters (SI Unit)
@@ -72,16 +73,11 @@ const double CHASSIS_LENGTH_B = 0.25;
 const double MOTION_WATCHDOG_TIMEOUT = 1.0;
 
 const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
-    {
-        4,
-        CLOSELOOP_POSITION,
-        &MOTOR_GM3510
-    },
-    {
-        5,
-        CLOSELOOP_VELOCITY,
-        &MOTOR_GM3508
-    }
-};
+    {4,
+     CLOSELOOP_POSITION,
+     &MOTOR_GM3510},
+    {5,
+     CLOSELOOP_VELOCITY,
+     &MOTOR_GM3508}};
 
 #endif

@@ -1,11 +1,13 @@
 #include "chassis.h"
 
-Chassis::Chassis() {
+Chassis::Chassis()
+{
 	ros::NodeHandle node_priv;
 
 	//Setup Variables
 	//Setup Motors
-	for(int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++)
+	{
 		motors[i] = new Motor(i, &MOTOR_CHASSIS, CLOSELOOP_VELOCITY);
 	}
 
@@ -13,19 +15,21 @@ Chassis::Chassis() {
 	node_priv.param<bool>("IsDebug", Config_IsDebug, true);
 
 	//Setup Reconfigurable Paramters
-    static ros::NodeHandle DynamicParamNodeHandle("~/chassis");
-    static dynamic_reconfigure::Server<rcbigcar::ChassisConfig> DynamicParamServer(DynamicParamNodeHandle);
-	DynamicParamServer.setCallback( boost::bind(&Chassis::CallbackDynamicParam, this, _1, _2) );
+	static ros::NodeHandle DynamicParamNodeHandle("~/chassis");
+	static dynamic_reconfigure::Server<rcbigcar::ChassisConfig> DynamicParamServer(DynamicParamNodeHandle);
+	DynamicParamServer.setCallback(boost::bind(&Chassis::CallbackDynamicParam, this, _1, _2));
 
 	//Setup Comm
-	twist_sub   = node_priv.subscribe<geometry_msgs::Twist>("velocity", 10, &Chassis::CallbackVelocity, this);
-	odom_pub	= node_priv.advertise<nav_msgs::Odometry>  ("odom", 50);
+	twist_sub   = node_priv.subscribe<geometry_msgs::Twist>("velocity", 100, &Chassis::CallbackVelocity, this);
+	vloc_sub    = node_priv.subscribe<geometry_msgs::Pose> ("vloc", 100,     &Chassis::CallbackVLocalization, this);
+	pos_pub	    = node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
 
 	//Setup Odom
 	x = y = theta = 0;
 	lastx = lasty = lasttheta = 0;
 	lastt = ros::Time::now();
-	for(int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++)
+	{
 		last_position[i] = motors[i]->getPosition();
 	}
 
@@ -33,22 +37,27 @@ Chassis::Chassis() {
 	motorWatchdog = ros::Time::now();
 
 	//Setup Debug
-	if(Config_IsDebug) {
+	if (Config_IsDebug)
+	{
 		dbg_spd_setpoint_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_set_spd", 50);
-		dbg_spd_real_pub     = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_real_spd", 50);
+		dbg_spd_real_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_real_spd", 50);
 	}
 }
 
-Chassis::~Chassis() {
+Chassis::~Chassis()
+{
 	//Free Motors
-	for(int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++)
+	{
 		delete motors[i];
 	}
 }
 
-void Chassis::update() {
+void Chassis::update()
+{
 	//Update Motors
-	for(int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++)
+	{
 		motors[i]->update();
 	}
 
@@ -58,11 +67,25 @@ void Chassis::update() {
 	UpdateDebug();
 }
 
+void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
+	//Transform Quat -> RPY
+	/* tf::Quaternion q_orient(pose->orientation.x, pose->orientation.y, pose->orientation.z, pose->orientation.w);
+	tf::Matrix3x3  m_orient(q_orient);
+
+    double roll, pitch, yaw;
+    m_orient.getRPY(roll, pitch, yaw); */
+
+	//Update Coordinate
+	x = pose->position.x;
+	y = pose->position.y;
+}
+
 void Chassis::UpdateOdometry() {
 	double d[4];
 
 	//calculate delta
-	for(int id = 0; id < 4; id++) {
+	for (int id = 0; id < 4; id++)
+	{
 		d[id] = motors[id]->getPosition() - last_position[id];
 		last_position[id] = motors[id]->getPosition();
 	}
@@ -79,16 +102,16 @@ void Chassis::UpdateOdometry() {
 	theta = Hardware()->gyro.angle;
 	theta = fmod(theta, 2 * M_PI);
 
-	PublishOdometry();
+	PublishPosition();
 }
 
-void Chassis::PublishOdometry() {
+void Chassis::PublishPosition() {
 	// since all odometry is 6DOF we'll need a quaternion created from yaw
 	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 
 	nav_msgs::Odometry odom;
 	odom.header.stamp = ros::Time::now();
-	odom.header.frame_id = "odom";
+	odom.header.frame_id = "world";
 
 	// set the position
 	odom.pose.pose.position.x = x;
@@ -98,7 +121,8 @@ void Chassis::PublishOdometry() {
 
 	//calculate velocity
 	double dt = (ros::Time::now() - lastt).toSec();
-	if(dt == 0) dt = 1e-8; //avoid zero dt
+	if (dt == 0)
+		dt = 1e-8; //avoid zero dt
 
 	double dx = x - lastx;
 	double dy = y - lasty;
@@ -115,10 +139,11 @@ void Chassis::PublishOdometry() {
 	odom.twist.twist.angular.z = dtheta / dt;
 
 	// publish the message
-	odom_pub.publish(odom);
+	pos_pub.publish(odom);
 }
 
-void Chassis::CallbackVelocity( const geometry_msgs::Twist::ConstPtr& twist ) {
+void Chassis::CallbackVelocity(const geometry_msgs::Twist::ConstPtr &twist)
+{
 	//reset watchdog
 	motorWatchdog = ros::Time::now();
 
@@ -130,59 +155,69 @@ void Chassis::CallbackVelocity( const geometry_msgs::Twist::ConstPtr& twist ) {
 	double a = CHASSIS_LENGTH_A + CHASSIS_LENGTH_B;
 
 	double w[4] = {
-		-(( a * vw + vx + vy) / CHASSIS_WHEEL_R),
-		 ((-a * vw + vx - vy) / CHASSIS_WHEEL_R),
-		 ( -a * vw + vx + vy) / CHASSIS_WHEEL_R,
-		-(( a * vw + vx - vy) / CHASSIS_WHEEL_R)
-	};
+		-((a * vw + vx + vy) / CHASSIS_WHEEL_R),
+		((-a * vw + vx - vy) / CHASSIS_WHEEL_R),
+		(-a * vw + vx + vy) / CHASSIS_WHEEL_R,
+		-((a * vw + vx - vy) / CHASSIS_WHEEL_R)};
 
 	//Velocity Limitation
 	double maxVel = 0.0;
-	for(int i = 0; i < 4; i++) maxVel = std::max(maxVel, std::abs(w[i]));
+	for (int i = 0; i < 4; i++)
+		maxVel = std::max(maxVel, std::abs(w[i]));
 
-	if(maxVel > Dyn_Config_MaxVel) {
+	if (maxVel > Dyn_Config_MaxVel)
+	{
 		double factor = Dyn_Config_MaxVel / maxVel;
-		for(int i = 0; i < 4; i++) w[i] *= factor;
+		for (int i = 0; i < 4; i++)
+			w[i] *= factor;
 	}
 
 	//Send Velocity
-	for(int i = 0; i < 4; i++) motors[i]->Setpoint = w[i];
+	for (int i = 0; i < 4; i++)
+		motors[i]->Setpoint = w[i];
 }
 
-void Chassis::UpdateWatchdog() {
+void Chassis::UpdateWatchdog()
+{
 	//Check timeout
-	if( (ros::Time::now() - motorWatchdog).toSec() > CHASSIS_WATCHDOG_TIMEOUT ) {
+	if ((ros::Time::now() - motorWatchdog).toSec() > CHASSIS_WATCHDOG_TIMEOUT)
+	{
 
 		//Zero motor powers
-		for(int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++)
+		{
 			motors[i]->Setpoint = 0;
 		}
 	}
 }
 
-void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t level) {
+void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t level)
+{
 	//Dynamic Params
 	Dyn_Config_MaxVel = config.MaxVel;
 
 	//Dynamic Motor Params
-	for(int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++)
+	{
 		motors[i]->setCoefficients(config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI);
 	}
 
-	ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, MaxVel = %lf]", 
-		config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, config.MaxVel
-	);
+	ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, MaxVel = %lf]",
+			 config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, config.MaxVel);
 }
 
-void Chassis::UpdateDebug() {
-	if(!Config_IsDebug) return;
+void Chassis::UpdateDebug()
+{
+	if (!Config_IsDebug)
+		return;
 
 	std_msgs::Float64MultiArray motorSetpoint;
 	std_msgs::Float64MultiArray motorReal;
 
-	for(int i = 0; i < 4; i++) {
-		motorSetpoint.data.push_back ( motors[i]->Setpoint   );
-		motorReal.data.push_back     ( motors[i]->getVelocity() );
+	for (int i = 0; i < 4; i++)
+	{
+		motorSetpoint.data.push_back(motors[i]->Setpoint);
+		motorReal.data.push_back(motors[i]->getVelocity());
 	}
 
 	dbg_spd_setpoint_pub.publish(motorSetpoint);

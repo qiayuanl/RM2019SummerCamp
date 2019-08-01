@@ -10,8 +10,9 @@ typedef struct
 	unsigned char Possition_Col;
 	unsigned char Camera;
 	unsigned char Delay;
-}Manifold_Receve_Struct;
-extern Manifold_Receve_Struct Manifold;;
+} Manifold_Receve_Struct;
+extern Manifold_Receve_Struct Manifold;
+;
 typedef struct
 {
 	unsigned char Possition_Row;
@@ -20,7 +21,7 @@ typedef struct
 	unsigned char Enemy;
 	unsigned char Get;
 	unsigned char Teminal;
-}Manifold_Send_Struct;
+} Manifold_Send_Struct;
 void Manifold_Analyze(void);
 void Manifold_Send(Manifold_Send_Struct send);
 #endif

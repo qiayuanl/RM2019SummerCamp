@@ -33,7 +33,7 @@
 #include "PWM.h"
 #include "TIM.h"
 #include "arm_math.h"
-#include "STM_Flash.h"   //从0x8180000往后0x80000字节均为可擦除的flash区
+#include "STM_Flash.h" //从0x8180000往后0x80000字节均为可擦除的flash区
 #include "bsp_imu.h"
 void User_Code(void);
 #endif

@@ -3,12 +3,14 @@
 
 #include "hardware.h"
 
-struct ErrorList {
+struct ErrorList
+{
     double value[3];
 };
 
-class Motor {
-public:
+class Motor
+{
+  public:
     Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopType);
 
     void update();
@@ -23,7 +25,7 @@ public:
 
     double Setpoint;
 
-private:
+  private:
     /* ID  */
     int ID;
 
@@ -41,7 +43,7 @@ private:
     ErrorList VError_Filtered = {{0}};
     ErrorList VError_Derivative = {{0}};
     ErrorList VError_Derivative_Filtered = {{0}};
-    double    VError_Intergral = 0;
+    double VError_Intergral = 0;
 };
 
 #endif

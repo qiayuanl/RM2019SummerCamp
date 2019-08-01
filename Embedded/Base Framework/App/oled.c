@@ -6,7 +6,7 @@
 #include "System_Config.h"
 #include "User.h"
 
-#if(USING_OLED == 1)
+#if (USING_OLED == 1)
 
 /**
  * OLED flash Addr:
@@ -26,13 +26,13 @@ static uint8_t OLED_GRAM[128][8];
 void delay_ms(uint16_t delaytimes)
 {
     uint16_t i;
-    for (i = 0; i < delaytimes; i++ )
+    for (i = 0; i < delaytimes; i++)
     {
-        int a = 10000;  //delay based on mian clock, 168Mhz
-        while (a-- );
+        int a = 10000; //delay based on mian clock, 168Mhz
+        while (a--)
+            ;
     }
 }
-
 
 /**
  * @brief   write data/command to OLED
@@ -47,10 +47,8 @@ void oled_write_byte(uint8_t dat, uint8_t cmd)
     else
         OLED_CMD_Clr();
 
-		
     HAL_SPI_Transmit(&hspi1, &dat, 1, 10);
 }
-
 
 /**
  * @brief   set OLED cursor position
@@ -61,9 +59,9 @@ void oled_write_byte(uint8_t dat, uint8_t cmd)
 static void oled_set_pos(uint8_t x, uint8_t y)
 {
     x += 2;
-    oled_write_byte((0xb0 + y), OLED_CMD);              //set page address y
-    oled_write_byte(((x&0xf0)>>4)|0x10, OLED_CMD);      //set column high address
-    oled_write_byte((x&0xf0), OLED_CMD);                //set column low address
+    oled_write_byte((0xb0 + y), OLED_CMD);               //set page address y
+    oled_write_byte(((x & 0xf0) >> 4) | 0x10, OLED_CMD); //set column high address
+    oled_write_byte((x & 0xf0), OLED_CMD);               //set column low address
 }
 
 /**
@@ -134,7 +132,7 @@ void oled_clear(Pen_Typedef pen)
                 OLED_GRAM[n][i] = 0xff - OLED_GRAM[n][i];
         }
     }
-		oled_refresh_gram();
+    oled_refresh_gram();
 }
 
 /**
@@ -178,8 +176,8 @@ void oled_drawline(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, Pen_Typedef p
 
     if (y1 == y2)
     {
-        (x1 <= x2) ? (x_st = x1):(x_st = x2);
-        (x1 <= x2) ? (x_ed = x2):(x_ed = x1);
+        (x1 <= x2) ? (x_st = x1) : (x_st = x2);
+        (x1 <= x2) ? (x_ed = x2) : (x_ed = x1);
 
         for (col = x_st; col <= x_ed; col++)
         {
@@ -188,8 +186,8 @@ void oled_drawline(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, Pen_Typedef p
     }
     else if (x1 == x2)
     {
-        (y1 <= y2) ? (y_st = y1):(y_st = y2);
-        (y1 <= y2) ? (y_ed = y2):(y_ed = y1);
+        (y1 <= y2) ? (y_st = y1) : (y_st = y2);
+        (y1 <= y2) ? (y_ed = y2) : (y_ed = y1);
 
         for (row = y_st; row <= y_ed; row++)
         {
@@ -201,19 +199,18 @@ void oled_drawline(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, Pen_Typedef p
         k = ((float)(y2 - y1)) / (x2 - x1);
         b = (float)y1 - k * x1;
 
-        (x1 <= x2) ? (x_st = x1):(x_st = x2);
-        (x1 <= x2) ? (x_ed = x2):(x_ed = x2);
+        (x1 <= x2) ? (x_st = x1) : (x_st = x2);
+        (x1 <= x2) ? (x_ed = x2) : (x_ed = x2);
 
         for (col = x_st; col <= x_ed; col++)
         {
             oled_drawpoint(col, (uint8_t)(col * k + b), pen);
         }
     }
-		oled_refresh_gram();
+    oled_refresh_gram();
 }
 
-
-//To add: rectangle, fillrectangle, circle, fillcircle, 
+//To add: rectangle, fillrectangle, circle, fillcircle,
 
 /**
  * @brief   show a character
@@ -236,7 +233,7 @@ void oled_showchar(uint8_t row, uint8_t col, uint8_t chr)
 
         for (t1 = 0; t1 < 8; t1++)
         {
-            if (temp&0x80)
+            if (temp & 0x80)
                 oled_drawpoint(x, y, Pen_Write);
             else
                 oled_drawpoint(x, y, Pen_Clear);
@@ -251,7 +248,7 @@ void oled_showchar(uint8_t row, uint8_t col, uint8_t chr)
             }
         }
     }
-		oled_refresh_gram();
+    oled_refresh_gram();
 }
 
 //m^n
@@ -281,7 +278,7 @@ void oled_shownum(uint8_t row, uint8_t col, uint32_t num, uint8_t mode, uint8_t 
 
     for (t = 0; t < len; t++)
     {
-        temp = (num / oled_pow(10, len - t -1)) % 10;
+        temp = (num / oled_pow(10, len - t - 1)) % 10;
 
         if (enshow == 0 && t < (len - 1))
         {
@@ -301,7 +298,6 @@ void oled_shownum(uint8_t row, uint8_t col, uint32_t num, uint8_t mode, uint8_t 
     }
 }
 
-
 /**
  * @brief   show a character string
  * @param   row: row of character string begin
@@ -311,7 +307,7 @@ void oled_shownum(uint8_t row, uint8_t col, uint32_t num, uint8_t mode, uint8_t 
  */
 void oled_showstring(uint8_t row, uint8_t col, uint8_t *chr)
 {
-    uint8_t n =0;
+    uint8_t n = 0;
 
     while (chr[n] != '\0')
     {
@@ -335,7 +331,7 @@ void oled_showstring(uint8_t row, uint8_t col, uint8_t *chr)
  * @retval  None
  * @note    if the character length is more than one row at a time, the extra characters will be truncated
  */
-void oled_printf(uint8_t row, uint8_t col, const char *fmt,...)
+void oled_printf(uint8_t row, uint8_t col, const char *fmt, ...)
 {
     uint8_t LCD_BUF[128] = {0};
     uint8_t remain_size = 0;
@@ -348,7 +344,7 @@ void oled_printf(uint8_t row, uint8_t col, const char *fmt,...)
     remain_size = 21 - col;
     LCD_BUF[remain_size] = '\0';
     oled_showstring(row, col, LCD_BUF);
-		oled_refresh_gram();
+    oled_refresh_gram();
 }
 
 void oled_LOGO(void)
@@ -357,15 +353,17 @@ void oled_LOGO(void)
     uint8_t temp_char = 0;
     uint8_t x = 0, y = 0;
     uint8_t i = 0;
-    for(; y < 64; y += 8)
+    for (; y < 64; y += 8)
     {
-        for(x = 0; x < 128; x++)
+        for (x = 0; x < 128; x++)
         {
-            temp_char = LOGO_BMP[x][y/8];
-            for(i = 0; i < 8; i++)
+            temp_char = LOGO_BMP[x][y / 8];
+            for (i = 0; i < 8; i++)
             {
-                if(temp_char & 0x80) oled_drawpoint(x, y + i,Pen_Write);
-                else oled_drawpoint(x,y + i,Pen_Clear);
+                if (temp_char & 0x80)
+                    oled_drawpoint(x, y + i, Pen_Write);
+                else
+                    oled_drawpoint(x, y + i, Pen_Clear);
                 temp_char <<= 1;
             }
         }
@@ -380,50 +378,50 @@ void oled_LOGO(void)
  */
 void oled_init(void)
 {
-		GPIO_InitTypeDef GPIO_InitStruct;
-		__HAL_RCC_GPIOB_CLK_ENABLE();
-		__HAL_RCC_GPIOA_CLK_ENABLE();
-		MX_SPI1_Init();
-		HAL_GPIO_WritePin(GPIOB, OLED_DC_Pin|OLED_RST_Pin, GPIO_PIN_RESET);
-		GPIO_InitStruct.Pin = OLED_DC_Pin|OLED_RST_Pin;
-		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
-		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-	  OLED_RST_Clr();
+    GPIO_InitTypeDef GPIO_InitStruct;
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    MX_SPI1_Init();
+    HAL_GPIO_WritePin(GPIOB, OLED_DC_Pin | OLED_RST_Pin, GPIO_PIN_RESET);
+    GPIO_InitStruct.Pin = OLED_DC_Pin | OLED_RST_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    OLED_RST_Clr();
     Delayms(50);
     OLED_RST_Set();
-    oled_write_byte(0xae, OLED_CMD);    //turn off oled panel
-    oled_write_byte(0x00, OLED_CMD);    //set low column address
-    oled_write_byte(0x10, OLED_CMD);    //set high column address
-    oled_write_byte(0x40, OLED_CMD);    //set start line address
-    oled_write_byte(0x81, OLED_CMD);    //set contrast control resigter
-    oled_write_byte(0xcf, OLED_CMD);    //set SEG output current brightness
-    oled_write_byte(0xa1, OLED_CMD);    //set SEG/column mapping
-    oled_write_byte(0xc8, OLED_CMD);    //set COM/row scan direction
-    oled_write_byte(0xa6, OLED_CMD);    //set nomarl display
-    oled_write_byte(0xa8, OLED_CMD);    //set multiplex display
-    oled_write_byte(0x3f, OLED_CMD);    //1/64 duty
-    oled_write_byte(0xd3, OLED_CMD);    //set display offset
-    oled_write_byte(0x00, OLED_CMD);    //not offest
-    oled_write_byte(0xd5, OLED_CMD);    //set display clock divide ratio/oscillator frequency
-    oled_write_byte(0x80, OLED_CMD);    //set divide ratio 
-    oled_write_byte(0xd9, OLED_CMD);    //set pre-charge period
-    oled_write_byte(0xf1, OLED_CMD);    //pre-charge: 15 clocks, discharge: 1 clock
-    oled_write_byte(0xda, OLED_CMD);    //set com pins hardware configuration 
-    oled_write_byte(0x12, OLED_CMD);    //
-    oled_write_byte(0xdb, OLED_CMD);    //set vcomh
-    oled_write_byte(0x40, OLED_CMD);    //set vcom deselect level
-    oled_write_byte(0x20, OLED_CMD);    //set page addressing mode
-    oled_write_byte(0x02, OLED_CMD);    //
-    oled_write_byte(0x8d, OLED_CMD);    //set charge pump enable/disable
-    oled_write_byte(0x14, OLED_CMD);    //charge pump disable
-    oled_write_byte(0xa4, OLED_CMD);    //disable entire dispaly on
-    oled_write_byte(0xa6, OLED_CMD);    //disable inverse display on
-    oled_write_byte(0xaf, OLED_CMD);    //turn on oled panel
-    oled_write_byte(0xaf, OLED_CMD);    //display on
+    oled_write_byte(0xae, OLED_CMD); //turn off oled panel
+    oled_write_byte(0x00, OLED_CMD); //set low column address
+    oled_write_byte(0x10, OLED_CMD); //set high column address
+    oled_write_byte(0x40, OLED_CMD); //set start line address
+    oled_write_byte(0x81, OLED_CMD); //set contrast control resigter
+    oled_write_byte(0xcf, OLED_CMD); //set SEG output current brightness
+    oled_write_byte(0xa1, OLED_CMD); //set SEG/column mapping
+    oled_write_byte(0xc8, OLED_CMD); //set COM/row scan direction
+    oled_write_byte(0xa6, OLED_CMD); //set nomarl display
+    oled_write_byte(0xa8, OLED_CMD); //set multiplex display
+    oled_write_byte(0x3f, OLED_CMD); //1/64 duty
+    oled_write_byte(0xd3, OLED_CMD); //set display offset
+    oled_write_byte(0x00, OLED_CMD); //not offest
+    oled_write_byte(0xd5, OLED_CMD); //set display clock divide ratio/oscillator frequency
+    oled_write_byte(0x80, OLED_CMD); //set divide ratio
+    oled_write_byte(0xd9, OLED_CMD); //set pre-charge period
+    oled_write_byte(0xf1, OLED_CMD); //pre-charge: 15 clocks, discharge: 1 clock
+    oled_write_byte(0xda, OLED_CMD); //set com pins hardware configuration
+    oled_write_byte(0x12, OLED_CMD); //
+    oled_write_byte(0xdb, OLED_CMD); //set vcomh
+    oled_write_byte(0x40, OLED_CMD); //set vcom deselect level
+    oled_write_byte(0x20, OLED_CMD); //set page addressing mode
+    oled_write_byte(0x02, OLED_CMD); //
+    oled_write_byte(0x8d, OLED_CMD); //set charge pump enable/disable
+    oled_write_byte(0x14, OLED_CMD); //charge pump disable
+    oled_write_byte(0xa4, OLED_CMD); //disable entire dispaly on
+    oled_write_byte(0xa6, OLED_CMD); //disable inverse display on
+    oled_write_byte(0xaf, OLED_CMD); //turn on oled panel
+    oled_write_byte(0xaf, OLED_CMD); //display on
     oled_clear(Pen_Clear);
     oled_set_pos(0, 0);
 }
 
-#endif	//#if(USING_OLED == 1)
+#endif //#if(USING_OLED == 1)
