@@ -25,6 +25,8 @@ Chassis::Chassis()
 	pos_pub	    = node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
 
 	//Setup Odom
+	InitialPoseGot = false;
+
 	x = y = theta = 0;
 	lastx = lasty = lasttheta = 0;
 	lastt = ros::Time::now();
@@ -78,9 +80,16 @@ void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose )
 	//Update Coordinate
 	x = pose->position.x;
 	y = pose->position.y;
+
+	InitialPoseGot = true;
 }
 
 void Chassis::UpdateOdometry() {
+	//Must get initial position
+	if(!InitialPoseGot) {
+		return;
+	}
+
 	double d[4];
 
 	//calculate delta

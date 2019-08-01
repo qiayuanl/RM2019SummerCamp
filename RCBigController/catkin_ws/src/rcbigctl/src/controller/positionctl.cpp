@@ -14,16 +14,16 @@ double AngularMinus(double a, double b) {
     double res1 = a - b;
     double res2 = (a < b) ? (a + 2 * M_PI - b) : (a - 2 * M_PI - b);
 
-    return ( abs(res1) < abs(res2) ) ? res1 : res2;
+    return ( std::abs(res1) < std::abs(res2) ) ? res1 : res2;
 }
 
 PositionCtl::PositionCtl() {
 	ros::NodeHandle node_priv;
 
     //Setup PID Paramters
-    Kp_X = 0;
-    Kp_Y = 0;
-    Kp_W = 0;
+    Kp_X = A_X = 0;
+    Kp_Y = A_Y = 0;
+    Kp_W = A_W = 0;
 
     //Setup Position Paramters
     X = Y = W = 0;
@@ -43,38 +43,45 @@ PositionCtl::PositionCtl() {
 PositionCtl::~PositionCtl() {}
 
 void PositionCtl::update() {
-    UpdateCloseloop();
+
 }
 
 void PositionCtl::CallbackDynamicParam(rcbigctl::ControllerConfig &config, uint32_t level) {
-    ROS_INFO("Position Controller Reconfigure: [Kp_X = %lf, Kp_Y = %lf, Kp_W = %lf]",
-        config.Kp_X, config.Kp_Y, config.Kp_W
+    ROS_INFO("Position Controller Reconfigure: [Kp_X = %lf, A_X = %lf, Kp_Y = %lf, A_Y = %lf, Kp_W = %lf, A_W = %lf]",
+        config.Kp_X, config.A_X,
+        config.Kp_Y, config.A_Y,
+        config.Kp_W, config.A_W
     );
 
     Kp_X = config.Kp_X;
+    A_X  = config.A_X;
+
     Kp_Y = config.Kp_Y;
+    A_Y  = config.A_Y;
+
     Kp_W = config.Kp_W;
+    A_W  = config.A_W;
 }
 
 void PositionCtl::UpdateCloseloop() {
-    /* geometry_msgs::Twist twist;
+    geometry_msgs::Twist twist;
     twist.linear.z = 0;
     twist.angular.x = 0;
     twist.angular.y = 0;
 
-    twist.linear.x  = Kp_X * (Set_X - X);
-    twist.linear.y  = Kp_Y * (Set_Y - Y);
-    twist.angular.z = Kp_W * AngularMinus( W, Set_W );
+    twist.linear.x  = FoutX.filter( Kp_X * (Set_X - X), A_X              );
+    twist.linear.y  = FoutY.filter( Kp_Y * (Set_Y - Y), A_Y              );
+    twist.angular.z = FoutW.filter( Kp_W * AngularMinus( W, Set_W ), A_W );
 
-    twist_pub.publish( twist ); */
-
-    ROS_INFO("yaw = %lf", W * 180.0 / M_PI);
+    twist_pub.publish( twist );
 }
 
 void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom) {
     X = odom->pose.pose.position.x;
     Y = odom->pose.pose.position.y;
     W = fmod( YawFromQuaternion(odom->pose.pose.orientation), 2 * M_PI );
+
+    UpdateCloseloop();
 }
 
 void PositionCtl::CallbackSetpoint(const geometry_msgs::Pose::ConstPtr& pose) {

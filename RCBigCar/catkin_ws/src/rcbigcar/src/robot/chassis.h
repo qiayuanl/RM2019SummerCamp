@@ -61,6 +61,8 @@ private:
     /*
     * Odometry
     */
+    bool InitialPoseGot;
+
     double x, y, theta;
     double lastx, lasty, lasttheta;
     ros::Time lastt;

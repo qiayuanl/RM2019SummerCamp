@@ -46,7 +46,7 @@
  <!-- Set static loaction of tags-->
 
 <node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_0" args="0 0 0 0 0 0 map tag_0" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam" args="0 0 0 0 1.57 -1.57 base cam" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam" args="0.18 0 0.15 -1.57079 0 -1.57079 base cam" />
 
 
 </launch>
