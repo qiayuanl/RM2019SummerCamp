@@ -101,6 +101,7 @@ void Chassis::UpdateOdometry() {
 	//theta += dtheta;
 	theta = Hardware()->gyro.angle;
 	theta = fmod(theta, 2 * M_PI);
+	ROS_INFO("HW Gyro = %lf", Hardware()->gyro.angle);
 
 	PublishPosition();
 }

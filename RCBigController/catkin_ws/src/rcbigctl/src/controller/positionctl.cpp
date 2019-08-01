@@ -57,7 +57,7 @@ void PositionCtl::CallbackDynamicParam(rcbigctl::ControllerConfig &config, uint3
 }
 
 void PositionCtl::UpdateCloseloop() {
-    geometry_msgs::Twist twist;
+    /* geometry_msgs::Twist twist;
     twist.linear.z = 0;
     twist.angular.x = 0;
     twist.angular.y = 0;
@@ -66,13 +66,15 @@ void PositionCtl::UpdateCloseloop() {
     twist.linear.y  = Kp_Y * (Set_Y - Y);
     twist.angular.z = Kp_W * AngularMinus( W, Set_W );
 
-    twist_pub.publish( twist );
+    twist_pub.publish( twist ); */
+
+    ROS_INFO("yaw = %lf", W * 180.0 / M_PI);
 }
 
-void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& twist) {
-    X = twist->pose.pose.position.x;
-    Y = twist->pose.pose.position.y;
-    W = fmod( YawFromQuaternion(twist->pose.pose.orientation), 2 * M_PI );
+void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom) {
+    X = odom->pose.pose.position.x;
+    Y = odom->pose.pose.position.y;
+    W = fmod( YawFromQuaternion(odom->pose.pose.orientation), 2 * M_PI );
 }
 
 void PositionCtl::CallbackSetpoint(const geometry_msgs::Pose::ConstPtr& pose) {

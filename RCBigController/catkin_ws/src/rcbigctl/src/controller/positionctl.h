@@ -25,7 +25,7 @@ public:
 
     /* Callback Funcs */
     void CallbackDynamicParam( rcbigctl::ControllerConfig &config, uint32_t level );
-    void CallbackPosition(     const nav_msgs::Odometry::ConstPtr& twist    );
+    void CallbackPosition(     const nav_msgs::Odometry::ConstPtr& odom    );
     void CallbackSetpoint(     const geometry_msgs::Pose::ConstPtr& pose    );
 private:
     /*
