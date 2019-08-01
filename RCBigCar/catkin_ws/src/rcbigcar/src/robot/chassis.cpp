@@ -81,7 +81,7 @@ void Chassis::update()
 }
 
 double Chassis::ReadGyroAngle() {
-	return Hardware()->gyro.angle / 180 * M_PI;
+	return -(Hardware()->gyro.angle / 180 * M_PI);
 }
 
 void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
