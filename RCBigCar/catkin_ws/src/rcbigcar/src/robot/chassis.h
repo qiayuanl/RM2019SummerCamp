@@ -10,6 +10,7 @@
 
 #include <ros/ros.h>
 #include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
 
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
@@ -23,6 +24,9 @@ class Chassis
   public:
     Chassis();
     ~Chassis();
+
+    /* Internal Funcs */
+    double ReadGyroAngle();
 
     /* Update Funcs */
     void update();
@@ -51,6 +55,7 @@ private:
     ros::Publisher	pos_pub;
     ros::Subscriber vloc_sub;
     ros::Subscriber twist_sub;
+    tf::TransformBroadcaster tf_pos_pub;
 
     /* 
     * Motor
@@ -61,6 +66,9 @@ private:
     /*
     * Odometry
     */
+    bool InitialPoseGot;
+    double GyroCorrection;
+
     double x, y, theta;
     double lastx, lasty, lasttheta;
     ros::Time lastt;

@@ -1,5 +1,15 @@
 #include "chassis.h"
 
+double YawFromQuaternion(const geometry_msgs::Quaternion &quat) {
+    tf::Quaternion q_orient(quat.x, quat.y, quat.z, quat.w);
+	tf::Matrix3x3  m_orient(q_orient);
+
+    double roll, pitch, yaw;
+    m_orient.getRPY(roll, pitch, yaw);
+
+    return yaw;
+}
+
 Chassis::Chassis()
 {
 	ros::NodeHandle node_priv;
@@ -25,6 +35,9 @@ Chassis::Chassis()
 	pos_pub	    = node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
 
 	//Setup Odom
+	InitialPoseGot = true;
+	GyroCorrection = 0.0;
+
 	x = y = theta = 0;
 	lastx = lasty = lasttheta = 0;
 	lastt = ros::Time::now();
@@ -67,6 +80,10 @@ void Chassis::update()
 	UpdateDebug();
 }
 
+double Chassis::ReadGyroAngle() {
+	return -(Hardware()->gyro.angle / 180 * M_PI);
+}
+
 void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
 	//Transform Quat -> RPY
 	/* tf::Quaternion q_orient(pose->orientation.x, pose->orientation.y, pose->orientation.z, pose->orientation.w);
@@ -78,9 +95,20 @@ void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose )
 	//Update Coordinate
 	x = pose->position.x;
 	y = pose->position.y;
+
+	//Correct Gyro
+	GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
+
+	//Set Initial Pose
+	InitialPoseGot = true;
 }
 
 void Chassis::UpdateOdometry() {
+	//Must get initial position
+	if(!InitialPoseGot) {
+		return;
+	}
+
 	double d[4];
 
 	//calculate delta
@@ -99,7 +127,7 @@ void Chassis::UpdateOdometry() {
 	y += dx * sin(theta) + dy * cos(theta);
 
 	//theta += dtheta;
-	theta = Hardware()->gyro.angle / 180 * M_PI;
+	theta = ReadGyroAngle() + GyroCorrection;
 	theta = fmod(theta, 2 * M_PI);
 
 	PublishPosition();
@@ -140,6 +168,18 @@ void Chassis::PublishPosition() {
 
 	// publish the message
 	pos_pub.publish(odom);
+
+	//publish tf message
+	geometry_msgs::TransformStamped odom_tf;
+
+	odom_tf.header = odom.header;
+	odom_tf.child_frame_id = odom.child_frame_id;
+	odom_tf.transform.translation.x = odom.pose.pose.position.x;
+	odom_tf.transform.translation.y = odom.pose.pose.position.y;
+	odom_tf.transform.translation.z = odom.pose.pose.position.z;
+	odom_tf.transform.rotation      = odom.pose.pose.orientation;
+
+	tf_pos_pub.sendTransform( odom_tf );
 }
 
 void Chassis::CallbackVelocity(const geometry_msgs::Twist::ConstPtr &twist)
