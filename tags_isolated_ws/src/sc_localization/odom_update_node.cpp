@@ -2,20 +2,18 @@
 #include "apriltag_ros/AprilTagDetectionArray.h"
 #include <tf/transform_listener.h>
 #include <tf/transform_broadcaster.h>
-#include <nav_msgs/Odometry.h>
 #include <memory>
-#include <eigen3/Eigen/Dense>
-#include <eigen3/Eigen/Geometry>
+#include <geometry_msgs/Twist.h>
 #include <cmath>
 
 tf::Transform tag_base_transform;
 tf::Quaternion tag_base_q;
 tf::TransformListener* listener;
 tf::Vector3 base_v_old(0.0,0.0,0.0);
-int not_seeing_tag_counter = 0;
-bool init = false;
+geometry_msgs::Pose odom;
 //// Nomenclature: 1. parentFrame_childFrame (If the parentFrame is map, then the parent frame is neglected.)
 ////               2. _r 3x3 tf rotation matrix, _v 1x3 tf vector, _q tf quaternion.
+bool new_detection;
 
 void aprilCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
 {
@@ -66,7 +64,7 @@ void aprilCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
         tf::Matrix3x3 tag_base_r = tag_cam_r*(base_cam_r.transpose());
 
         tf::Vector3 tag_cam_v(tag_cam_x, tag_cam_y, tag_cam_z);
-        tf::Vector3 base_cam_v(base_cam_x,base_cam_y,tag_cam_z);
+        tf::Vector3 base_cam_v(base_cam_x,base_cam_y,base_cam_z);
         tf::Vector3 tag_base_v = tag_cam_v-tag_base_r*base_cam_v;
         double base_roll,base_pitch,base_yaw;
 
@@ -74,17 +72,34 @@ void aprilCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
         tag_base_transform.setRotation(tag_base_q);
         tag_base_transform.setOrigin(tag_base_v);
         br.sendTransform(tf::StampedTransform(tag_base_transform, ros::Time::now(), "tag_0", "base"));
+        odom.position.x = tag_base_v.getX();
+        odom.position.y = tag_base_v.getY();
+        odom.orientation.x = tag_base_q.getX();
+        odom.orientation.y = tag_base_q.getY();
+        odom.orientation.z = tag_base_q.getZ();
+        odom.orientation.w = tag_base_q.getW();
+        new_detection = true;
     }
 }
-
 
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "base_update_node");
+
   ros::NodeHandle nh;
+
   listener = new tf::TransformListener(ros::Duration(1));
   ros::Subscriber detection = nh.subscribe("tag_detections", 1000, &aprilCallback);
-
-  ros::spin();
+  ros::Publisher base_pub = nh.advertise<geometry_msgs::Pose>("vloc", 1000);
+  ros::Rate rate(30);
+  while (ros :: ok()) {
+    if(new_detection)
+    {
+        new_detection = false;
+        base_pub.publish(odom);
+    }
+    ros::spinOnce();
+    rate.sleep();
+  }
   return 0;
 }
