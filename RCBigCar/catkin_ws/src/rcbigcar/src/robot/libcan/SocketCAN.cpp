@@ -29,16 +29,14 @@
 #include <sys/types.h>
 */
 
-
 SocketCAN::SocketCAN()
-   :CANAdapter(),
-    sockfd(-1),
-    receiver_thread_id(0)
+    : CANAdapter(),
+      sockfd(-1),
+      receiver_thread_id(0)
 {
     adapter_type = ADAPTER_SOCKETCAN;
     printf("SocketCAN adapter created.\n");
 }
-
 
 SocketCAN::~SocketCAN()
 {
@@ -49,8 +47,7 @@ SocketCAN::~SocketCAN()
     }
 }
 
-
-void SocketCAN::open(char* interface)
+void SocketCAN::open(char *interface)
 {
     // Request a socket
     sockfd = socket(PF_CAN, SOCK_RAW, CAN_RAW);
@@ -78,9 +75,8 @@ void SocketCAN::open(char* interface)
     addr.can_ifindex = if_request.ifr_ifindex;
     int rc = bind(
         sockfd,
-        reinterpret_cast<struct sockaddr*>(&addr),
-        sizeof(addr)
-    );
+        reinterpret_cast<struct sockaddr *>(&addr),
+        sizeof(addr));
     if (rc == -1)
     {
         printf("Failed to bind socket to network interface\n");
@@ -95,11 +91,11 @@ void SocketCAN::open(char* interface)
     start_receiver_thread();
 }
 
-
 void SocketCAN::close()
 {
     terminate_receiver_thread = true;
-    while(receiver_thread_running);
+    while (receiver_thread_running)
+        ;
 
     if (!is_open())
         return;
@@ -111,14 +107,12 @@ void SocketCAN::close()
     printf("CAN socket destroyed.\n");
 }
 
-
 bool SocketCAN::is_open()
 {
     return (sockfd != -1);
 }
 
-
-void SocketCAN::transmit(can_frame_t* frame)
+void SocketCAN::transmit(can_frame_t *frame)
 {
     CANAdapter::transmit(frame);
     if (!is_open())
@@ -130,14 +124,13 @@ void SocketCAN::transmit(can_frame_t* frame)
     write(sockfd, frame, sizeof(can_frame_t));
 }
 
-
-static void* socketcan_receiver_thread(void* argv)
+static void *socketcan_receiver_thread(void *argv)
 {
     /*
      * The first and only argument to this function
      * is the pointer to the object, which started the thread.
      */
-    SocketCAN* sock = (SocketCAN*) argv;
+    SocketCAN *sock = (SocketCAN *)argv;
 
     // Holds the set of descriptors, that 'select' shall monitor
     fd_set descriptors;
@@ -161,18 +154,18 @@ static void* socketcan_receiver_thread(void* argv)
         FD_ZERO(&descriptors);
         // Add socket descriptor
         FD_SET(sock->sockfd, &descriptors);
-//        printf("Added %d to monitored descriptors.\n", sock->sockfd);
+        //        printf("Added %d to monitored descriptors.\n", sock->sockfd);
 
         // Set timeout
-        timeout.tv_sec  = 1;
+        timeout.tv_sec = 1;
         timeout.tv_usec = 0;
 
         // Wait until timeout or activity on any descriptor
-        if (select(maxfd+1, &descriptors, NULL, NULL, &timeout) == 1)
+        if (select(maxfd + 1, &descriptors, NULL, NULL, &timeout) == 1)
         {
-//            printf("Something happened.\n");
+            //            printf("Something happened.\n");
             int len = read(sock->sockfd, &rx_frame, CAN_MTU);
-//            printf("Received %d bytes: Frame from 0x%0X, DLC=%d\n", len, rx_frame.can_id, rx_frame.can_dlc);
+            //            printf("Received %d bytes: Frame from 0x%0X, DLC=%d\n", len, rx_frame.can_id, rx_frame.can_dlc);
 
             if (len < 0)
                 continue;
@@ -184,17 +177,17 @@ static void* socketcan_receiver_thread(void* argv)
 
             if (sock->parser != NULL)
             {
-//                printf("Invoking parser...\n");
+                //                printf("Invoking parser...\n");
                 sock->parser->parse_frame(&rx_frame);
             }
             else
             {
-//                printf("sock->parser is NULL.\n");
+                //                printf("sock->parser is NULL.\n");
             }
         }
         else
         {
-//            printf("Received nothing.\n");
+            //            printf("Received nothing.\n");
         }
     }
 
@@ -205,7 +198,6 @@ static void* socketcan_receiver_thread(void* argv)
 
     return NULL;
 }
-
 
 void SocketCAN::start_receiver_thread()
 {
@@ -221,7 +213,7 @@ void SocketCAN::start_receiver_thread()
         printf("Unable to start receiver thread.\n");
         return;
     }
-    printf("Successfully started receiver thread with ID %d.\n", (int) receiver_thread_id);
+    printf("Successfully started receiver thread with ID %d.\n", (int)receiver_thread_id);
 }
 
 #endif

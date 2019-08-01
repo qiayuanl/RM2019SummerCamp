@@ -4,14 +4,13 @@
 
 #include "CANFrame.h"
 
-
 class CANFrameParser
 {
-  public:
-    CANFrameParser();
-    virtual ~CANFrameParser();
+public:
+  CANFrameParser();
+  virtual ~CANFrameParser();
 
-    virtual void parse_frame(can_frame_t*);
+  virtual void parse_frame(can_frame_t *);
 };
 
 #endif

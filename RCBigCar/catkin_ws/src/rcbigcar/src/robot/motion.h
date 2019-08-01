@@ -16,8 +16,9 @@
 #include <dynamic_reconfigure/server.h>
 #include "rcbigcar/MotionConfig.h"
 
-class Motion {
-public:
+class Motion
+{
+  public:
     Motion();
     ~Motion();
 
@@ -26,14 +27,15 @@ public:
     void UpdateMotors();
     void UpdatePublisher();
 
-    void CallbackDynamicParam( rcbigcar::MotionConfig &config, uint32_t level );
-    void CallbackSetpoint(     const std_msgs::Float64MultiArray::ConstPtr& setpoint     );
-private:
+    void CallbackDynamicParam(rcbigcar::MotionConfig &config, uint32_t level);
+    void CallbackSetpoint(const std_msgs::Float64MultiArray::ConstPtr &setpoint);
+
+  private:
     /*
      * Handles
     */
     ros::Subscriber motor_sub;
-    ros::Publisher	status_pub;
+    ros::Publisher status_pub;
 
     /*
      * Motors
@@ -43,7 +45,7 @@ private:
     /*
      * Watchdog
      */
-    ros::Time  motionWatchdog;
+    ros::Time motionWatchdog;
 };
 
 #endif

@@ -5,4 +5,4 @@ CANFrameParser::CANFrameParser() {}
 
 CANFrameParser::~CANFrameParser() {}
 
-void CANFrameParser::parse_frame(can_frame_t*) {}
+void CANFrameParser::parse_frame(can_frame_t *) {}

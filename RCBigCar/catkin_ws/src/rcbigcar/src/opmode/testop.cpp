@@ -1,7 +1,8 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	ros::init(argc, argv, "testop");
 
 	ros::NodeHandle nh;
@@ -17,7 +18,8 @@ int main(int argc, char **argv) {
 
 	while (ros::ok())
 	{
-		if((ros::Time::now() - t).toSec() >= 1.5) {
+		if ((ros::Time::now() - t).toSec() >= 1.5)
+		{
 			t = ros::Time::now();
 
 			twist.linear.x *= -1;

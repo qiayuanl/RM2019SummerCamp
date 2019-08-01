@@ -18,8 +18,9 @@
 #include <dynamic_reconfigure/server.h>
 #include "rcbigcar/ChassisConfig.h"
 
-class Chassis {
-public:
+class Chassis
+{
+  public:
     Chassis();
     ~Chassis();
 
@@ -33,27 +34,28 @@ public:
     void PublishOdometry();
 
     /* Callback Funcs */
-    void CallbackDynamicParam( rcbigcar::ChassisConfig &config, uint32_t level );
-    void CallbackVelocity(     const geometry_msgs::Twist::ConstPtr& twist    );
-private:
+    void CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t level);
+    void CallbackVelocity(const geometry_msgs::Twist::ConstPtr &twist);
+
+  private:
     /*
      * Config
     */
-    bool   Config_IsDebug;
+    bool Config_IsDebug;
 
     double Dyn_Config_MaxVel;
 
     /*
      * Handles
     */
-    ros::Publisher	odom_pub;
+    ros::Publisher odom_pub;
     ros::Subscriber twist_sub;
 
     /* 
     * Motor
     */
-    Motor      *motors[4];
-    ros::Time  motorWatchdog;
+    Motor *motors[4];
+    ros::Time motorWatchdog;
 
     /*
     * Odometry

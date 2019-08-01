@@ -2,23 +2,20 @@
 #include "CANAdapter.h"
 #include <stdio.h>
 
-
 CANAdapter::CANAdapter()
-    :adapter_type(ADAPTER_NONE),
-     reception_handler(NULL),
-     parser(NULL)
+    : adapter_type(ADAPTER_NONE),
+      reception_handler(NULL),
+      parser(NULL)
 {
     printf("CAN adapter created.\n");
 }
-
 
 CANAdapter::~CANAdapter()
 {
     printf("Destroying CAN adapter...\n");
 }
 
-
-void CANAdapter::transmit(can_frame_t*)
+void CANAdapter::transmit(can_frame_t *)
 {
     if (adapter_type == ADAPTER_NONE)
     {
