@@ -35,7 +35,7 @@ Chassis::Chassis()
 	pos_pub	    = node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
 
 	//Setup Odom
-	InitialPoseGot = true;
+	InitialPoseGot = false;
 	GyroCorrection = 0.0;
 
 	x = y = theta = 0;

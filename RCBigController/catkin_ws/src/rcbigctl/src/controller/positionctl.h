@@ -6,6 +6,7 @@
 
 #include <ros/ros.h>
 #include <tf/tf.h>
+#include <tf/transform_listener.h>
 
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
@@ -54,6 +55,7 @@ private:
     ros::Subscriber pos_sub;
     ros::Subscriber setpoint_sub;
     ros::Publisher	twist_pub;
+    tf::TransformListener tf_pos;
 
     /*
      * Closeloop Paramters
