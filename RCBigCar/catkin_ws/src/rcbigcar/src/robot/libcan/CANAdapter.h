@@ -11,56 +11,54 @@
 #include "CANFrame.h"
 #include "CANFrameParser.h"
 
-
 /**
  * Specifies the type of a CAN adapter
  */
 typedef enum
 {
-    ADAPTER_NONE,
-    ADAPTER_SOCKETCAN,
-    ADAPTER_SLCAN,
-    ADAPTER_LOGFILE,
+  ADAPTER_NONE,
+  ADAPTER_SOCKETCAN,
+  ADAPTER_SLCAN,
+  ADAPTER_LOGFILE,
 } can_adapter_t;
 
 /**
  * How a frame reception handler should look like
  */
-typedef void (*reception_handler_t)(can_frame_t*, void*);
-
+typedef void (*reception_handler_t)(can_frame_t *, void *);
 
 /**
  * Facilitates frame transmission and reception via a CAN adapter
  */
 class CANAdapter
 {
-  protected:
-    can_adapter_t adapter_type;
+protected:
+  can_adapter_t adapter_type;
 
-  public:
-    /**
+public:
+  /**
      * Pointer to a function which shall be called
      * when frames are being received from the CAN bus
      */
-    void* reception_handler_data;
+  void *reception_handler_data;
 
-    reception_handler_t reception_handler;
+  reception_handler_t reception_handler;
 
-    /**
+  /**
      * Pointer to a CAN frame parser object
      * which's parse_frame() method will be called when frames are received
      */
-    CANFrameParser* parser = NULL;
+  CANFrameParser *parser = NULL;
 
-    /** Constructor */
-	CANAdapter();
-	/** Destructor */
-	virtual ~CANAdapter();
+  /** Constructor */
+  CANAdapter();
+  /** Destructor */
+  virtual ~CANAdapter();
 
-	/**
+  /**
 	 * Sends the referenced frame to the bus
 	 */
-	virtual void transmit(can_frame_t*);
+  virtual void transmit(can_frame_t *);
 };
 
 #endif

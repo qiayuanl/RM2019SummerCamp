@@ -8,12 +8,13 @@
 
 rcbigctl::TeleopConfig config;
 
-ros::Publisher  twist_pub;
+ros::Publisher twist_pub;
 ros::Subscriber joy_sub;
 
 geometry_msgs::Twist twist;
 
-void callback_joy( const sensor_msgs::Joy::ConstPtr& joy ) {
+void callback_joy(const sensor_msgs::Joy::ConstPtr &joy)
+{
     twist.angular.z = joy->axes[0] * config.MaxW;
 
     twist.linear.x = joy->axes[3] * config.MaxX;
@@ -24,13 +25,14 @@ void callback_param( rcbigctl::TeleopConfig &_config, uint32_t level ) {
     config = _config;
 }
 
-int main(int argc, char **argv) {
-	ros::init(argc, argv, "teleop");
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "teleop");
 
-	ros::NodeHandle nh;
+    ros::NodeHandle nh;
 
-	twist_pub = nh.advertise<geometry_msgs::Twist>("velocity", 50);
-    joy_sub =   nh.subscribe<sensor_msgs::Joy>    ("joy",      50, &callback_joy );
+    twist_pub = nh.advertise<geometry_msgs::Twist>("velocity", 50);
+    joy_sub = nh.subscribe<sensor_msgs::Joy>("joy", 50, &callback_joy);
 
     //init twist
     twist.angular.x = 0;
@@ -43,20 +45,20 @@ int main(int argc, char **argv) {
 
     //load paramter
     nh.param<double>("MaxX", config.MaxX, 1.0);
-	nh.param<double>("MaxY", config.MaxY, 0.0);
-	nh.param<double>("MaxW", config.MaxW, 0.0);
+    nh.param<double>("MaxY", config.MaxY, 0.0);
+    nh.param<double>("MaxW", config.MaxW, 0.0);
 
     //dynamic reconfigure
     dynamic_reconfigure::Server<rcbigctl::TeleopConfig>               param_server;
     param_server.setCallback(callback_param);
 
-	ros::Rate loop_rate(200);
+    ros::Rate loop_rate(200);
 
-	while (ros::ok())
-	{
+    while (ros::ok())
+    {
         twist_pub.publish(twist);
 
         ros::spinOnce();
-		loop_rate.sleep();
+        loop_rate.sleep();
     }
 }

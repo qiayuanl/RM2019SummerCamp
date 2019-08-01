@@ -17,12 +17,12 @@
 // Workaround for absent linux headers: Explicit struct definition
 struct can_frame
 {
-    uint32_t    can_id;
-    uint8_t     can_dlc;
-    uint8_t     __pad;
-    uint8_t     __res0;
-    uint8_t     __res1;
-    uint8_t     data[8] __attribute__((aligned(8)));
+    uint32_t can_id;
+    uint8_t can_dlc;
+    uint8_t __pad;
+    uint8_t __res0;
+    uint8_t __res1;
+    uint8_t data[8] __attribute__((aligned(8)));
 };
 #endif
 

@@ -26,6 +26,5 @@ extern rc_info_t Remote;
 uint16_t dma_current_data_counter(DMA_Stream_TypeDef *dma_stream);
 void uart_receive_handler(UART_HandleTypeDef *huart);
 void Remote_Init(void);
-void USART_SendData(USART_TypeDef* USARTx, uint16_t Data);
+void USART_SendData(USART_TypeDef *USARTx, uint16_t Data);
 #endif
-

@@ -18,8 +18,9 @@
 #include <dynamic_reconfigure/server.h>
 #include "rcbigcar/ChassisConfig.h"
 
-class Chassis {
-public:
+class Chassis
+{
+  public:
     Chassis();
     ~Chassis();
 
@@ -40,7 +41,7 @@ private:
     /*
      * Config
     */
-    bool   Config_IsDebug;
+    bool Config_IsDebug;
 
     double Dyn_Config_MaxVel;
 
@@ -54,8 +55,8 @@ private:
     /* 
     * Motor
     */
-    Motor      *motors[4];
-    ros::Time  motorWatchdog;
+    Motor *motors[4];
+    ros::Time motorWatchdog;
 
     /*
     * Odometry
