@@ -24,6 +24,9 @@ class Chassis
     Chassis();
     ~Chassis();
 
+    /* Internal Funcs */
+    double ReadGyroAngle();
+
     /* Update Funcs */
     void update();
     void UpdateOdometry();
@@ -62,6 +65,7 @@ private:
     * Odometry
     */
     bool InitialPoseGot;
+    double GyroCorrection;
 
     double x, y, theta;
     double lastx, lasty, lasttheta;
