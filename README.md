@@ -5,10 +5,11 @@ RM2019 Summer Camp Group No.7 (RC BIG CAR) Source Code
 
 Using Manifold 2 as microcontroller, this project eliminates involvement of embedded MCU programming; instead, fully depending on ROS with Real-time patched linux kernel offers a simple yet elegent method to implement the entire project.
 
-## Project Structure
+## Filesystem
 
  - Documentation: The demand analysis and fundamental planning
- - RCBigCar: ROS catkin workspace
+ - RCBigCar: Motion control in ROS catkin workspace
+ - RCBigController: Advanced control in ROS catkin workspace
  - Embedded: The backup base framework for remote control
  - localization_ws: Locating the robot using ROS
  - localmotion_ws: Drivers for chassis, etc
@@ -17,15 +18,16 @@ Using Manifold 2 as microcontroller, this project eliminates involvement of embe
 
 ## About
 
-### Members (7)
+### Members
 
 #### Embedded
-- Liao Qiayuan
-- Zheng Yuxin
-- Zhang Zhemin 
+- Liao Qiayuan @QiayuanLiao
+- Zheng Yuxin @MeowMeowX
+- Zhu Yanzhen @ZhuYanzhen1
+- Zhang Zhemin @HisenZhang
 
 #### Algorithm
-- Wang Guan
+- Wang Guan @imoneoi
 
 #### Mechanics
 - Chen Wenxiao
