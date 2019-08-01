@@ -35,7 +35,7 @@ Chassis::Chassis()
 	pos_pub	    = node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
 
 	//Setup Odom
-	InitialPoseGot = false;
+	InitialPoseGot = true;
 	GyroCorrection = 0.0;
 
 	x = y = theta = 0;
@@ -168,6 +168,18 @@ void Chassis::PublishPosition() {
 
 	// publish the message
 	pos_pub.publish(odom);
+
+	//publish tf message
+	geometry_msgs::TransformStamped odom_tf;
+
+	odom_tf.header = odom.header;
+	odom_tf.child_frame_id = odom.child_frame_id;
+	odom_tf.transform.translation.x = odom.pose.pose.position.x;
+	odom_tf.transform.translation.y = odom.pose.pose.position.y;
+	odom_tf.transform.translation.z = odom.pose.pose.position.z;
+	odom_tf.transform.rotation      = odom.pose.pose.orientation;
+
+	tf_pos_pub.sendTransform( odom_tf );
 }
 
 void Chassis::CallbackVelocity(const geometry_msgs::Twist::ConstPtr &twist)
