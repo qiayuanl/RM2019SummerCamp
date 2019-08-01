@@ -18,7 +18,7 @@ Using Manifold 2 as microcontroller, this project eliminates involvement of embe
 
 ## About
 
-### Members
+### Team
 
 #### Embedded
 - Liao Qiayuan @QiayuanLiao
