@@ -12,7 +12,7 @@ double YawFromQuaternion(const geometry_msgs::Quaternion &quat) {
 
 double AngularMinus(double a, double b) {
     double res1 = a - b;
-    double res2 = -( 2 * M_PI - (a - b) );
+    double res2 = (a < b) ? (a + 2 * M_PI - b) : (a - 2 * M_PI - b);
 
     return ( abs(res1) < abs(res2) ) ? res1 : res2;
 }
