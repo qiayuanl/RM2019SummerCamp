@@ -30,12 +30,12 @@ public:
     void UpdateDebug();
 
     /* Publish Funcs */
-    void PublishOdometry();
+    void PublishPosition();
 
     /* Callback Funcs */
     void CallbackDynamicParam( rcbigcar::ChassisConfig &config, uint32_t level );
     void CallbackVelocity(     const geometry_msgs::Twist::ConstPtr& twist    );
-    void CallbackVLocalization( const geometry_msgs::Twist::ConstPtr& twist    );
+    void CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose    );
 private:
     /*
      * Config

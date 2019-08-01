@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(rcbigcar)
+project(rcbigctl)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -74,8 +74,7 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 generate_dynamic_reconfigure_options(
-  cfg/ChassisConfig.cfg
-  cfg/MotionConfig.cfg
+  cfg/TeleopConfig.cfg
 )
 
 ################################################
@@ -155,16 +154,20 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-
 add_compile_options(-Wall -Wextra -Wconversion -g)
 
-#robot
-AUX_SOURCE_DIRECTORY(src/robot        ROBOT_SOURCES)
-AUX_SOURCE_DIRECTORY(src/robot/libcan ROBOT_LIBCAN_SOURCES)
+#opmode - testop
+add_executable(testop src/opmode/testop.cpp)
+target_link_libraries(testop ${catkin_LIBRARIES})
 
-add_executable(robot ${ROBOT_SOURCES} ${ROBOT_LIBCAN_SOURCES})
-target_link_libraries(robot ${catkin_LIBRARIES})
-add_dependencies(robot ${PROJECT_NAME}_gencfg)
+#opmode - testpid
+add_executable(testpid src/opmode/testpid.cpp)
+target_link_libraries(testpid ${catkin_LIBRARIES})
+
+#opmode - teleop
+add_executable(teleop src/opmode/teleop.cpp)
+target_link_libraries(teleop ${catkin_LIBRARIES})
+add_dependencies(teleop ${PROJECT_NAME}_gencfg)
 
 #############
 ## Install ##

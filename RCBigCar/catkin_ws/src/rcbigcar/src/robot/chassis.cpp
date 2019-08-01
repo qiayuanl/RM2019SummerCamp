@@ -19,8 +19,8 @@ Chassis::Chassis() {
 
 	//Setup Comm
 	twist_sub   = node_priv.subscribe<geometry_msgs::Twist>("velocity", 100, &Chassis::CallbackVelocity, this);
-	vloc_sub    = node_priv.subscribe<geometry_msgs::Pose>("vloc", 100, &Chassis::CallbackVLocalization, this);
-	odom_pub	= node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
+	vloc_sub    = node_priv.subscribe<geometry_msgs::Pose> ("vloc", 100,     &Chassis::CallbackVLocalization, this);
+	pos_pub	    = node_priv.advertise<nav_msgs::Odometry>  ("odom", 100);
 
 	//Setup Odom
 	x = y = theta = 0;
@@ -59,6 +59,19 @@ void Chassis::update() {
 	UpdateDebug();
 }
 
+void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
+	//Transform Quat -> RPY
+	/* tf::Quaternion q_orient(pose->orientation.x, pose->orientation.y, pose->orientation.z, pose->orientation.w);
+	tf::Matrix3x3  m_orient(q_orient);
+
+    double roll, pitch, yaw;
+    m_orient.getRPY(roll, pitch, yaw); */
+
+	//Update Coordinate
+	x = pose->position.x;
+	y = pose->position.y;
+}
+
 void Chassis::UpdateOdometry() {
 	double d[4];
 
@@ -80,16 +93,16 @@ void Chassis::UpdateOdometry() {
 	theta = Hardware()->gyro.angle;
 	theta = fmod(theta, 2 * M_PI);
 
-	PublishOdometry();
+	PublishPosition();
 }
 
-void Chassis::PublishOdometry() {
+void Chassis::PublishPosition() {
 	// since all odometry is 6DOF we'll need a quaternion created from yaw
 	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 
 	nav_msgs::Odometry odom;
 	odom.header.stamp = ros::Time::now();
-	odom.header.frame_id = "odom";
+	odom.header.frame_id = "world";
 
 	// set the position
 	odom.pose.pose.position.x = x;
@@ -116,7 +129,7 @@ void Chassis::PublishOdometry() {
 	odom.twist.twist.angular.z = dtheta / dt;
 
 	// publish the message
-	odom_pub.publish(odom);
+	pos_pub.publish(odom);
 }
 
 void Chassis::CallbackVelocity( const geometry_msgs::Twist::ConstPtr& twist ) {
