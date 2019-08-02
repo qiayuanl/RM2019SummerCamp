@@ -20,6 +20,8 @@ public:
 private:
     ros::Subscriber detect_sub;
     ros::Publisher  vloc_pub;
+    tf::TransformListener tf_listener;
+    tf::TransformBroadcaster tf_broadcaster;
 };
 
 #endif
