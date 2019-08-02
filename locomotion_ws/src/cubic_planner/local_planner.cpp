@@ -235,7 +235,7 @@ using namespace robomaster;
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "local_planner");
-  ros::NIodeHandle nh("~");
+  ros::NodeHandle nh("~");
   LocalPlanner local_planner(nh);
   ros::spin();
   return 0;
