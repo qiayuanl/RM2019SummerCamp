@@ -35,9 +35,9 @@ PositionCtl::PositionCtl() {
 	DynamicParamServer.setCallback(boost::bind(&PositionCtl::CallbackDynamicParam, this, _1, _2));
 
 	//Setup Comm
-	pos_sub         = node_priv.subscribe<nav_msgs::Odometry>     ("odom",   100, &PositionCtl::CallbackPosition, this);
+	pos_sub         = node_priv.subscribe<nav_msgs::Odometry>          ("odom",   100, &PositionCtl::CallbackPosition, this);
 	setpoint_sub    = node_priv.subscribe<geometry_msgs::PoseStamped>  ("move_base_simple/goal", 100, &PositionCtl::CallbackSetpoint, this);
-	twist_pub	    = node_priv.advertise<geometry_msgs::Twist>   ("velocity", 100);
+	twist_pub	    = node_priv.advertise<geometry_msgs::Twist>        ("velocity", 100);
 }
 
 PositionCtl::~PositionCtl() {}
