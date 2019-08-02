@@ -41,7 +41,7 @@ class LocalPlanner{
     double max_angle_diff;
     nh.param<double>("max_angle_diff", max_angle_diff, 60);
     max_angle_diff_ = max_angle_diff * M_PI / 180;
-    nh.param<double>("p_coeff", p_coeff_, 10.0);
+    nh.param<double>("p_coeff", p_coeff_, 50.0);
     nh.param<int>("plan_frequency", plan_freq_, 50);
     nh.param<double>("goal_tolerance", goal_tolerance_, 0.1);
     nh.param<double>("prune_ahead_distance", prune_ahead_dist_, 0.3);
@@ -56,8 +56,6 @@ class LocalPlanner{
     global_path_sub_ = nh.subscribe("/global_planner/path", 5, &LocalPlanner::GlobalPathCallback,this);
 
     plan_timer_ = nh.createTimer(ros::Duration(1.0/plan_freq_),&LocalPlanner::Plan,this);
-
-
 
   }
   ~LocalPlanner()= default;
@@ -235,7 +233,7 @@ using namespace robomaster;
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "local_planner");
-  ros::NIodeHandle nh("~");
+  ros::NodeHandle nh("~");
   LocalPlanner local_planner(nh);
   ros::spin();
   return 0;

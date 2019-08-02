@@ -33,7 +33,7 @@ class GlobalPlanner{
   GlobalPlanner(ros::NodeHandle& given_nh):
       nh(given_nh), record_(false){
 
-    nh.param<int>("point_num", point_num_, 3);
+    nh.param<int>("point_num", point_num_, 10);
     nh.param<int>("plan_frequency", plan_freq_, 50);
     nh.param<std::string>("global_frame", global_frame_, "map");
     nh.param<double>("waypoint_distance", waypoint_dist_, 0.4);
@@ -41,8 +41,8 @@ class GlobalPlanner{
     // -------------------visulize endpoints and trajectory---------------------
     tf_listener_ = std::make_shared<tf::TransformListener>();
 
-    setpoint_pub_ = nh.advertise<visualization_msgs::Marker>("set_point", 10);
-    global_path_pub_ = nh.advertise<nav_msgs::Path>("path", 10);
+    setpoint_pub_ = nh.advertise<visualization_msgs::Marker>("set_point", 3);
+    global_path_pub_ = nh.advertise<nav_msgs::Path>("path", 3);
 
     // 2D Nav Goal to set point
     waypoint_sub_ = nh.subscribe("/clicked_point", 5, &GlobalPlanner::WaypointCallback,this);
