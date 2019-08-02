@@ -139,7 +139,7 @@ void Chassis::PublishPosition() {
 
 	nav_msgs::Odometry odom;
 	odom.header.stamp = ros::Time::now();
-	odom.header.frame_id = "world";
+	odom.header.frame_id = "map";
 
 	// set the position
 	odom.pose.pose.position.x = x;
@@ -161,7 +161,7 @@ void Chassis::PublishPosition() {
 	lasttheta = theta;
 
 	// set the velocity
-	odom.child_frame_id = "base_link";
+	odom.child_frame_id = "base_fused";
 	odom.twist.twist.linear.x = dx / dt;
 	odom.twist.twist.linear.y = dy / dt;
 	odom.twist.twist.angular.z = dtheta / dt;
