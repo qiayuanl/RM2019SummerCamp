@@ -85,7 +85,6 @@ void aprilCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "base_update_node");
-
   ros::NodeHandle nh;
 
   listener = new tf::TransformListener(ros::Duration(1));
