@@ -18,7 +18,7 @@
     <remap from="camera_info" to="$(arg camera_name)/camera_info" />
 
     <param name="camera_frame" type="str" value="$(arg camera_frame)" />
-    <param name="publish_tag_detections_image" type="bool" value="true" />      <!-- default: false -->
+    <param name="publish_tag_detections_image" type="bool" value="false" />      <!-- default: false -->
   </node>
 
   <!-- Activate Image Processing Node -->
