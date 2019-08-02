@@ -33,7 +33,7 @@ class GlobalPlanner{
   GlobalPlanner(ros::NodeHandle& given_nh):
       nh(given_nh), record_(false){
 
-    nh.param<int>("point_num", point_num_, 10);
+    nh.param<int>("point_num", point_num_, 3);
     nh.param<int>("plan_frequency", plan_freq_, 50);
     nh.param<std::string>("global_frame", global_frame_, "map");
     nh.param<double>("waypoint_distance", waypoint_dist_, 0.4);

@@ -39,9 +39,9 @@ class LocalPlanner{
 
     nh.param<double>("max_speed", max_speed_, 2.0);
     double max_angle_diff;
-    nh.param<double>("max_angle_diff", max_angle_diff, 60);
+    nh.param<double>("max_angle_diff", max_angle_diff, 10);
     max_angle_diff_ = max_angle_diff * M_PI / 180;
-    nh.param<double>("p_coeff", p_coeff_, 50.0);
+    nh.param<double>("p_coeff", p_coeff_, 1000.0);
     nh.param<int>("plan_frequency", plan_freq_, 50);
     nh.param<double>("goal_tolerance", goal_tolerance_, 0.1);
     nh.param<double>("prune_ahead_distance", prune_ahead_dist_, 0.3);
