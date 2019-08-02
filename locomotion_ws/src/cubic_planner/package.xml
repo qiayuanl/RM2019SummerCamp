@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>simple_planner</name>
+    <version>0.1.0</version>
+    <description>A planner ROS packages for RoboMaster 2019 Summer Camp </description>
+    <maintainer email="charles.yang@dji.com">Charles Yang</maintainer>
+    <license>BSD</license>
+    <url type="website">https://github.com/robomaster</url>
+    <author email="charles.yang@dji.com">Peter Fankhauser</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <!--<depend>eigen</depend>-->
+    <!--<depend>boost</depend>-->
+    <depend>roscpp</depend>
+    <depend>tf</depend>
+    <depend>nav_msgs</depend>
+    <depend>geometry_msgs</depend>
+    <depend>visualization_msgs</depend>
+</package>
