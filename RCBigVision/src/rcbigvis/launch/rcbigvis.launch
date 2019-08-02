@@ -44,7 +44,7 @@
 
 <!-- Set static location of base to cam -->
 
-<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam" args="0.19 0 0.46 -1.5707 0 -2.3562 base cam" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam" args="0.19 0 0.6 -1.5707 0 -2.3562 base cam" />
 
 <!-- Set static location of tags -->
 
