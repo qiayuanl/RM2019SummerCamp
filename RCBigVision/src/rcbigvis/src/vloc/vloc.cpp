@@ -9,18 +9,8 @@ int main(int argc, char **argv)
 	//Create Nodes
 	VLocalization vlocalization;
 
-	ros::Rate loop_rate(100);
-
 	//Process Jobs
-	while (ros::ok())
-	{
-		//Update Subnodes
-		vlocalization.update();
-
-		//Spin
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
+	ros::spin();
 
 	//Release Nodes
 	return 0;

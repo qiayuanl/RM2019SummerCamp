@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
 
-            "program": "${workspaceFolder}/../../devel/lib/${workspaceFolderBasename}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/../../devel_isolated/rcbigvis/lib/${workspaceFolderBasename}/${fileBasenameNoExtension}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

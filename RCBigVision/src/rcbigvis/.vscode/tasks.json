@@ -6,7 +6,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "catkin_make --pkg rcbigctl -DCMAKE_BUILD_TYPE=Debug",
+            "command": "catkin_make_isolated --pkg rcbigvis -DCMAKE_BUILD_TYPE=Debug",
             "args": [],
             "options": {
                 "cwd": "${workspaceFolder}/../../"
