@@ -6,6 +6,7 @@
     "files.associations": {
         "geometry": "cpp",
         "cmath": "cpp",
-        "dense": "cpp"
+        "dense": "cpp",
+        "eigen": "cpp"
     }
 }
