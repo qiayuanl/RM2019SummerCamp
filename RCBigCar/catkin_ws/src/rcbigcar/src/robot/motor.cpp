@@ -64,7 +64,15 @@ void Motor::update()
 
 	//PID Closeloop
 	//Reference: https://bitbucket.org/AndyZe/pid
-	double c_ = Kf; //filter error paramter 1/4 sampling rate
+
+	// Check if tan(_) is really small, could cause c = NaN
+	double tan_filt_ = tan((Kf * 6.2832) * dt / 2);
+
+	// Avoid tan(0) ==> NaN
+	if ((tan_filt_ <= 0.) && (tan_filt_ > -0.01)) tan_filt_ = -0.01;
+	if ((tan_filt_ >= 0.) && (tan_filt_ < 0.01))  tan_filt_ = 0.01;
+
+	double c_ = 1 / tan_filt_;
 
 	//Calculate Error
 	double real = (CloseloopType == CLOSELOOP_VELOCITY) ? getVelocity() : getPosition();
