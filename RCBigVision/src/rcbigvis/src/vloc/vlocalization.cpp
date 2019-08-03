@@ -84,17 +84,21 @@ void VLocalization::TagDetectionCallback(const apriltag_ros::AprilTagDetectionAr
 
         double Cur_Base_X =   tf_world_base.getOrigin().getX();
         double Cur_Base_Y =   tf_world_base.getOrigin().getY();
+        double Cur_Base_Z =   tf_world_base.getOrigin().getZ();
         double Cur_Base_Yaw = YawFromQuaternion(tf_world_base.getRotation());
 
-        //Calc Weight
-        double Cur_Weight = 1 / tag_cam_v.length();
+        //Ignore Flying Tags (>0.25m)
+        if(Cur_Base_Z < 0.25) {
+            //Calc Weight
+            double Cur_Weight = 1 / tag_cam_v.length();
 
-        //Sum Up Position Estimate
-        Loc_X +=   Cur_Weight * Cur_Base_X;
-        Loc_Y +=   Cur_Weight * Cur_Base_Y;
-        Loc_Yaw_X += Cur_Weight * cos(Cur_Base_Yaw);
-        Loc_Yaw_Y += Cur_Weight * sin(Cur_Base_Yaw);
-        Loc_Weight_Sum += Cur_Weight;
+            //Sum Up Position Estimate
+            Loc_X +=   Cur_Weight * Cur_Base_X;
+            Loc_Y +=   Cur_Weight * Cur_Base_Y;
+            Loc_Yaw_X += Cur_Weight * cos(Cur_Base_Yaw);
+            Loc_Yaw_Y += Cur_Weight * sin(Cur_Base_Yaw);
+            Loc_Weight_Sum += Cur_Weight;
+        }
     }
 
     if(!Loc_Weight_Sum) return;

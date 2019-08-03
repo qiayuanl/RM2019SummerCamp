@@ -21,9 +21,9 @@ PositionCtl::PositionCtl() {
 	ros::NodeHandle node_priv;
 
     //Setup PID Paramters
-    Kp_X = A_X = 0;
-    Kp_Y = A_Y = 0;
-    Kp_W = A_W = 0;
+    Kp_X = Max_X = A_X = 0;
+    Kp_Y = Max_Y = A_Y = 0;
+    Kp_W = Max_W = A_W = 0;
 
     //Setup Position Paramters
     X = Y = W = 0;
@@ -47,20 +47,23 @@ void PositionCtl::update() {
 }
 
 void PositionCtl::CallbackDynamicParam(rcbigctl::ControllerConfig &config, uint32_t level) {
-    ROS_INFO("Position Controller Reconfigure: [Kp_X = %lf, A_X = %lf, Kp_Y = %lf, A_Y = %lf, Kp_W = %lf, A_W = %lf]",
-        config.Kp_X, config.A_X,
-        config.Kp_Y, config.A_Y,
-        config.Kp_W, config.A_W
+    ROS_INFO("Position Controller Reconfigure: [Kp_X = %lf, Max_X = %lf, A_X = %lf, Kp_Y = %lf, Max_Y = %lf, A_Y = %lf, Kp_W = %lf, Max_W = %lf, A_W = %lf]",
+        config.Kp_X, config.Max_X, config.A_X,
+        config.Kp_Y, config.Max_Y, config.A_Y,
+        config.Kp_W, config.Max_W, config.A_W
     );
 
-    Kp_X = config.Kp_X;
-    A_X  = config.A_X;
+    Kp_X =  config.Kp_X;
+    Max_X = config.Max_X;
+    A_X  =  config.A_X;
 
-    Kp_Y = config.Kp_Y;
-    A_Y  = config.A_Y;
+    Kp_Y =  config.Kp_Y;
+    Max_Y = config.Max_Y;
+    A_Y  =  config.A_Y;
 
-    Kp_W = config.Kp_W;
-    A_W  = config.A_W;
+    Kp_W =  config.Kp_W;
+    Max_W = config.Max_W;
+    A_W  =  config.A_W;
 }
 
 void PositionCtl::UpdateCloseloop() {
@@ -86,9 +89,9 @@ void PositionCtl::UpdateCloseloop() {
         ROS_ERROR("%s",ex.what());
     }
 
-    twist.linear.x  = FoutX.filter( vRobot.vector.x ,  A_X );
-    twist.linear.y  = FoutY.filter( vRobot.vector.y ,  A_Y );
-    twist.angular.z = FoutW.filter( Kp_W * AngularMinus( Set_W, W ) , A_W );
+    twist.linear.x  = FoutX.filter( vRobot.vector.x , Max_X, A_X );
+    twist.linear.y  = FoutY.filter( vRobot.vector.y , Max_Y, A_Y );
+    twist.angular.z = FoutW.filter( Kp_W * AngularMinus( Set_W, W ) , Max_W, A_W );
 
     twist_pub.publish( twist );
 }
