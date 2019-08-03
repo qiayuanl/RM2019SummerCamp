@@ -28,14 +28,14 @@
 #include "cubic_spline/cubic_spline_ros.h"
 #include "utility.h"
 
+namespace robomaster
+{
 
-namespace robomaster{
-
-
-class LocalPlanner{
- public:
-  LocalPlanner(ros::NodeHandle& given_nh):nh(given_nh),plan_(false), prune_index_(0){
-
+class LocalPlanner
+{
+public:
+  LocalPlanner(ros::NodeHandle &given_nh) : nh(given_nh), plan_(false), prune_index_(0)
+  {
 
     nh.param<double>("max_speed", max_speed_, 2.0);
     double max_angle_diff;
@@ -49,44 +49,46 @@ class LocalPlanner{
 
     tf_listener_ = std::make_shared<tf::TransformListener>();
 
-    local_path_pub_= nh.advertise<nav_msgs::Path>("path", 5);
+    local_path_pub_ = nh.advertise<nav_msgs::Path>("path", 5);
 
     cmd_vel_pub_ = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
-    global_path_sub_ = nh.subscribe("/global_planner/path", 5, &LocalPlanner::GlobalPathCallback,this);
+    global_path_sub_ = nh.subscribe("/global_planner/path", 5, &LocalPlanner::GlobalPathCallback, this);
 
-    plan_timer_ = nh.createTimer(ros::Duration(1.0/plan_freq_),&LocalPlanner::Plan,this);
-
+    plan_timer_ = nh.createTimer(ros::Duration(1.0 / plan_freq_), &LocalPlanner::Plan, this);
   }
-  ~LocalPlanner()= default;
-  void GlobalPathCallback(const nav_msgs::PathConstPtr & msg){
-    if (!msg->poses.empty()){
+  ~LocalPlanner() = default;
+  void GlobalPathCallback(const nav_msgs::PathConstPtr &msg)
+  {
+    if (!msg->poses.empty())
+    {
       global_path_ = *msg;
       prune_index_ = 0;
       plan_ = true;
     }
   }
- private:
 
-  void Plan(const ros::TimerEvent& event){
+private:
+  void Plan(const ros::TimerEvent &event)
+  {
 
-    if (plan_){
+    if (plan_)
+    {
 
       auto begin = std::chrono::steady_clock::now();
 
       // 1. Update the transform from global path frame to local planner frame
       UpdateTransform(tf_listener_, global_frame_,
                       global_path_.header.frame_id, global_path_.header.stamp,
-                      global2path_transform_);//source_time needs decided
-
+                      global2path_transform_); //source_time needs decided
 
       // 2. Get current robot pose in global path frame
       geometry_msgs::PoseStamped robot_pose;
       GetGlobalRobotPose(tf_listener_, global_path_.header.frame_id, robot_pose);
 
       // 3. Check if robot has already arrived with given distance tolerance
-      if (GetEuclideanDistance(robot_pose,global_path_.poses.back())<= goal_tolerance_
-          && prune_index_ == global_path_.poses.size() - 1){
+      if (GetEuclideanDistance(robot_pose, global_path_.poses.back()) <= goal_tolerance_ && prune_index_ == global_path_.poses.size() - 1)
+      {
         plan_ = false;
         geometry_msgs::Twist cmd_vel;
         cmd_vel.linear.x = 0;
@@ -98,7 +100,7 @@ class LocalPlanner{
       }
 
       // 4. Get prune index from given global path
-      FindNearstPose(robot_pose, global_path_, prune_index_, prune_ahead_dist_);// TODO: double direct prune index is needed later!
+      FindNearstPose(robot_pose, global_path_, prune_index_, prune_ahead_dist_); // TODO: double direct prune index is needed later!
 
       // 5. Generate the prune path and transform it into local planner frame
       nav_msgs::Path prune_path, local_path;
@@ -112,10 +114,10 @@ class LocalPlanner{
       TransformPose(global2path_transform_, robot_pose, tmp_pose);
       prune_path.poses.push_back(tmp_pose);
 
-      for (int i = prune_index_; i < global_path_.poses.size(); i++){
+      for (int i = prune_index_; i < global_path_.poses.size(); i++)
+      {
         TransformPose(global2path_transform_, global_path_.poses[i], tmp_pose);
         prune_path.poses.push_back(tmp_pose);
-
       }
 
       // 6. Generate the cubic spline trajectory from above prune path
@@ -129,68 +131,82 @@ class LocalPlanner{
 
       auto plan_time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin);
       ROS_INFO("Planning takes %f ms and passed %d/%d.",
-               plan_time.count()/1000.,
+               plan_time.count() / 1000.,
                prune_index_,
                static_cast<int>(global_path_.poses.size()));
     }
-
   }
 
-  void FollowTraj(const geometry_msgs::PoseStamped& robot_pose,
-                  const nav_msgs::Path& traj,
-                  geometry_msgs::Twist& cmd_vel){
-    double diff_yaw = GetYawFromOrientation(traj.poses[0].pose.orientation)
-        - GetYawFromOrientation(robot_pose.pose.orientation);
+  void FollowTraj(const geometry_msgs::PoseStamped &robot_pose,
+                  const nav_msgs::Path &traj,
+                  geometry_msgs::Twist &cmd_vel)
+  {
+    double diff_yaw = GetYawFromOrientation(traj.poses[0].pose.orientation) - GetYawFromOrientation(robot_pose.pose.orientation);
 
     // set it from -PI to PI
-    if(diff_yaw > M_PI){
-      diff_yaw -= 2*M_PI;
-    } else if(diff_yaw < -M_PI){
-      diff_yaw += 2*M_PI;
+    if (diff_yaw > M_PI)
+    {
+      diff_yaw -= 2 * M_PI;
+    }
+    else if (diff_yaw < -M_PI)
+    {
+      diff_yaw += 2 * M_PI;
     }
 
     // calculate velocity
 
-    if( diff_yaw > 0 ){
-      cmd_vel.angular.z = std::min(p_coeff_*diff_yaw, 2.0);
-    }else{
-      cmd_vel.angular.z = std::max(p_coeff_*diff_yaw, -2.0);
+    if (diff_yaw > 0)
+    {
+      cmd_vel.angular.z = std::min(p_coeff_ * diff_yaw, 2.0);
+    }
+    else
+    {
+      cmd_vel.angular.z = std::max(p_coeff_ * diff_yaw, -2.0);
     }
 
-
-    cmd_vel.linear.x = max_speed_*(1.0-std::abs(diff_yaw)/(max_angle_diff_));
+    cmd_vel.linear.x = max_speed_ * (1.0 - std::abs(diff_yaw) / (max_angle_diff_));
     cmd_vel.linear.y = 0;
-    if(std::abs(diff_yaw) > max_angle_diff_){
+    if (std::abs(diff_yaw) > max_angle_diff_)
+    {
       cmd_vel.linear.x = 0;
     }
   }
 
- private:
+private:
+  void FindNearstPose(geometry_msgs::PoseStamped &robot_pose, nav_msgs::Path &path, int &prune_index, double prune_ahead_dist = 0.3)
+  {
 
-  void FindNearstPose(geometry_msgs::PoseStamped& robot_pose,nav_msgs::Path& path, int& prune_index, double prune_ahead_dist = 0.3){
-
-    double dist_threshold = 10;// threshold is 10 meters (basically never over 10m i suppose)
+    double dist_threshold = 10; // threshold is 10 meters (basically never over 10m i suppose)
     double sq_dist_threshold = dist_threshold * dist_threshold;
     double sq_dist;
-    if(prune_index!=0){
-      sq_dist = GetEuclideanDistance(robot_pose,path.poses[prune_index-1]);
-    }else{
+    if (prune_index != 0)
+    {
+      sq_dist = GetEuclideanDistance(robot_pose, path.poses[prune_index - 1]);
+    }
+    else
+    {
       sq_dist = 1e10;
     }
 
     double new_sq_dist = 0;
-    while (prune_index < (int)path.poses.size()) {
-      new_sq_dist = GetEuclideanDistance(robot_pose,path.poses[prune_index]);
-      if (new_sq_dist > sq_dist && sq_dist < sq_dist_threshold) {
+    while (prune_index < (int)path.poses.size())
+    {
+      new_sq_dist = GetEuclideanDistance(robot_pose, path.poses[prune_index]);
+      if (new_sq_dist > sq_dist && sq_dist < sq_dist_threshold)
+      {
 
         //Judge if it is in the same direction and sq_dist is further than 0.3 meters
         if ((path.poses[prune_index].pose.position.x - robot_pose.pose.position.x) *
-            (path.poses[prune_index-1].pose.position.x - robot_pose.pose.position.x) +
-            (path.poses[prune_index].pose.position.y - robot_pose.pose.position.y) *
-                (path.poses[prune_index-1].pose.position.y - robot_pose.pose.position.y) > 0
-            && sq_dist > prune_ahead_dist) {
+                        (path.poses[prune_index - 1].pose.position.x - robot_pose.pose.position.x) +
+                    (path.poses[prune_index].pose.position.y - robot_pose.pose.position.y) *
+                        (path.poses[prune_index - 1].pose.position.y - robot_pose.pose.position.y) >
+                0 &&
+            sq_dist > prune_ahead_dist)
+        {
           prune_index--;
-        }else{
+        }
+        else
+        {
           sq_dist = new_sq_dist;
         }
 
@@ -200,8 +216,7 @@ class LocalPlanner{
       ++prune_index;
     }
 
-    prune_index = std::min(prune_index, (int)(path.poses.size()-1));
-
+    prune_index = std::min(prune_index, (int)(path.poses.size() - 1));
   }
 
   ros::NodeHandle nh;
@@ -225,9 +240,8 @@ class LocalPlanner{
   double goal_tolerance_;
   double prune_ahead_dist_;
   int plan_freq_;
-
 };
-}
+} // namespace robomaster
 
 using namespace robomaster;
 int main(int argc, char **argv)
@@ -238,5 +252,3 @@ int main(int argc, char **argv)
   ros::spin();
   return 0;
 }
-
-
