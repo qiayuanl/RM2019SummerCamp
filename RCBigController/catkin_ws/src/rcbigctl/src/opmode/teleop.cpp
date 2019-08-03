@@ -17,8 +17,8 @@ void callback_joy(const sensor_msgs::Joy::ConstPtr &joy)
 {
     twist.angular.z = joy->axes[0] * config.MaxW;
 
-    twist.linear.x = joy->axes[3] * config.MaxX;
-    twist.linear.y = joy->axes[2] * config.MaxY;
+    twist.linear.x = joy->axes[4] * config.MaxX;
+    twist.linear.y = joy->axes[3] * config.MaxY;
 }
 
 void callback_param( rcbigctl::TeleopConfig &_config, uint32_t level ) {
