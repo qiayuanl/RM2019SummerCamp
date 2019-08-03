@@ -1,72 +1,3 @@
-<launch>
-  <arg name="launch_prefix" default="" /> <!-- set to value="gdbserver localhost:10000" for remote debugging -->
-  <arg name="node_namespace" default="apriltag_ros_continuous_node" />
-  <arg name="camera_name" default="/usb_cam" />
-  <arg name="camera_frame" default="usb_cam" />
-  <arg name="image_topic" default="image_rect" />
-  <arg name="debug" default="false"/>
-  <arg name="device" default="/dev/video0" />
-
-  <!-- Activate AprilTag detection mode -->
-  <!-- Set parameters -->
-  <rosparam command="load" file="$(find apriltag_ros)/config/settings.yaml" ns="$(arg node_namespace)" />
-  <rosparam command="load" file="$(find apriltag_ros)/config/tags.yaml" ns="$(arg node_namespace)" />
-  
-  <node pkg="apriltag_ros" type="apriltag_ros_continuous_node" name="$(arg node_namespace)" clear_params="true" output="screen" launch-prefix="$(arg launch_prefix)" >
-    <!-- Remap topics from those used in code to those on the ROS network -->
-    <remap from="image_rect" to="$(arg camera_name)/$(arg image_topic)" />
-    <remap from="camera_info" to="$(arg camera_name)/camera_info" />
-
-    <param name="camera_frame" type="str" value="$(arg camera_frame)" />
-    <param name="publish_tag_detections_image" type="bool" value="true" />      <!-- default: false -->
-  </node>
-
-  <!-- Activate Image Processing Node -->
-  <!-- refer to: http://wiki.ros.org/image_proc  -->
-  <node ns="usb_cam" pkg="image_proc" type="image_proc" name="image_proc"/>  
-  <!-- Activate Camera Driver Node -->
-  <include file="$(find usb_cam)/launch/camera.launch">
-    <arg name="debug" value="$(arg debug)" />
-    <arg name="device" value="$(arg device)" />
-  </include>
-
-  <!-- show image for debug -->
-  <group  if="$(arg debug)">
-    <node pkg="image_view" type="image_view" name="image_rect" if="$(arg debug)">
-		<remap from="image" to="/usb_cam/image_rect_color" />
-		<param name="autosize" type="bool" value="true" />
-	</node>
-  </group>
-
- <node pkg="rcbigvis" type="vloc" name="vloc" respawn="true" output="screen"/>
-
-<!-- Set static location of base to cam -->
-
-<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam" args="0.19 0 0.6 -1.5707 0 -2.3562 base cam" />
-
-<!-- Set static location of tags -->
-
-
-
-
-
-
-
-
-
-<!-- testmap 3x3
-
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_7" args="0 0 0 0 0 0 map tag_7" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_6" args="-0.4 0 0 0 0 0 map tag_6" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_8" args="0.4 0 0 0 0 0 map tag_8" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_9" args="-0.4 0.4 0 0 0 0 map tag_9" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_15" args="0 0.4 0 0 0 0 map tag_15" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_18" args="0.4 0.4 0 0 0 0 map tag_18" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_1" args="-0.4 -0.4 0 0 0 0 map tag_1" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_12" args="0 -0.4 0 0 0 0 map tag_12" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_19" args="0.4 -0.4 0 0 0 0 map tag_19" /> -->
-
-
 <node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_0" args="0.0 -0.0 0 0 0 0 map tag_0" />
 <node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_1" args="0.93 -0.0 0 0 0 0 map tag_1" />
 <node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_2" args="1.86 -0.0 0 0 0 0 map tag_2" />
@@ -130,5 +61,3 @@
 <node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_60" args="5.58 -5.58 0 0 0 0 map tag_60" />
 <node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_61" args="6.51 -5.58 0 0 0 0 map tag_61" />
 <node pkg="tf2_ros" type="static_transform_publisher" name="map_tag_62" args="7.44 -5.58 0 0 0 0 map tag_62" />
-
-</launch>
