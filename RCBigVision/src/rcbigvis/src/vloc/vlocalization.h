@@ -43,7 +43,7 @@ public:
     //Callback Functions
     void TagDetectionCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
 private:
-    MovingAverage<double,      5> Filter_X, Filter_Y, Filter_Yaw_X, Filter_Yaw_Y;
+    MovingAverage<double,      1> Filter_X, Filter_Y, Filter_Yaw_X, Filter_Yaw_Y;
 
     ros::Subscriber detect_sub;
     ros::Publisher  vloc_pub;

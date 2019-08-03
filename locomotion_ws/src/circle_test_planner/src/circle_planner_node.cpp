@@ -22,6 +22,8 @@ int main(int argc, char **argv) {
     y = sin(0.01745 * w * t) * r;
     theta = 0.01745*(w * t) + 3.1415926;
     plan_q.setRPY(0, 0, theta);
+    plan.header.stamp = ros::Time::now();
+    plan.header.frame_id = "/map";
     plan.pose.orientation.x = plan_q.getX();
     plan.pose.orientation.y = plan_q.getY();
     plan.pose.orientation.z = plan_q.getZ();

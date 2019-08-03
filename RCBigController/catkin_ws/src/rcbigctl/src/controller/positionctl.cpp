@@ -71,7 +71,7 @@ void PositionCtl::UpdateCloseloop() {
 
     geometry_msgs::Vector3Stamped vWorld;
     vWorld.header.stamp = ros::Time();
-    vWorld.header.frame_id = "world";
+    vWorld.header.frame_id = "map";
 
     vWorld.vector.x = Kp_X * (Set_X - X);
     vWorld.vector.y = Kp_Y * (Set_Y - Y);
@@ -80,7 +80,7 @@ void PositionCtl::UpdateCloseloop() {
     //Transform World Velocity To Robot Velocity
     geometry_msgs::Vector3Stamped vRobot;
     try {
-        tf_pos.transformVector("base_link", vWorld, vRobot);
+        tf_pos.transformVector("base_fused", vWorld, vRobot);
     }
     catch (tf::TransformException ex) {
         ROS_ERROR("%s",ex.what());
