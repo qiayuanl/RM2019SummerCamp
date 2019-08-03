@@ -85,47 +85,6 @@ standalone_tags:
     {id: 60, size: 0.144, name: tag_60},
     {id: 61, size: 0.144, name: tag_61},
     {id: 62, size: 0.144, name: tag_62},
-<<<<<<< HEAD
-    {id: 63, size: 0.144, name: tag_63},
-    {id: 64, size: 0.144, name: tag_64},
-    {id: 65, size: 0.144, name: tag_65},
-    {id: 66, size: 0.144, name: tag_66},
-    {id: 67, size: 0.144, name: tag_67},
-    {id: 68, size: 0.144, name: tag_68},
-    {id: 69, size: 0.144, name: tag_69},
-    {id: 70, size: 0.144, name: tag_70},
-    {id: 71, size: 0.144, name: tag_71},
-    {id: 72, size: 0.144, name: tag_72},
-    {id: 73, size: 0.144, name: tag_73},
-    {id: 74, size: 0.144, name: tag_74},
-    {id: 75, size: 0.144, name: tag_75},
-    {id: 76, size: 0.144, name: tag_76},
-    {id: 77, size: 0.144, name: tag_77},
-    {id: 78, size: 0.144, name: tag_78},
-    {id: 79, size: 0.144, name: tag_79},
-    {id: 80, size: 0.144, name: tag_80},
-    {id: 81, size: 0.144, name: tag_81},
-    {id: 82, size: 0.144, name: tag_82},
-    {id: 83, size: 0.144, name: tag_83},
-    {id: 84, size: 0.144, name: tag_84},
-    {id: 85, size: 0.144, name: tag_85},
-    {id: 86, size: 0.144, name: tag_86},
-    {id: 87, size: 0.144, name: tag_87},
-    {id: 88, size: 0.144, name: tag_88},
-    {id: 89, size: 0.144, name: tag_89},
-    {id: 90, size: 0.144, name: tag_90},
-    {id: 91, size: 0.144, name: tag_91},
-    {id: 92, size: 0.144, name: tag_92},
-    {id: 93, size: 0.144, name: tag_93},
-    {id: 94, size: 0.144, name: tag_94},
-    {id: 95, size: 0.144, name: tag_95},
-    {id: 96, size: 0.144, name: tag_96},
-    {id: 97, size: 0.144, name: tag_97},
-    {id: 98, size: 0.144, name: tag_98},
-    {id: 99, size: 0.144, name: tag_99},
-  
-   ]
-=======
     # {id: 63, size: 0.144, name: tag_63},
     # {id: 64, size: 0.144, name: tag_64},
     # {id: 65, size: 0.144, name: tag_65},
@@ -664,7 +623,6 @@ standalone_tags:
 #     {id: 18, size: 0.1735, name: tag_18},
 #     {id: 19, size: 0.1735, name: tag_19},
 #   ]
->>>>>>> ec63ef934d65d49235bd238d9ea6b3775f618426
 
 
 # ## Tag bundle definitions
