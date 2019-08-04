@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 	Chassis chassis;
 	Motion motion;
 
-	ros::Rate loop_rate(200);
+	ros::Rate loop_rate(ROBOT_SAMPLING_RATE);
 
 	//Process Jobs
 	while (ros::ok())
