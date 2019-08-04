@@ -27,7 +27,7 @@ bool GetGlobalRobotPose(const std::shared_ptr<tf::TransformListener>& tf_listene
                         geometry_msgs::PoseStamped& robot_global_pose){
   tf::Stamped<tf::Pose> robot_pose_tf;
   robot_pose_tf.setIdentity();
-  robot_pose_tf.frame_id_ = "base_vodom";
+  robot_pose_tf.frame_id_ = "base_fused";
   robot_pose_tf.stamp_ = ros::Time();
 
   tf::Stamped<tf::Pose> robot_global_pose_tf;

@@ -16,5 +16,5 @@ for i in range(1, 8):  # col
         y_offset = round(.93*(j-1), 2)
 
         print(
-            '''<node pkg="tf2_ros" type="static_transform_publisher" name=\"map_tag_{tag_id}\" args=\"{x_offset} {y_offset} 0 0 0 0 map tag_{tag_id}\" />'''
+            '''<node pkg="tf2_ros" type="static_transform_publisher" name=\"map_tag_{tag_id}\" args=\"{x_offset} {y_offset} 0 0 0 1.5708 map tag_{tag_id}\" />'''
             .format(tag_id=tag_id, x_offset=x_offset, y_offset=y_offset))
