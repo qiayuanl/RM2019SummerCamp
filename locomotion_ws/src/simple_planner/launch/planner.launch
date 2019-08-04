@@ -4,7 +4,7 @@
     <node pkg="simple_planner" type="global_planner" name="global_planner" respawn="true" output="screen" >
         <param name="global_frame" value="base_fused"/>
         <param name="plan_frequency" value="50"/>
-        <param name="point_num" value="3"/>
+        <param name="point_num" value="5"/>
         <param name="waypoint_distance" value="0.3"/>
     </node>
 
@@ -13,9 +13,14 @@
         <param name="plan_frequency" value="50"/>
         <param name="max_speed" value="1.5"/>
         <param name="max_angle_diff" value="60"/>
-        <param name="p_coeff" value="2"/>
+        <param name="p_coeff" value="200"/>
         <param name="goal_tolerance" value="0.1"/>
         <param name="prune_ahead_distance" value="0.3"/>
     </node>
+
+  <!-- Run the map server -->
+  <arg name="map" value="summer_camp"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find simple_planner)/simulator/$(arg map).yaml" respawn="false" />
+	
 
 </launch>
