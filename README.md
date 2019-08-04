@@ -14,7 +14,6 @@ Using Manifold 2 as microcontroller, this project eliminates involvement of embe
  - Embedded: The backup base framework for remote control
  - localization_ws: Locating the robot using ROS
  - localmotion_ws: Drivers for chassis, etc
- - tags_isolated_ws: Computer vision locating with AprilTags
  - Script: Common scripts for this project
 
 ## About

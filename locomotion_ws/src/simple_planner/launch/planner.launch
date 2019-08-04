@@ -4,12 +4,12 @@
     <node pkg="simple_planner" type="global_planner" name="global_planner" respawn="true" output="screen" >
         <param name="global_frame" value="odom"/>
         <param name="plan_frequency" value="50"/>
-        <param name="point_num" value="10"/>
+        <param name="point_num" value="3"/>
         <param name="waypoint_distance" value="0.3"/>
     </node>
 
     <node pkg="simple_planner" type="local_planner" name="local_planner" respawn="true" output="screen" >
-        <param name="global_frame" value="odom"/>
+        <param name="global_frame" value="base_"/>
         <param name="plan_frequency" value="50"/>
         <param name="max_speed" value="1.5"/>
         <param name="max_angle_diff" value="60"/>

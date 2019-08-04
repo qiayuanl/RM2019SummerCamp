@@ -27,15 +27,13 @@
 
 #include "utility.h"
 
-namespace robomaster
-{
-class GlobalPlanner
-{
-public:
-  GlobalPlanner(ros::NodeHandle &given_nh) : nh(given_nh), record_(false)
-  {
+namespace robomaster{
+class GlobalPlanner{
+ public:
+  GlobalPlanner(ros::NodeHandle& given_nh):
+      nh(given_nh), record_(false){
 
-    nh.param<int>("point_num", point_num_, 3);
+    nh.param<int>("point_num", point_num_, 10);
     nh.param<int>("plan_frequency", plan_freq_, 50);
     nh.param<std::string>("global_frame", global_frame_, "map");
     nh.param<double>("waypoint_distance", waypoint_dist_, 0.4);
@@ -43,50 +41,51 @@ public:
     // -------------------visulize endpoints and trajectory---------------------
     tf_listener_ = std::make_shared<tf::TransformListener>();
 
-    setpoint_pub_ = nh.advertise<visualization_msgs::Marker>("set_point", 3);
-    global_path_pub_ = nh.advertise<nav_msgs::Path>("path", 3);
+    setpoint_pub_ = nh.advertise<visualization_msgs::Marker>("set_point", 10);
+    global_path_pub_ = nh.advertise<nav_msgs::Path>("path", 10);
 
     // 2D Nav Goal to set point
-    waypoint_sub_ = nh.subscribe("/clicked_point", 5, &GlobalPlanner::WaypointCallback, this);
-    record_sub_ = nh.subscribe("/initialpose", 1, &GlobalPlanner::RecordCallback, this);
+    waypoint_sub_ = nh.subscribe("/clicked_point", 5, &GlobalPlanner::WaypointCallback,this);
+    record_sub_ = nh.subscribe("/initialpose",1, &GlobalPlanner::RecordCallback,this);
 
-    //    plan_timer_ = nh.createTimer(ros::Duration(1.0/plan_freq_),&GlobalPlanner::Plan,this);
+//    plan_timer_ = nh.createTimer(ros::Duration(1.0/plan_freq_),&GlobalPlanner::Plan,this);
 
-    record_timer_ = nh.createTimer(ros::Duration(0.02), &GlobalPlanner::Record, this);
+    record_timer_ = nh.createTimer(ros::Duration(0.02),&GlobalPlanner::Record,this);
     record_timer_.stop();
 
     path_.header.frame_id = global_frame_;
+
+
   }
-  ~GlobalPlanner() = default;
+  ~GlobalPlanner()= default;
 
-private:
-  //  void Plan(const ros::TimerEvent& event){
-  //  global_path_pub_.publish(path_);
-  //  }
+ private:
 
-  void Record(const ros::TimerEvent &event)
-  {
+//  void Plan(const ros::TimerEvent& event){
+//  global_path_pub_.publish(path_);
+//  }
+
+  void Record(const ros::TimerEvent& event){
 
     geometry_msgs::PoseStamped tmp_pose;
     GetGlobalRobotPose(tf_listener_, global_frame_, tmp_pose);
-    if (path_.poses.empty())
-    {
+    if(path_.poses.empty()){
       path_.poses.push_back(tmp_pose);
       ROS_INFO(" Record Point: 1");
     }
-    else if (hypot(tmp_pose.pose.position.x - path_.poses.back().pose.position.x,
-                   tmp_pose.pose.position.y - path_.poses.back().pose.position.y) > waypoint_dist_)
-    {
+    else if(hypot(tmp_pose.pose.position.x - path_.poses.back().pose.position.x,
+                  tmp_pose.pose.position.y - path_.poses.back().pose.position.y) > waypoint_dist_){
       path_.poses.push_back(tmp_pose);
       VisualizeSetPoints(path_);
       ROS_INFO(" Record Point: %d", static_cast<int>(path_.poses.size()));
     }
+
   }
 
-  void VisualizeSetPoints(const nav_msgs::Path &path)
+  void VisualizeSetPoints(const nav_msgs::Path& path)
   {
     // send them to rviz
-    for (int i = 0; i < path.poses.size(); ++i)
+    for(int i = 0; i < path.poses.size(); ++i)
     {
       visualization_msgs::Marker p;
       p.header.frame_id = global_frame_;
@@ -113,19 +112,18 @@ private:
 
       setpoint_pub_.publish(p);
       ros::Duration(0.001).sleep();
+
     }
   }
 
   void WaypointCallback(const geometry_msgs::PointStamped::ConstPtr &msg)
   {
-    if (record_)
-    {
+    if(record_){
       ROS_INFO("Currently Recording");
       return;
     }
 
-    if (path_.poses.size() >= point_num_)
-    {
+    if(path_.poses.size() >= point_num_){
       path_.poses.clear();
     }
 
@@ -134,8 +132,7 @@ private:
     pose.pose.position = msg->point;
     pose.pose.position.z = 0;
     pose.pose.orientation.w = 1;
-    if (pose.header.frame_id != global_frame_)
-    {
+    if (pose.header.frame_id != global_frame_){
       TransformPose(tf_listener_, global_frame_, pose, pose);
     }
 
@@ -144,7 +141,7 @@ private:
 
     ROS_INFO("New waypoint added!");
 
-    if (path_.poses.size() == point_num_)
+    if(path_.poses.size() == point_num_)
     {
       ROS_INFO("Waypoint enough!");
       global_path_pub_.publish(path_);
@@ -155,19 +152,16 @@ private:
     }
   }
 
-  void RecordCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &msg)
-  {
+  void RecordCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &msg){
 
-    if (record_)
-    {
+    if(record_){
       record_ = false;
       ROS_INFO("Record complete");
       ROS_ASSERT(record_timer_.hasStarted());
       record_timer_.stop();
       global_path_pub_.publish(path_);
-    }
-    else
-    {
+
+    } else {
       record_ = true;
       ROS_INFO("Start to record, stop planning");
       path_.poses.clear();
@@ -175,12 +169,11 @@ private:
       record_timer_.start();
     }
   }
-
-private:
+ private:
   ros::NodeHandle nh;
   std::shared_ptr<tf::TransformListener> tf_listener_;
   std::string global_frame_;
-  //  ros::Timer plan_timer_;
+//  ros::Timer plan_timer_;
 
   ros::Publisher global_path_pub_;
   ros::Publisher setpoint_pub_;
@@ -195,8 +188,9 @@ private:
   int point_num_;
   double waypoint_dist_;
   int plan_freq_;
+
 };
-} // namespace robomaster
+}
 
 using namespace robomaster;
 int main(int argc, char **argv)
@@ -207,3 +201,5 @@ int main(int argc, char **argv)
   ros::spin();
   return 0;
 }
+
+

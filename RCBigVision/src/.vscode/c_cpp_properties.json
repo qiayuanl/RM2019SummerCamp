@@ -6,7 +6,6 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "/home/qiayuanliao/Project/RM2019SummerCamp/tags_isolated_ws/devel_isolated/apriltag_ros/include",
                 "/opt/ros/kinetic/include",
                 "/usr/include"
             ],
