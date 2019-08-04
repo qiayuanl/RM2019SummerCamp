@@ -17,7 +17,7 @@ Motor::Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopT
 	Kp = 0;
 	Ki = 0;
 	Kd = 0;
-	Kf = 1.0;
+	Kf = 0;
 	KmaxI = 1000;
 
 	//Initialize PID Variables
@@ -64,19 +64,13 @@ void Motor::update()
 
 	//PID Closeloop
 	//Reference: https://bitbucket.org/AndyZe/pid
-
-	// Check if tan(_) is really small, could cause c = NaN
-	double tan_filt_ = tan((Kf * 6.2832) * dt / 2);
-
-	// Avoid tan(0) ==> NaN
-	if ((tan_filt_ <= 0.) && (tan_filt_ > -0.01)) tan_filt_ = -0.01;
-	if ((tan_filt_ >= 0.) && (tan_filt_ < 0.01))  tan_filt_ = 0.01;
-
-	double c_ = 1 / tan_filt_;
+	double c_ = 1.0;
 
 	//Calculate Error
 	double real = (CloseloopType == CLOSELOOP_VELOCITY) ? getVelocity() : getPosition();
-	double error = Setpoint - real;
+	double set = Setpoint;
+
+	double error = set - real;
 
 	VError.value[2] = VError.value[1];
 	VError.value[1] = VError.value[0];
@@ -110,7 +104,7 @@ void Motor::update()
 		 (c_ * c_ - 1.414 * c_ + 1) * VError_Derivative_Filtered.value[2] - (-2 * c_ * c_ + 2) * VError_Derivative_Filtered.value[1]);
 
 	//output power
-	double output = Kp * VError_Filtered.value[0] + Ki * VError_Intergral + Kd * VError_Derivative_Filtered.value[0];
+	double output = Kp * VError_Filtered.value[0] + Ki * VError_Intergral + Kd * VError_Derivative_Filtered.value[0] + Kf * set;
 
 	int pwm_max_value = Preset->PWMMaxValue;
 	int out_power = (int)(output * pwm_max_value);

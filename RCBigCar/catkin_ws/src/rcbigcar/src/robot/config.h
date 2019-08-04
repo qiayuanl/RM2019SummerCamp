@@ -30,6 +30,8 @@ struct MotionMotor
  * Robot Hardware Config
  */
 
+#define ROBOT_SAMPLING_RATE 200
+
 #define HW_MOTOR_COUNT 8
 #define HW_CAN_MOTOR_ID_1 0x200
 #define HW_CAN_MOTOR_ID_2 0x1FF
@@ -41,7 +43,7 @@ struct MotionMotor
 const MotorPreset MOTOR_GM2006 = {
     10000,                                           //PWM Max Value
     (1.0 / 60.0) * 2.0 * M_PI / 36.0,                //RPM To rad/s
-    (1.0 / 8192.0) * 2.0 * M_PI / 36.0 * 1.020153998 //TICK to Meters
+    (1.0 / 8192.0) * 2.0 * M_PI / 36.0               //TICK to Meters
 };
 
 const MotorPreset MOTOR_GM3508 = {
