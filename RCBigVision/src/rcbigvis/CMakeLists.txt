@@ -164,6 +164,15 @@ add_executable(vloc        ${VLOC_SOURCES})
 target_link_libraries(vloc ${catkin_LIBRARIES})
 add_dependencies(vloc      ${PROJECT_NAME}_gencfg)
 
+#tags_lut
+add_executable(tags_lut        src/tags_lut/tags_lut.cpp)
+target_link_libraries(tags_lut ${catkin_LIBRARIES})
+
+#test
+#add_executable(testtf        src/testtf/testtf.cpp)
+#target_link_libraries(testtf ${catkin_LIBRARIES})
+
+
 #############
 ## Install ##
 #############
