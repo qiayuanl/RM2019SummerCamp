@@ -1,4 +1,4 @@
-image: bg.pgm
+image: summer_camp.pgm
 resolution: 0.01
 origin: [-0.465, -0.465, 0]
 negate: 0
