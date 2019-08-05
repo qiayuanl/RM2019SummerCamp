@@ -3,7 +3,10 @@
 
 #include <std_msgs/Float64MultiArray.h>
 
+#include "serial/serial.h"
+
 ros::Subscriber servo_sub;
+serial::Serial servo_serial;
 
 #define VAL_LIMIT(x, minv, maxv) std::min(maxv, std::max(x, minv))
 
@@ -19,7 +22,7 @@ void CallbackServo(const std_msgs::Float64MultiArray::ConstPtr &servo_angle) {
     }
     ss << "}";
 
-    puts(ss.str().c_str());
+    servo_serial.write(ss.str());
 }
 
 int main(int argc, char **argv)
@@ -27,6 +30,28 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "robot");
 
 	ros::NodeHandle nh;
+
+    //Read serial paramters
+    std::string SerialDevice = nh.param<std::string>("device", "/dev/ttyUSB0");
+    int         SerialBaudRate = nh.param<int>        ("baudrate", 115200);
+
+    //Open serial
+    serial::Timeout timeout = serial::Timeout::simpleTimeout(100);
+
+    servo_serial.setPort(SerialDevice.c_str());
+    servo_serial.setBaudrate(SerialBaudRate);
+    servo_serial.setTimeout(timeout);
+
+    while(!servo_serial.isOpen()) {
+        try {
+            servo_serial.open();
+        }
+        catch(const std::exception& e) {
+            ROS_WARN("Servo Serial cannot open [%s].", e.what());
+        }
+
+        ros::Duration(0.5).sleep();
+    }
 
     servo_sub = nh.subscribe<std_msgs::Float64MultiArray>("servo", 100, CallbackServo);
 
