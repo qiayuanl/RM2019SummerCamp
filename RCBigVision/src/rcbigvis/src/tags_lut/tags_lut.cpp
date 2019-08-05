@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 
 #include <tf/tf.h>
-#include <tf/transform_broadcaster.h>
+#include <tf2_ros/static_transform_broadcaster.h>
 
 inline std::string to_string(int x) {
     std::stringstream ss;
@@ -9,46 +9,39 @@ inline std::string to_string(int x) {
     return ss.str();
 }
 
-class TagsBroadcaster {
-private:
-    tf::TransformBroadcaster tf_broadcaster;
-
-public:
-    void update(ros::Time frame_time) {
-        for(int x = 0; x < 7; x++) {
-            for(int y = 0; y < 9; y++) {
-                int tag_id   = y * 7 + x;
-                double tag_x = 0.93 * x;
-                double tag_y = 0.93 * y;
-
-                tf::Transform tf_map_tag;
-                tf_map_tag.setOrigin(tf::Vector3(tag_x, tag_y, 0)); //[x, y, z]
-                tf_map_tag.setRotation(tf::createQuaternionFromRPY(0, 0, M_PI / 2)); //[roll, pitch, yaw]
-
-                tf_broadcaster.sendTransform(tf::StampedTransform(tf_map_tag, frame_time, "map", "tag_" + to_string(tag_id)));
-            }
-        }
-    }
-};
-
 int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "tags_lut");
 
 	ros::NodeHandle nh;
 
-    ros::Rate loop_rate(10);
+    tf2_ros::StaticTransformBroadcaster broadcaster;
 
-    TagsBroadcaster broadcaster;
+    //Init Static Transforms
+    for(int x = 0; x < 7; x++) {
+        for(int y = 0; y < 9; y++) {
+            int tag_id   = x * 9 + y;
+            double tag_x = 0.93 * x;
+            double tag_y = 0.93 * y;
 
-	//Process Jobs
-	while(ros::ok()) {
-        //update subnodes
-        broadcaster.update(ros::Time::now() + loop_rate.expectedCycleTime());
+            geometry_msgs::TransformStamped tf_map_tag;
+            tf_map_tag.header.frame_id = "map";
+            tf_map_tag.header.stamp = ros::Time::now();
+            tf_map_tag.child_frame_id = "tag_" + to_string(tag_id);
 
-        //sleep
-        ros::spinOnce();
-        loop_rate.sleep();
+            tf_map_tag.transform.translation.x = tag_x;
+            tf_map_tag.transform.translation.y = tag_y;
+            tf_map_tag.transform.translation.z = 0.0;
+
+            tf::quaternionTFToMsg(
+                tf::createQuaternionFromRPY(0, 0, M_PI / 2),
+                tf_map_tag.transform.rotation
+            ); //[roll, pitch, yaw]
+
+            broadcaster.sendTransform(tf_map_tag);
+        }
     }
+
+    ros::spin();
 	return 0;
 }
