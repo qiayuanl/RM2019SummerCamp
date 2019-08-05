@@ -9,14 +9,13 @@
             "type": "cppdbg",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/../../devel/lib/${workspaceFolderBasename}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/../../devel/lib/simple_controller/simple_controller_node",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
