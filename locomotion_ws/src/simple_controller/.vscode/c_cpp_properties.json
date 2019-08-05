@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/qiayuanliao/Project/RM2019SummerCamp/locomotion_ws/devel/include",
+        "/opt/ros/kinetic/include",
+        "/usr/include"
+      ],
+      "name": "Linux"
+    }
+  ]
+}
