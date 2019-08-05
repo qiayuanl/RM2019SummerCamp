@@ -13,7 +13,7 @@
 #include <std_msgs/Float64MultiArray.h>
 
 #include <dynamic_reconfigure/server.h>
-#include "simple_controller/DynReconf1.h"
+#include "simple_controller/controllerConfig.h"
 
 
 int main(int argc, char **argv)
@@ -23,8 +23,6 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh;
 
 	//Create Nodes
-	PositionCtl positionctl;
-
 	ros::Rate loop_rate(100);
 
 	//Process Jobs
