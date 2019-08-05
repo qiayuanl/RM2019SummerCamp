@@ -41,7 +41,7 @@ private:
   /*
    * Closeloop Paramters
    */
-  double max_speed, max_angle_diff, kp;
+  double max_linear_speed, max_angular_speed, max_angle_diff, kp;
   /*
    * Position
   */
@@ -89,7 +89,9 @@ controller::~controller()
 void controller::CallbackDynamicParam(simple_controller::controllerConfig& config, uint32_t level)
 {
   kp = config.kp;
-  max_speed = config.max_speed;
+  max_linear_speed = config.max_linear_speed;
+  max_angular_speed = config.max_angular_speed;
+
   max_angle_diff = config.max_angle_diff;
 }
 void controller::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom)
@@ -138,7 +140,7 @@ void controller::updateCloseloop()
     twist.angular.z = std::max(kp * diff_w, -2.0);
   }
 
-  twist.linear.x = max_speed * (1.0 - std::abs(diff_w) / (max_angle_diff));
+  twist.linear.x = max_linear_speed * (1.0 - std::abs(diff_w) / (max_angle_diff));
 
   twist_pub.publish(twist);
 }
