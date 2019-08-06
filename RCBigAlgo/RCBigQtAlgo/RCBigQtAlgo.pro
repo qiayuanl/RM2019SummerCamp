@@ -29,7 +29,9 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h
+        game.h \
+        mainwindow.h \
+        visualwidget.h
 
 FORMS += \
         mainwindow.ui

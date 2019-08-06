@@ -8,4 +8,6 @@ sudo ~/RM2019SummerCamp/Script/setupCAN.sh
 echo "================= CAN INITIALIZED ================="
 sleep 1
 
-roslaunch ~/RM2019SummerCamp/Script/setupNodes.launch
+roslaunch ~/RM2019SummerCamp/Script/setupController.launch
+
+roslaunch ~/RM2019SummerCamp/Script/setupVision.launch

@@ -1,4 +1,4 @@
-**/build/
+**/build*/
 **/devel/
 **/cmake-build-debug/
 *.obj

@@ -1,0 +1,4 @@
+<launch>
+    <!-- Visual Localization -->
+    <include file="$(find rcbigvis)/launch/rcbigvis.launch"></include>
+</launch>

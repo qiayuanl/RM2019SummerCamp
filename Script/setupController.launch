@@ -4,7 +4,4 @@
 
     <!-- Position Controller -->
     <node pkg="rcbigctl" type="controller" name="controller"></node>
-
-    <!-- Visual Localization -->
-    <include file="$(find rcbigvis)/launch/rcbigvis.launch"></include>
 </launch>
