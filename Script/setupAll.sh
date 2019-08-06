@@ -20,14 +20,15 @@ sleep 2
 
 roslaunch ~/RM2019SummerCamp/Script/setupVision.launch 2> /dev/null &
 sleep 3
-pstree $! -p| awk -F"[()]" '{print $2}'| xargs sudo renice -20 -p"
+sudo renice -20 -p $(./findchildren.sh $!)
+
 
 echo "================= VISION ENABLED ================="
 
 
 roslaunch ~/RM2019SummerCamp/Script/setupController.launch &
 sleep 3
-pstree $! -p| awk -F"[()]" '{print $2}'| xargs sudo renice -15 -p"
+sudo renice -15 -p $(./findchildren.sh $!)
 
 echo "================= CONTROLLER ENABLED ================="
 
