@@ -19,9 +19,9 @@ random.shuffle(namelist)
 for name in namelist:
     outstr=""
     wordbuf=wordlist.copy()
-    outstr+=(name+"\t")
+    outstr+=(name+"\n")
     for i in range(random.randint(2,5)):
         outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "，" )
-    outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "." )
+    outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "\n" )
     print(outstr)
     # print(outstr,file=outf)
