@@ -19,8 +19,8 @@ random.shuffle(namelist)
 for name in namelist:
     outstr=""
     wordbuf=wordlist.copy()
-    outstr+=(name+" 同学 ")
-    for i in range(random.randint(6,9)):
+    outstr+=(name+"\t")
+    for i in range(random.randint(4,9)):
         outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "，" )
     outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "." )
     print(outstr)
