@@ -9,3 +9,4 @@
 **/devel_isolated/
 .DS_Store
 RCBigCar/catkin_ws/src/CMakeLists.txt
+Script/assessment.txt
