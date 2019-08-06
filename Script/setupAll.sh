@@ -10,12 +10,12 @@ sleep 1
 
 roslaunch ~/RM2019SummerCamp/Script/setupVision.launch &
 sleep 5
-renice -20 -p $!
+sudo renice -20 -p $!
 echo "================= VISION ENABLED PID $! ================="
 
 
 roslaunch ~/RM2019SummerCamp/Script/setupController.launch &
 sleep 5
-renice -15 -p $!
+sudo renice -15 -p $!
 echo "================= CONTROLLER ENABLED PID $! ================="
 
