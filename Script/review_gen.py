@@ -3,7 +3,7 @@ import time
 
 random.seed(time.time())
 
-outf=open("assessment.txt","w+")
+# outf=open("assessment.txt","w+")
 
 namelist=["廖洽源","张哲慜","王冠","陈文潇","青雨晴","郑雨盺","朱彦臻"]
 
@@ -24,4 +24,4 @@ for name in namelist:
         outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "，" )
     outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "." )
     print(outstr)
-    print(outstr,file=outf)
+    # print(outstr,file=outf)

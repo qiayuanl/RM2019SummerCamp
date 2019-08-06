@@ -2,8 +2,6 @@
     <!-- Robot Hardware -->
     <node pkg="rcbigcar" type="robot" name="robot"></node>
 
-    <!-- Position Controller -->
-    <node pkg="rcbigctl" type="controller" name="controller"></node>
 
     <!-- Visual Localization -->
     <include file="$(find rcbigvis)/launch/rcbigvis.launch"></include>

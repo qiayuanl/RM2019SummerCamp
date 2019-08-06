@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include <cmath>
 
@@ -26,12 +25,24 @@ double yawFromQuaternion(const geometry_msgs::Quaternion& quat)
   return yaw;
 }
 
+double AngularMinus(double a, double b)
+{
+  a = fmod(a, 2.0 * M_PI);
+  b = fmod(b, 2.0 * M_PI);
+
+  double res1 = a - b;
+  double res2 = (a < b) ? (a + 2 * M_PI - b) : (a - 2 * M_PI - b);
+
+  return (std::abs(res1) < std::abs(res2)) ? res1 : res2;
+}
+
 class controller
 {
 private:
   /*
    * Handles
   */
+
   ros::Subscriber pos_sub;
   ros::Subscriber setpoint_sub;
   ros::Subscriber path_sub;
@@ -41,7 +52,7 @@ private:
   /*
    * Closeloop Paramters
    */
-  double max_linear_speed, max_angular_speed, max_angle_diff, kp;
+  double max_linear_speed, max_angular_speed, max_angle_diff, goal_tolerance, kw, kx;
   /*
    * Position
   */
@@ -51,6 +62,7 @@ private:
    * Setpoint
    */
   double set_x, set_y, set_w;
+  bool near_goal;
 
   void updateCloseloop();
 
@@ -80,6 +92,13 @@ controller::controller(/* args */)
   static ros::NodeHandle DynamicParamNodeHandle("~/position");
   static dynamic_reconfigure::Server<simple_controller::controllerConfig> DynamicParamServer(DynamicParamNodeHandle);
   DynamicParamServer.setCallback(boost::bind(&controller::CallbackDynamicParam, this, _1, _2));
+
+  // Setup Comm
+  pos_sub = node_priv.subscribe<nav_msgs::Odometry>("odom", 100, &controller::CallbackPosition, this);
+  setpoint_sub =
+      node_priv.subscribe<geometry_msgs::PoseStamped>("move_base_simple/goal", 100, &controller::CallbackSetPose, this);
+  path_sub = node_priv.subscribe<nav_msgs::Path>("local_planner/path", 100, &controller::CallbackPath, this);
+  twist_pub = node_priv.advertise<geometry_msgs::Twist>("velocity", 100);
 }
 
 controller::~controller()
@@ -88,11 +107,12 @@ controller::~controller()
 
 void controller::CallbackDynamicParam(simple_controller::controllerConfig& config, uint32_t level)
 {
-  kp = config.kp;
+  kx = config.kx;
+  kw = config.kw;
   max_linear_speed = config.max_linear_speed;
   max_angular_speed = config.max_angular_speed;
-
   max_angle_diff = config.max_angle_diff;
+  goal_tolerance = config.goal_tolerance;
 }
 void controller::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom)
 {
@@ -117,7 +137,17 @@ void controller::CallbackSetPose(const geometry_msgs::PoseStamped::ConstPtr& pos
 
 void controller::CallbackPath(const nav_msgs::Path::ConstPtr& path)
 {
-  setPose(path->poses[0].pose);
+  int poses_length = path->poses.size();
+  if (poses_length >= goal_tolerance)
+  {
+    near_goal = false;
+    setPose(path->poses[0].pose);
+  }
+  else
+  {
+    near_goal = true;
+    setPose(path->poses[poses_length - 1].pose);
+  }
 }
 
 void controller::updateCloseloop()
@@ -127,20 +157,24 @@ void controller::updateCloseloop()
   twist.angular.x = 0;
   twist.angular.y = 0;
 
-  double diff_w = set_w - w;
-
+  double diff_w = AngularMinus(set_w, w);
+  double diff_xy = sqrt((set_x - x) * (set_x - x) + (set_y - y) * (set_y - y));
   // calculate velocity
 
   if (diff_w > 0)
   {
-    twist.angular.z = std::min(kp * diff_w, 2.0);
+    twist.angular.z = std::min(kw * diff_w, max_angular_speed);
   }
   else
   {
-    twist.angular.z = std::max(kp * diff_w, -2.0);
+    twist.angular.z = std::max(kw * diff_w, -max_angular_speed);
   }
-
-  twist.linear.x = max_linear_speed * (1.0 - std::abs(diff_w) / (max_angle_diff));
+  if (!near_goal)
+    twist.linear.x = max_linear_speed * (1.0 - std::abs(diff_w) / (max_angle_diff));
+  else
+  {
+    twist.linear.x = 0;
+  }
 
   twist_pub.publish(twist);
 }
@@ -150,7 +184,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "controller");
 
   ros::NodeHandle nh;
-
+  controller simplectl;
   // Create Nodes
   ros::Rate loop_rate(100);
 
