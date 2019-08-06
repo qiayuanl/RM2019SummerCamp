@@ -38,7 +38,7 @@ PositionCtl::PositionCtl()
   DynamicParamServer.setCallback(boost::bind(&PositionCtl::CallbackDynamicParam, this, _1, _2));
 
   // Setup Comm
-  pos_sub = node_priv.subscribe<nav_msgs::Odometry>("odom", 100, &PositionCtl::CallbackPosition, this);
+  pos_sub = node_priv.su+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))bscribe<nav_msgs::Odometry>("odom", 100, &PositionCtl::CallbackPosition, this);
   setpoint_sub = node_priv.subscribe<geometry_msgs::PoseStamped>("move_base_simple/goal", 100,
                                                                  &PositionCtl::CallbackSetpoint, this);
   path_sub = node_priv.subscribe<nav_msgs::Path>("local_planner/path", 100, &PositionCtl::CallbackPath, this);
@@ -88,15 +88,15 @@ void PositionCtl::UpdateCloseloop()
   vWorld.vector.y = Kp_Y * (Set_Y - Y);
   vWorld.vector.z = 0;
 
-  // Transform World Velocity To Robot Velocity
-  geometry_msgs::Vector3Stamped vRobot;
-  try
-  {
-    tf_pos.transformVector("base_fused", vWorld, vRobot);
-  }
-  catch (tf::TransformException ex)
-  {
-    ROS_ERROR("%s", ex.what());
+  // Transform W+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))orld Velocity To Robot Velocity
+  geometry_msgs:+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2)):Vector3Stamped vRobot;
+  try+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))
+  {+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))
+    tf_pos.trans+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))formVector("base_fused", vWorld, vRobot);
+  }+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))
+  catch (tf::Tra+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))nsformException ex)
+  {+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))
+    ROS_ERROR("%+1].pose.position.x - data.poses[i].pose.position.x),2) + pow((data.poses[i+1].pose.position.y - data.poses[i].pose.position.y), 2))s", ex.what());
   }
 
   twist.linear.x = FoutX.filter(vRobot.vector.x, Max_X, A_X);

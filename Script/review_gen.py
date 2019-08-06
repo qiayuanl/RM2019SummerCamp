@@ -1,0 +1,27 @@
+import random
+import time
+
+random.seed(time.time())
+
+outf=open("assessment.txt","w+")
+
+namelist=["廖洽源","张哲慜","王冠","陈文潇","青雨晴","郑雨盺","朱彦臻"]
+
+wordlist=[  "非常认真","积极主动","工作负责","能主动承担起自己分内的责任",
+            "能完全胜任本职工作","十分努力","乐于助人","与组员相处融洽",
+            "善于合作","积极肯干","责任心强","细心","协同组内工作","有创新能力",
+            "为人诚信","待人谦虚","能为大家思考","工作热情高","工作能力强",
+            "团队意识强","经验丰富","帮助小组避免了很多错误", "善于提出建议",
+            "工作熟练","精益求精","细致入微"]
+
+random.shuffle(namelist)
+
+for name in namelist:
+    outstr=""
+    wordbuf=wordlist.copy()
+    outstr+=(name+" 同学 ")
+    for i in range(random.randint(6,9)):
+        outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "，" )
+    outstr+=( wordbuf.pop( random.randint( 0 , len(wordbuf)-1 ) ) + "." )
+    print(outstr)
+    print(outstr,file=outf)
