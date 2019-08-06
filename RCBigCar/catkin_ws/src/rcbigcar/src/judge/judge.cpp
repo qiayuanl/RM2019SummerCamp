@@ -9,6 +9,8 @@ void RMUnpackCallback(uint8_t* data) {
     switch(unpack->cmd_id) {
         case GAME_STATUS_CMD_ID:
             summer_camp_info_t *info = (summer_camp_info_t *)unpack->cmd_data;
+
+            
         break;
     }
 }
@@ -55,6 +57,7 @@ int main(int argc, char **argv)
 
             //unpack
             for(int idx = 0; idx < buffer.size(); idx++) {
+                //printf("%2x ", buffer[idx]);
                 RMProtocolUnpack(&unpack_obj, buffer[idx], &RMUnpackCallback);
             }
         }

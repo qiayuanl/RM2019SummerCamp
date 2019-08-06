@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <stdint.h>
 
+#pragma pack(push, 1)
+
 #define HEADER_SOF 0xA5
 #define REF_PROTOCOL_FRAME_MAX_SIZE 128
 
@@ -23,10 +25,10 @@ typedef enum
 //RM协议帧头结构体
 typedef struct
 {
-    uint8_t SOF;
-    uint16_t data_length;
-    uint8_t seq;
-    uint8_t CRC8;
+    uint8_t SOF: 8;
+    uint16_t data_length: 16;
+    uint8_t seq: 8;
+    uint8_t CRC8: 8;
 } frame_header_struct_t;
 
 //RM协议反序列化步骤枚举

@@ -1,5 +1,21 @@
-#include "CRC8_CRC16.h"
+/****************************************************************************
+ *  Copyright (C) 2019 RoboMaster.
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ ***************************************************************************/
 
+#include "CRC8_CRC16.h"
 //crc8 generator polynomial:G(x)=x8+x5+x4+1
 const uint8_t CRC8_INIT = 0xff;
 const uint8_t CRC8_TAB[256] =
@@ -59,9 +75,9 @@ const uint16_t wCRC_Table[256] =
 };
 
 
-uint8_t Get_CRC8_Check_Sum(uint8_t *pchMessage,int dwLength,uint8_t ucCRC8)
+uint8_t Get_CRC8_Check_Sum(unsigned char *pchMessage,unsigned int dwLength,unsigned char ucCRC8)
 {
-    uint8_t ucIndex;
+    unsigned char ucIndex;
     while (dwLength--)
     {
         ucIndex = ucCRC8^(*pchMessage++);
@@ -74,9 +90,9 @@ uint8_t Get_CRC8_Check_Sum(uint8_t *pchMessage,int dwLength,uint8_t ucCRC8)
 ** Input: Data to Verify,Stream length = Data + checksum
 ** Output: True or False (CRC Verify Result)
 */
-uint32_t Verify_CRC8_Check_Sum(uint8_t *pchMessage, int dwLength)
+uint32_t Verify_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength)
 {
-    uint8_t ucExpected = 0;
+    unsigned char ucExpected = 0;
     if ((pchMessage == 0) || (dwLength <= 2))
     {
         return 0;
@@ -89,14 +105,14 @@ uint32_t Verify_CRC8_Check_Sum(uint8_t *pchMessage, int dwLength)
 ** Input: Data to CRC and append,Stream length = Data + checksum
 ** Output: True or False (CRC Verify Result)
 */
-void Append_CRC8_Check_Sum(uint8_t *pchMessage, int dwLength)
+void Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength)
 {
-    uint8_t ucCRC = 0;
+    unsigned char ucCRC = 0;
     if ((pchMessage == 0) || (dwLength <= 2))
     {
         return;
     }
-    ucCRC = Get_CRC8_Check_Sum ( (uint8_t *)pchMessage, dwLength-1, CRC8_INIT);
+    ucCRC = Get_CRC8_Check_Sum ( (unsigned char *)pchMessage, dwLength-1, CRC8_INIT);
     pchMessage[dwLength-1] = ucCRC;
 }
 

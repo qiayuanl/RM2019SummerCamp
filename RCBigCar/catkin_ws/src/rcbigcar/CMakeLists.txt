@@ -159,23 +159,29 @@ include_directories(
 
 add_compile_options(-Wall -Wextra -Wconversion -g)
 
+#libraries
+AUX_SOURCE_DIRECTORY(src/robot/libcan ROBOT_LIBCAN_SOURCES)
+FILE(GLOB JUDGE_SERIAL_SOURCES src/judge/serial/*.cc src/judge/serial/*/*.cc)
+
 #robot
 AUX_SOURCE_DIRECTORY(src/robot        ROBOT_SOURCES)
-AUX_SOURCE_DIRECTORY(src/robot/libcan ROBOT_LIBCAN_SOURCES)
 
 add_executable(robot ${ROBOT_SOURCES} ${ROBOT_LIBCAN_SOURCES})
 target_link_libraries(robot ${catkin_LIBRARIES})
 add_dependencies(robot ${PROJECT_NAME}_gencfg)
 
 #judge
-
 AUX_SOURCE_DIRECTORY(src/judge        JUDGE_SOURCES)
-FILE(GLOB JUDGE_SERIAL_SOURCES src/judge/serial/*.cc src/judge/serial/*/*.cc)
 AUX_SOURCE_DIRECTORY(src/judge/crc    CRC_SOURCES)
 
 add_executable(judge ${JUDGE_SOURCES} ${JUDGE_SERIAL_SOURCES} ${CRC_SOURCES})
 target_include_directories(judge PUBLIC src/judge)
 target_link_libraries(judge ${catkin_LIBRARIES})
+
+#servo
+add_executable(servo src/servo/servo.cpp ${JUDGE_SERIAL_SOURCES})
+target_include_directories(servo PUBLIC src/judge)
+target_link_libraries(servo ${catkin_LIBRARIES})
 
 #############
 ## Install ##
