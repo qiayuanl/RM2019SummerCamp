@@ -19,7 +19,7 @@ sleep 2
 # TODO get children pid and set nice priority
 
 roslaunch ~/RM2019SummerCamp/Script/setupVision.launch 2> /dev/null &
-sleep 3
+sleep 5
 sudo renice -20 -p $(./findchildren.sh $!)
 
 
@@ -27,7 +27,7 @@ echo "================= VISION ENABLED ================="
 
 
 roslaunch ~/RM2019SummerCamp/Script/setupController.launch &
-sleep 3
+sleep 5
 sudo renice -15 -p $(./findchildren.sh $!)
 
 echo "================= CONTROLLER ENABLED ================="

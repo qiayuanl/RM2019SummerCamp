@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 [ "$#" -eq 1 -a -d "/proc/$1/task" ] || exit 1
 
 PID_LIST=
