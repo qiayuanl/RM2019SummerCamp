@@ -20,15 +20,22 @@ sleep 2
 
 roslaunch ~/RM2019SummerCamp/Script/setupVision.launch 2> /dev/null &
 sleep 3
-sudo renice -20 -p $!
-echo "================= VISION ENABLED PID $! ================="
+pstree $! -p| awk -F"[()]" '{print $2}'| xargs sudo renice -20 -p"
+
+echo "================= VISION ENABLED ================="
 
 
 roslaunch ~/RM2019SummerCamp/Script/setupController.launch &
 sleep 3
-sudo renice -15 -p $!
-echo "================= CONTROLLER ENABLED PID $! ================="
+pstree $! -p| awk -F"[()]" '{print $2}'| xargs sudo renice -15 -p"
 
+echo "================= CONTROLLER ENABLED ================="
+
+# echo "############################"
+# echo "############################"
+# echo "####                    ####"
+# echo "############################"
+# echo "############################"
 
 while true ; do 
    sleep 1
