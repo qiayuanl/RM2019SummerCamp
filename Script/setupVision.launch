@@ -1,8 +1,4 @@
 <launch>
-    <!-- Robot Hardware -->
-    <node pkg="rcbigcar" type="robot" name="robot"></node>
-
-
     <!-- Visual Localization -->
     <include file="$(find rcbigvis)/launch/rcbigvis.launch"></include>
 </launch>
