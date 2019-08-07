@@ -84,11 +84,15 @@ void VisualWidget::GameUpdate(void) {
     //draw text
     this->GameStatusOut->setPlainText(
         QString("Turn No   = ") + QString::number(TurnCount) + QString("\n") +
+
         QString("Time Left = ") + QString::number(TimeLeft[who] / 1000) + QString("\n") + 
         QString("Move Left = ") + QString::number(MoveLeft[who]) + QString("\n") + 
 
         QString("Ball Left = ") + QString::number(GlobalBoard.ball[who]) + QString("\n") + 
-        QString("Cup Left  = ") + QString::number(GlobalBoard.cup [who]) + QString("\n")
+        QString("Cup Left  = ") + QString::number(GlobalBoard.cup [who]) + QString("\n") +
+
+        QString("Score Red = ")  + QString::number(Game::OP::get_score(GlobalBoard, 0)) + QString("\n") +
+        QString("Score Blue = ") + QString::number(Game::OP::get_score(GlobalBoard, 1)) + QString("\n")
     );
 }
 
@@ -326,7 +330,7 @@ void MainWindow::on_pbSearch_clicked()
     for(int i = 0; i < 10; i++) {
         bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
-        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who]);
+        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who], 3000);
 
         for(int i = 0; i < strategies.size(); i++) {
             uint8_t st = strategies[i];
