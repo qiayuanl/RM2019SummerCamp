@@ -165,6 +165,11 @@ add_executable(controller ${CONTROLLER_SOURCES})
 target_link_libraries(controller ${catkin_LIBRARIES})
 add_dependencies(controller ${PROJECT_NAME}_gencfg)
 
+#mecanics
+AUX_SOURCE_DIRECTORY(src/mecanics          MECANICS_SOURCES)
+add_executable(mecanics   ${MECANICS_SOURCES})
+target_link_libraries(mecanics ${catkin_LIBRARIES})
+
 #opmode - testop
 add_executable(testop src/opmode/testop.cpp)
 target_link_libraries(testop ${catkin_LIBRARIES})
