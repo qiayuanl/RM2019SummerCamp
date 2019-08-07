@@ -548,7 +548,7 @@ namespace Game {
             }
 
             //use eval func to find best decision
-            int max_eval = 0;
+            int max_eval = -2147483648;
             int state_id = 0;
             for(int i = 0; i < qT; i++) {
                 int eval = evaluate(who, Hash::status[Q[i].tt_id], Q[i].tot_time, Q[i].tot_step);
