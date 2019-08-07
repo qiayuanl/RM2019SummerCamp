@@ -44,10 +44,11 @@ echo "================= CONTROLLER ENABLED ================="
 # echo "############################"
 # echo "############################"
 
-while true ; do 
-   sleep 1
-done
+# while true ; do 
+#    sleep 1
+# done
 
+top
 
 # sleep 365d
 # pstree pid -p| awk -F"[()]" '{print $2}'| xargs kill -9
