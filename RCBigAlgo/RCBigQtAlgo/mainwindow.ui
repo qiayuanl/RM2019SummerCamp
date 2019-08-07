@@ -94,7 +94,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>SEARCH!</string>
+     <string>Machine Go</string>
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="tGameStatus">
