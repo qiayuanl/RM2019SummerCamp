@@ -108,7 +108,6 @@ controller::~controller()
 void controller::CallbackDynamicParam(simple_controller::controllerConfig& config, uint32_t level)
 {
   kx = config.kx;
-  ky = config.ky;
   kw = config.kw;
   max_linear_speed = config.max_linear_speed;
   max_angular_speed = config.max_angular_speed;
