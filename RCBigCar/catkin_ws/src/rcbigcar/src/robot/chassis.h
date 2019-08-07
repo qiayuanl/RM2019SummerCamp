@@ -48,6 +48,7 @@ private:
     bool Config_IsDebug;
 
     double Dyn_Config_MaxVel;
+    double Dyn_Config_VisualVel;
 
     /*
      * Handles
@@ -68,6 +69,7 @@ private:
     */
     bool InitialPoseGot;
     double GyroCorrection;
+    double AngularVelocity;
 
     double x, y, theta;
     double lastx, lasty, lasttheta;
