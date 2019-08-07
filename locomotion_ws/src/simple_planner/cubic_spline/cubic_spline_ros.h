@@ -29,7 +29,7 @@ struct TrajInfo{
       smoothed_path_s;
 };
 
-TrajInfo GenTraj(const nav_msgs::Path& path, nav_msgs::Path& smoothed_path, const float interval = 0.1){
+TrajInfo GenTraj(const nav_msgs::Path& path, nav_msgs::Path& smoothed_path, const float interval = 0.05){
   using namespace cpprobotics;
   TrajInfo traj_info;
   std::vector<float> path_x, path_y;
