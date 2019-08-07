@@ -8,8 +8,7 @@
             "includePath": [
                 "/home/qiayuanliao/Project/RM2019SummerCamp/locomotion_ws/devel/include",
                 "/opt/ros/kinetic/include",
-                "/usr/include/**",
-                "/usr/lib/gcc/x86_64-linux-gnu/**"
+                "/usr/include"
             ],
             "name": "Linux",
             "intelliSenseMode": "gcc-x64",
