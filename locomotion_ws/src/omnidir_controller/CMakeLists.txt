@@ -93,6 +93,7 @@ find_package(catkin REQUIRED  COMPONENTS
    cfg/controller.cfg
  )
 
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -122,20 +123,19 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/simple_controller.cpp
+#   src/${PROJECT_NAME}/omnidir_controller.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 
+
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node src/controller.cpp)
-
 add_dependencies(${PROJECT_NAME}_node ${PROJECT_NAME}_gencfg)
-
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -150,6 +150,7 @@ add_dependencies(${PROJECT_NAME}_node ${PROJECT_NAME}_gencfg)
  target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
  )
+
 
 #############
 ## Install ##
@@ -191,7 +192,7 @@ add_dependencies(${PROJECT_NAME}_node ${PROJECT_NAME}_gencfg)
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_simple_controller.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_omnidir_controller.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
