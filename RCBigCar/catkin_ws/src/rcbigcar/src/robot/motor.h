@@ -44,6 +44,10 @@ class Motor
     ErrorList VError_Derivative = {{0}};
     ErrorList VError_Derivative_Filtered = {{0}};
     double VError_Intergral = 0;
+
+    /* Calibration */
+    bool isCalibrating;
+    double CalibrateDuration;
 };
 
 #endif

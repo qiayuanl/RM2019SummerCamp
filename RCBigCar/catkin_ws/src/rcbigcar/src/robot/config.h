@@ -37,6 +37,10 @@ struct MotionMotor
 #define HW_CAN_MOTOR_ID_2 0x1FF
 #define HW_CAN_ID "can0"
 
+const double MOTOR_CALIBRATION_THRESHOLD = 0.628;
+const double MOTOR_CALIBRATION_DURATION  = 0.5;
+const double MOTOR_CALIBRATION_POWER     = 0.1;
+
 /*
  * Different Motor Presets
  */
@@ -75,11 +79,16 @@ const double CHASSIS_LENGTH_B = 0.25;
 const double MOTION_WATCHDOG_TIMEOUT = 1.0;
 
 const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
-    {4,
-     CLOSELOOP_POSITION,
-     &MOTOR_GM3510},
-    {5,
-     CLOSELOOP_VELOCITY,
-     &MOTOR_GM3508}};
+    {
+        4,
+        CLOSELOOP_POSITION,
+        &MOTOR_GM3510,
+    },
+    {
+        5,
+        CLOSELOOP_VELOCITY,
+        &MOTOR_GM3508,
+    }
+};
 
 #endif

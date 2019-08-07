@@ -3,11 +3,23 @@
 #include "game.h"
 
 ////////////////////////GAME/////////////////////////
-struct BoardStatus {
+enum GameUIStatus {
+    GameStatus_Place_Red,
+    GameStatus_Place_Blue,
 
+    GameStatus_Move_Red,
+    GameStatus_Move_Blue
+};
+
+QString GameStatusString[4] = {
+    "START RED",
+    "START BLUE",
+    "RED",
+    "BLUE"
 };
 
 Game::Board GlobalBoard;
+GameUIStatus UIStatus;
 
 int TimeLeft[2], MoveLeft[2];
 int TurnCount = 0;
@@ -289,7 +301,7 @@ void MainWindow::on_pbPlaceBall_clicked() {
 void MainWindow::on_pbPlaceCup_clicked() {
     bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
-             if((TimeLeft[who] >= Game::ACTION_PLACE_CUP_MS) && (GlobalBoard.cup[who])) {
+    if((TimeLeft[who] >= Game::ACTION_PLACE_CUP_MS) && (GlobalBoard.cup[who])) {
         if(Game::OP::can_place(GlobalBoard, who)) {
             Game::OP::place(GlobalBoard, who, 4);
 

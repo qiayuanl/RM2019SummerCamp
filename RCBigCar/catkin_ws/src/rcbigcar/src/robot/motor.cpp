@@ -22,6 +22,12 @@ Motor::Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopT
 
 	//Initialize PID Variables
 	VError_Intergral = 0;
+
+	//Calibrate
+	isCalibrating = (CloseloopType == CLOSELOOP_POSITION);
+	CalibrateDuration = 0;
+
+	if(isCalibrating) ROS_INFO("Motor #%d Calibrating...", ID);
 }
 
 void Motor::setCoefficients(double _Kp, double _Ki, double _Kd, double _Kf, double _KmaxI)
@@ -59,6 +65,23 @@ void Motor::update()
 	if (!dt)
 	{
 		//Return at zero delta time
+		return;
+	}
+
+	//Position Calibrate
+	if(isCalibrating) {
+		Hardware()->motors[ID].power = MOTOR_CALIBRATION_POWER * Preset->PWMMaxValue;
+
+		if(getVelocity() < MOTOR_CALIBRATION_THRESHOLD) {
+			CalibrateDuration += dt;
+		}
+
+		if(CalibrateDuration > MOTOR_CALIBRATION_DURATION) {
+			isCalibrating = false;
+
+			ROS_INFO("Motor #%d Calibration OK!", ID);
+		}
+
 		return;
 	}
 

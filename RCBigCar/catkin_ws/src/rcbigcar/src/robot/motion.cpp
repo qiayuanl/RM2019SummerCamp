@@ -45,7 +45,6 @@ void Motion::UpdateWatchdog()
 	//Check timeout
 	if ((ros::Time::now() - motionWatchdog).toSec() > MOTION_WATCHDOG_TIMEOUT)
 	{
-
 		//Zero motor powers
 		for (int i = 0; i < MOTION_MOTOR_COUNT; i++)
 		{
