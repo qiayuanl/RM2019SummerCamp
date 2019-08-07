@@ -179,9 +179,6 @@ void controller::updateCloseloop()
   }
   else
   {
-    v_map.header.stamp = ros::Time();
-    v_map.header.frame_id = "map";
-
     v_map.vector.x = kx * (set_x - x);
     v_map.vector.y = ky * (set_y - y);
     v_map.vector.z = 0;
@@ -195,6 +192,8 @@ void controller::updateCloseloop()
     }
   }
   // Transform map Velocity to robot base Velocity
+  v_map.header.stamp = ros::Time();
+  v_map.header.frame_id = "map";
   try
   {
     tf_pos.transformVector("base_fused", v_map, v_base);
