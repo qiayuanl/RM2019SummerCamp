@@ -4,6 +4,7 @@
 
 PID_LIST=
 findpids() {
+        sleep 0.001
         for pid in /proc/$1/task/* ; do
                 pid="$(basename "$pid")"
                 PID_LIST="$PID_LIST$pid "
