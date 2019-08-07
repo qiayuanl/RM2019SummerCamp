@@ -48,11 +48,5 @@ while true ; do
 done
 
 
-<<<<<<< HEAD
-roslaunch ~/RM2019SummerCamp/Script/setupController.launch
-
-roslaunch ~/RM2019SummerCamp/Script/setupVision.launch
-=======
 # sleep 365d
 # pstree pid -p| awk -F"[()]" '{print $2}'| xargs kill -9
->>>>>>> 5e20553e82422694b3728e7c828464ac77f54eeb
