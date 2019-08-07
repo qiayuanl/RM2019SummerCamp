@@ -77,7 +77,7 @@ public:
   controller(/* args */);
   ~controller();
   /* Callback Funcs */
-  void CallbackDynamicParam(simple_controller::controllerConfig& config, uint32_t level);
+  void CallbackDynamicParam(omnidir_controller::controllerConfig& config, uint32_t level);
   void CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom);
   void CallbackSetPose(const geometry_msgs::PoseStamped::ConstPtr& pose);
   void CallbackPath(const nav_msgs::Path::ConstPtr& path);
@@ -95,7 +95,7 @@ controller::controller(/* args */)
 
   // Setup Reconfigurable Paramters
   static ros::NodeHandle DynamicParamNodeHandle("~/position");
-  static dynamic_reconfigure::Server<simple_controller::controllerConfig> DynamicParamServer(DynamicParamNodeHandle);
+  static dynamic_reconfigure::Server<omnidir_controller::controllerConfig> DynamicParamServer(DynamicParamNodeHandle);
   DynamicParamServer.setCallback(boost::bind(&controller::CallbackDynamicParam, this, _1, _2));
 
   // Setup Comm
@@ -110,7 +110,7 @@ controller::~controller()
 {
 }
 
-void controller::CallbackDynamicParam(simple_controller::controllerConfig& config, uint32_t level)
+void controller::CallbackDynamicParam(omnidir_controller::controllerConfig& config, uint32_t level)
 {
   kx = config.kx;
   ky = config.ky;
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "controller");
 
   ros::NodeHandle nh;
-  controller simplectl;
+  controller omnidirctl;
   // Create Nodes
   ros::Rate loop_rate(100);
 
