@@ -4,7 +4,10 @@
 
 ////////////////////////GAME/////////////////////////
 struct BoardStatus {
+    bool who;
 
+    int TimeLeft[2];
+    int MoveLeft[2];
 };
 
 Game::Board GlobalBoard;
