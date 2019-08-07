@@ -20,18 +20,20 @@ sleep 2
 # TODO get children pid and set nice priority
 
 roslaunch ~/RM2019SummerCamp/Script/setupVision.launch 2> /dev/null &
+echo "Vision PID $!"
 sleep 5
 # sudo renice -20 -p $(./findchildren.sh $!)
-sudo chrt -f -p 50 $(./findchildren.sh $!)
+sudo chrt -r -p 50 $(./findchildren.sh $!)
 
 
 echo "================= VISION ENABLED ================="
 
 
 roslaunch ~/RM2019SummerCamp/Script/setupController.launch &
+echo "Controller PID $!"
 sleep 5
 # sudo renice -15 -p $(./findchildren.sh $!)
-sudo chrt -f -p 50 $(./findchildren.sh $!)
+sudo chrt -r -p 50 $(./findchildren.sh $!)
 
 echo "================= CONTROLLER ENABLED ================="
 
