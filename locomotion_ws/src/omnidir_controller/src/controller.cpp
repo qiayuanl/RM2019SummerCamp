@@ -117,7 +117,6 @@ void controller::CallbackDynamicParam(omnidir_controller::controllerConfig& conf
   kw = config.kw;
   max_linear_speed = config.max_linear_speed;
   max_angular_speed = config.max_angular_speed;
-  max_angle_diff = config.max_angle_diff;
   goal_tolerance = config.goal_tolerance;
 }
 void controller::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom)
