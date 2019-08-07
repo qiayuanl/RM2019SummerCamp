@@ -22,8 +22,8 @@ sleep 2
 roslaunch ~/RM2019SummerCamp/Script/setupVision.launch 2> /dev/null &
 echo "Vision PID $!"
 sleep 5
-sudo renice -20 -p $(./findchildren.sh $!)
-sudo chrt -r -p 50 $(./findchildren.sh $!)
+sudo chrt -r --pid 50 $(./findchildrenpid.sh $!)
+sudo renice -20 -p $(./findchildrenpid.sh $!)
 
 
 echo "================= VISION ENABLED ================="
@@ -32,8 +32,8 @@ echo "================= VISION ENABLED ================="
 roslaunch ~/RM2019SummerCamp/Script/setupController.launch &
 echo "Controller PID $!"
 sleep 5
-sudo renice -15 -p $(./findchildren.sh $!)
-sudo chrt -r -p 50 $(./findchildren.sh $!)
+sudo chrt -r --pid 40 $(./findchildrenpid.sh $!)
+sudo renice -15 -p $(./findchildrenpid.sh $!)
 
 echo "================= CONTROLLER ENABLED ================="
 
