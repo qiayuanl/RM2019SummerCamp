@@ -24,6 +24,11 @@ double yawFromQuaternion(const geometry_msgs::Quaternion& quat)
 
   return yaw;
 }
+double limit_abs(double x, double max_abs)
+{
+  double sign = (x < 0) ? -1 : 1;
+  return sign * std::min(std::abs(x), std::abs(max_abs));
+}
 
 double AngularMinus(double a, double b)
 {
@@ -52,7 +57,7 @@ private:
   /*
    * Closeloop Paramters
    */
-  double max_linear_speed, max_angular_speed, max_angle_diff, goal_tolerance, kw, kx;
+  double max_linear_speed, max_angular_speed, max_angle_diff, goal_tolerance, kw, kx, ky;
   /*
    * Position
   */
@@ -174,7 +179,26 @@ void controller::updateCloseloop()
     twist.linear.x = max_linear_speed * (1.0 - std::abs(diff_w) / (max_angle_diff));
   else
   {
-    twist.linear.x = 0;
+    geometry_msgs::Vector3Stamped v_map;
+    v_map.header.stamp = ros::Time();
+    v_map.header.frame_id = "map";
+
+    v_map.vector.x = kx * (set_x - x);
+    v_map.vector.y = ky * (set_y - y);
+    v_map.vector.z = 0;
+
+    // Transform map Velocity to robot base Velocity
+    geometry_msgs::Vector3Stamped v_base;
+    try
+    {
+      tf_pos.transformVector("base_fused", v_map, v_base);
+    }
+    catch (tf::TransformException ex)
+    {
+      ROS_ERROR("%s", ex.what());
+    }
+    twist.linear.x = limit_abs(v_base.vector.x, max_linear_speed);
+    twist.linear.y = limit_abs(v_base.vector.y, max_linear_speed);
   }
 
   twist_pub.publish(twist);
