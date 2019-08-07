@@ -37,6 +37,7 @@ Chassis::Chassis()
 	//Setup Odom
 	InitialPoseGot = false;
 	GyroCorrection = 0.0;
+	AngularVelocity = 0.0;
 
 	x = y = theta = 0;
 	lastx = lasty = lasttheta = 0;
@@ -85,22 +86,17 @@ double Chassis::ReadGyroAngle() {
 }
 
 void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
-	//Transform Quat -> RPY
-	/* tf::Quaternion q_orient(pose->orientation.x, pose->orientation.y, pose->orientation.z, pose->orientation.w);
-	tf::Matrix3x3  m_orient(q_orient);
+	if(AngularVelocity < Dyn_Config_VisualVel) {
+		//Update Coordinate
+		x = pose->position.x;
+		y = pose->position.y;
 
-    double roll, pitch, yaw;
-    m_orient.getRPY(roll, pitch, yaw); */
+		//Correct Gyro
+		GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
 
-	//Update Coordinate
-	x = pose->position.x;
-	y = pose->position.y;
-
-	//Correct Gyro
-	GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
-
-	//Set Initial Pose
-	InitialPoseGot = true;
+		//Set Initial Pose
+		InitialPoseGot = true;
+	}
 }
 
 void Chassis::UpdateOdometry() {
@@ -165,6 +161,9 @@ void Chassis::PublishPosition() {
 	odom.twist.twist.linear.x = dx / dt;
 	odom.twist.twist.linear.y = dy / dt;
 	odom.twist.twist.angular.z = dtheta / dt;
+
+	//read angular velocity
+	AngularVelocity = odom.twist.twist.angular.z;
 
 	// publish the message
 	pos_pub.publish(odom);
@@ -235,6 +234,7 @@ void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t lev
 {
 	//Dynamic Params
 	Dyn_Config_MaxVel = config.MaxVel;
+	Dyn_Config_VisualVel = config.VisualVel;
 
 	//Dynamic Motor Params
 	for (int i = 0; i < 4; i++)
@@ -242,8 +242,8 @@ void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t lev
 		motors[i]->setCoefficients(config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI);
 	}
 
-	ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, MaxVel = %lf]",
-			 config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, config.MaxVel);
+	ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, MaxVel = %lf, VisualVel = %lf]",
+			 config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, config.MaxVel, config.VisualVel);
 }
 
 void Chassis::UpdateDebug()
