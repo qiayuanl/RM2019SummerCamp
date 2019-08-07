@@ -5,15 +5,22 @@
 //       OPP = 1
 
 //DEFINITIONS OF SEARCH
-//2GB  Transposition Table
-//256M Hash Table
-#define TT_HASH_MOD  33554467
-#define TT_SIZE      44739242
+//1GB  Transposition Table
+//128M Hash Table
+#define TT_HASH_MOD  40000003
+#define TT_SIZE      20000000
 
+//OPTIMIZATION
+#pragma GCC optimize(3)
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("inline")
+
+//BEGIN
 #include <cstring>
 #include <cstdio>
 #include <algorithm>
 #include <vector>
+#include <sys/time.h>
 
 namespace Game {
     //time consts
@@ -105,8 +112,10 @@ namespace Game {
     const int dx[4] = {1, 0, -1, 0};
     const int dy[4] = {0, 1, 0, -1};
 
+/*
     const int dx_8[8] = {1, 0, -1, 0, 1,  1, -1, -1};
     const int dy_8[8] = {0, 1, 0, -1, 1, -1,  1, -1};
+*/
 
     //utility
     inline int sgn(int x) {
@@ -340,7 +349,7 @@ namespace Game {
              + Steps
 
              + 50 * TowersOccupied
-             + 3  * TowerDeltaSum
+             + 5  * TowerDeltaSum
 
              + 20 * GridStrongOccupied
              + 10  * GridOccupied
@@ -372,28 +381,28 @@ namespace Game {
                 bool castle_owner = (b.castle[i] > 0) ? 0 : 1;
 
                 score += (who == castle_owner) ? 100 : (-100);
-                score += 8 * point_sign(who) * b.castle[i];
+                score += 10 * point_sign(who) * b.castle[i];
+            }
 
-                //calculate 8con
-                /* if(b.castle[i] != 0) {
-                    int n8con = 0;
+            //calculate 8con
+            /* if(b.castle[i] != 0) {
+                int n8con = 0;
 
-                    for(int dir = 0; dir < 8; dir++) {
-                        int tx = CASTLE_OCCU_COORD[!castle_owner][i][0] + dx_8[dir];
-                        int ty = CASTLE_OCCU_COORD[!castle_owner][i][1] + dy_8[dir];
+                for(int dir = 0; dir < 8; dir++) {
+                    int tx = CASTLE_OCCU_COORD[!castle_owner][i][0] + dx_8[dir];
+                    int ty = CASTLE_OCCU_COORD[!castle_owner][i][1] + dy_8[dir];
 
-                        if(COORD_OK(tx, ty) && (CASTLE_ID[tx][ty] == -1)) {
-                            int8_t c8_cell_state = b.board_state(tx, ty);
+                    if(COORD_OK(tx, ty) && (CASTLE_ID[tx][ty] == -1)) {
+                        int8_t c8_cell_state = b.board_state(tx, ty);
 
-                            if(c8_cell_state != -1) {
-                                n8con += (c8_cell_state == castle_owner) ? 1 : -1;
-                            }
+                        if(c8_cell_state != -1) {
+                            n8con += (c8_cell_state == castle_owner) ? 1 : -1;
                         }
                     }
+                }
 
-                    score += 10 * point_sign(castle_owner) * n8con;
-                } */
-            }
+                score += 10 * point_sign(castle_owner) * n8con;
+            } */
 
             return score;
         }
@@ -414,7 +423,7 @@ namespace Game {
             }
         }
 
-        std::vector<uint8_t> search(bool who, const Board &start, int depth_limit = 19, int total_step = GAME_TOTAL_STEP, int total_time = GAME_TOTAL_MS, int time_limit = 5000) {
+        std::vector<uint8_t> search(bool who, const Board &start, int total_step = GAME_TOTAL_STEP, int total_time = GAME_TOTAL_MS, int time_limit = 3000) {
             //init hash
             Hash::init();
 
@@ -431,6 +440,13 @@ namespace Game {
                 0
             };
 
+            //record time
+            timeval T_start, T_end;
+            gettimeofday(&T_start, 0);
+
+            //node count
+            int nodes_to_next_tcheck = 0;
+
             //start search
             while(qH < qT) {
                 //check if hash boom
@@ -438,12 +454,26 @@ namespace Game {
                     break;
                 }
 
+                //check if tle
+                if(++nodes_to_next_tcheck >= 2500000) {
+                    nodes_to_next_tcheck = 0;
+
+                    gettimeofday(&T_end, 0);
+
+                    int time_elapsed = (T_end.tv_sec * 1000 + T_end.tv_usec / 1000) - (T_start.tv_sec * 1000 + T_start.tv_usec / 1000);
+
+                    fprintf(stderr, "T=%d Depth=%d\n", time_elapsed, Q[qT - 1].depth);
+                    if(time_elapsed >= time_limit) {
+                        break;
+                    }
+                }
+
                 //pick queue head
                 int st_queue_id = qH++;
                 State &st = Q[st_queue_id];
 
                 //endgame condition
-                if(st.depth >= depth_limit || st.tot_step <= 0 || st.tot_time <= 0) {
+                if(st.tot_step <= 0 || st.tot_time <= 0) {
                     continue;
                 }
 

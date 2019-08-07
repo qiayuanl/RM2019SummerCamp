@@ -323,37 +323,41 @@ void MainWindow::on_pEndTurn_clicked() {
 
 void MainWindow::on_pbSearch_clicked()
 {
-    bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
+    for(int i = 0; i < 10; i++) {
+        bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
-    std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, 17, MoveLeft[who], TimeLeft[who]);
+        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who]);
 
-    for(int i = 0; i < strategies.size(); i++) {
-        uint8_t st = strategies[i];
+        for(int i = 0; i < strategies.size(); i++) {
+            uint8_t st = strategies[i];
 
-        if(st >= 0 && st <= 3) {
-            Game::OP::move(GlobalBoard, who, st);
+            if(st >= 0 && st <= 3) {
+                Game::OP::move(GlobalBoard, who, st);
 
-            TimeLeft[who] -= Game::ACTION_MOVE_MS;
-            MoveLeft[who] -= 1;
+                TimeLeft[who] -= Game::ACTION_MOVE_MS;
+                MoveLeft[who] -= 1;
+            }
+            else if(st == 4) {
+                Game::OP::occupy(GlobalBoard, who);
+
+                TimeLeft[who] -= Game::ACTION_OCCUPY_MS;
+            }
+            else if(st == 5) {
+                Game::OP::place(GlobalBoard, who, 1);
+                GlobalBoard.ball[who]--;
+
+                TimeLeft[who] -= Game::ACTION_PLACE_BALL_MS;
+            }
+            else if(st == 6) {
+                Game::OP::place(GlobalBoard, who, 4);
+                GlobalBoard.cup[who]--;
+
+                TimeLeft[who] -= Game::ACTION_PLACE_CUP_MS;
+            }
+
+            canvas->GameUpdate();
         }
-        else if(st == 4) {
-            Game::OP::occupy(GlobalBoard, who);
-
-            TimeLeft[who] -= Game::ACTION_OCCUPY_MS;
-        }
-        else if(st == 5) {
-            Game::OP::place(GlobalBoard, who, 1);
-            GlobalBoard.ball[who]--;
-
-            TimeLeft[who] -= Game::ACTION_PLACE_BALL_MS;
-        }
-        else if(st == 6) {
-            Game::OP::place(GlobalBoard, who, 4);
-            GlobalBoard.cup[who]--;
-
-            TimeLeft[who] -= Game::ACTION_PLACE_CUP_MS;
-        }
-
-        canvas->GameUpdate();
     }
+
+    on_pEndTurn_clicked();
 }
