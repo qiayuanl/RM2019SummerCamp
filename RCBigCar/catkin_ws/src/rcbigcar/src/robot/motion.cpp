@@ -94,9 +94,9 @@ void Motion::CallbackSetpoint(const std_msgs::Float64MultiArray::ConstPtr &setpo
 #define DynamicParamSet(id)                                                                                             \
 	if (id < MOTION_MOTOR_COUNT)                                                                                        \
 	{                                                                                                                   \
-		ROS_INFO("Motion #%d Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf]",                       \
-				 id, config.Kp_##id, config.Ki_##id, config.Kd_##id, config.Kf_##id, config.KmaxI_##id);                \
-		motors[id]->setCoefficients(config.Kp_##id, config.Ki_##id, config.Kd_##id, config.Kf_##id, config.KmaxI_##id); \
+		ROS_INFO("Motion #%d Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, KmaxO = %lf]",                       \
+				 id, config.Kp_##id, config.Ki_##id, config.Kd_##id, config.Kf_##id, config.KmaxI_##id, config.KmaxO_##id);                \
+		motors[id]->setCoefficients(config.Kp_##id, config.Ki_##id, config.Kd_##id, config.Kf_##id, config.KmaxI_##id, config.KmaxO_##id); \
 	}
 
 void Motion::CallbackDynamicParam(rcbigcar::MotionConfig &config, uint32_t level)
@@ -104,5 +104,4 @@ void Motion::CallbackDynamicParam(rcbigcar::MotionConfig &config, uint32_t level
 	DynamicParamSet(0);
 	DynamicParamSet(1);
 	DynamicParamSet(2);
-	DynamicParamSet(3);
 }
