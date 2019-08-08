@@ -47,7 +47,9 @@ namespace MK_Blocking {
         }
 
         void init() {
-            ball_cnt[0] = ball_cnt[1] = ball_cnt[2] = 10;
+            ball_cnt[0] = 4;
+            ball_cnt[1] = 3;
+            ball_cnt[2] = 4;
 
             print();
         }
@@ -88,6 +90,8 @@ int main(int argc, char **argv)
     MK_Blocking::init_all();
 	while (ros::ok())
 	{
+        int ch = getchar();
+        printf("ok\n");
         MK_Blocking::Ball::place_ball();
 	}
 }
