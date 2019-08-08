@@ -14,7 +14,7 @@
     <param name="framerate" value="30" />
     <param name="camera_info_url" value="package://usb_cam/camera_info/camera.yaml" />
     <param name="autoexposure" value="false" />
-    <param name="exposure" value="500" />
+    <param name="exposure" value="1500" />
 
     <param name="camera_name" value="usb_cam" />  
   </node>
