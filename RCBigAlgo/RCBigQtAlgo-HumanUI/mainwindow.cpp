@@ -330,7 +330,7 @@ void MainWindow::on_pbSearch_clicked()
     for(int i = 0; i < 10; i++) {
         bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
-        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who], 3000);
+        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who], 1000);
 
         for(int i = 0; i < strategies.size(); i++) {
             uint8_t st = strategies[i];

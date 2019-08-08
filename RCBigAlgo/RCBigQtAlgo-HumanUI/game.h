@@ -27,7 +27,7 @@
 namespace Game {
     //time consts
     const int GAME_TOTAL_STEP = 15;
-    const int GAME_TOTAL_MS   = 30000;
+    const int GAME_TOTAL_MS   = 40000;
 
     const int ACTION_MOVE_MS  = 1000;
     const int ACTION_OCCUPY_MS = 1000;
