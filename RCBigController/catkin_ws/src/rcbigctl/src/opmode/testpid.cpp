@@ -13,18 +13,22 @@ int main(int argc, char **argv)
 	ros::Rate loop_rate(50);
 	ros::Time t = ros::Time::now();
 
+	double value = -8.0 * M_PI;
+	bool is_on = true;
+
 	data.data.resize(4);
 	for (int i = 0; i < data.data.size(); i++)
-		data.data[i] = M_PI;
+		data.data[i] = value;
 
 	while (ros::ok())
 	{
-		if ((ros::Time::now() - t).toSec() >= 1.5)
+		if ((ros::Time::now() - t).toSec() >= 5.0)
 		{
 			t = ros::Time::now();
 
+			is_on = !is_on;
 			for (int i = 0; i < data.data.size(); i++)
-				data.data[i] *= -1.0;
+				data.data[i] = is_on ? value : 0;
 		}
 
 		data_pub.publish(data);
