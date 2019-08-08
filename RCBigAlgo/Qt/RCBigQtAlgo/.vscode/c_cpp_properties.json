@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../**",
+                "/usr/include/x86_64-linux-gnu/qt5/**",
+                "/home/dji/Documents/RM2019SummerCamp/RCBigAlgo/build-RCBigQtAlgo-Desktop_Qt_5_13_0_GCC_64bit-Debug"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

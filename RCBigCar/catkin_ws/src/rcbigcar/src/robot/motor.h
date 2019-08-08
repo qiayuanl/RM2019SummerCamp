@@ -15,7 +15,7 @@ class Motor
 
     void update();
 
-    void setCoefficients(double _Kp, double _Ki, double _Kd, double _Kf, double _KmaxI);
+    void setCoefficients(double _Kp, double _Ki, double _Kd, double _Kf, double _KmaxI, double _KmaxO);
 
     double getVelocity();
     double getPosition();
@@ -36,7 +36,7 @@ class Motor
     ros::Time last_looptime;
 
     /* PID */
-    double Kp, Ki, Kd, Kf, KmaxI;
+    double Kp, Ki, Kd, Kf, KmaxI, KmaxO;
 
     /* PID Variables */
     ErrorList VError = {{0}};
@@ -44,6 +44,11 @@ class Motor
     ErrorList VError_Derivative = {{0}};
     ErrorList VError_Derivative_Filtered = {{0}};
     double VError_Intergral = 0;
+
+    /* Calibration */
+    bool isCalibrating;
+    double CalibrateDuration;
+    double CalibrationValue;
 };
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef __GAME_H__
-#define __GAME_H__
+#ifndef GAME_H
+#define GAME_H
 
 //ASSET: ME = 0
 //       OPP = 1
@@ -21,13 +21,14 @@
 #include <algorithm>
 #include <vector>
 #include <sys/time.h>
+#include <stdint.h>
 
 #define VAL_LIMIT(x, minv, maxv) std::max( std::min( (x), (maxv) ), (minv) )
 
 namespace Game {
     //time consts
     const int GAME_TOTAL_STEP = 15;
-    const int GAME_TOTAL_MS   = 30000;
+    const int GAME_TOTAL_MS   = 40000;
 
     const int ACTION_MOVE_MS  = 1000;
     const int ACTION_OCCUPY_MS = 1000;
@@ -548,7 +549,7 @@ namespace Game {
             }
 
             //use eval func to find best decision
-            int max_eval = 0;
+            int max_eval = -2147483648;
             int state_id = 0;
             for(int i = 0; i < qT; i++) {
                 int eval = evaluate(who, Hash::status[Q[i].tt_id], Q[i].tot_time, Q[i].tot_step);

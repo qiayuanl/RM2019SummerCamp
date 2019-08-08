@@ -40,14 +40,19 @@ class VLocalization {
 public:
     VLocalization();
 
-    //Callback Functions
-    void TagDetectionCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
-private:
-    MovingAverage<double,      1> Filter_X, Filter_Y, Filter_Yaw_X, Filter_Yaw_Y;
+    void FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg, const std::string camera_frame);
 
-    ros::Subscriber detect_sub;
+    //Callback Functions
+    void TagDetection_0_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
+    void TagDetection_1_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
+private:
+    MovingAverage<double,      3> Filter_X, Filter_Y, Filter_Yaw_X, Filter_Yaw_Y;
+
+    ros::Subscriber detect_0_sub;
+    ros::Subscriber detect_1_sub;
     ros::Publisher  vloc_pub;
-    tf::TransformListener tf_listener;
+
+    tf::TransformListener    tf_listener;
     tf::TransformBroadcaster tf_broadcaster;
 };
 

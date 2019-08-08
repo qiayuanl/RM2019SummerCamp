@@ -91,7 +91,7 @@ class RobotHardware
 
     /* Motor */
     void Motor_UpdateOffset(moto_measure_t *ptr, can_frame_t *frame);
-    void Motor_UpdateTotalAngle(moto_measure_t *p);
+    //void Motor_UpdateTotalAngle(moto_measure_t *p);
     void CAN_Motor_Update();
 };
 
