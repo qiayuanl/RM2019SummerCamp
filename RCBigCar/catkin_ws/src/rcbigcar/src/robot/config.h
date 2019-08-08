@@ -68,9 +68,9 @@ const MotorPreset MOTOR_GM3510 = {
 
 const double CHASSIS_WATCHDOG_TIMEOUT = 1.0;
 
-const double CHASSIS_WHEEL_R = 0.038;
-const double CHASSIS_LENGTH_A = 0.25;
-const double CHASSIS_LENGTH_B = 0.25;
+const double CHASSIS_WHEEL_R = 0.076;
+const double CHASSIS_LENGTH_A = 0.56;
+const double CHASSIS_LENGTH_B = 0.285;
 
 /*
  * Motion Paramters
