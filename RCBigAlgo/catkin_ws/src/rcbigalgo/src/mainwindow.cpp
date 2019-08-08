@@ -1,6 +1,10 @@
-#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "game.h"
+
+#include "../include/mainwindow.hpp"
+#include "../include/action_executer.h"
+
+#include <ros/ros.h>
+#include <rcbigcar/board.h>
 
 ////////////////////////GAME/////////////////////////
 enum GameUIStatus {
@@ -130,12 +134,13 @@ void VisualWidget::DrawContent(QPainter *painter, QPaintEvent *event) {
     //draw status
     int status_margins = std::min(this->size().width(), this->size().height()) * 0.1;
     painter->setPen  (QPen(Qt::black));
-    painter->drawText(this->rect().marginsRemoved(QMargins(status_margins, status_margins, status_margins, status_margins)).bottomLeft(),
+
+    painter->drawText(this->rect().adjusted(status_margins, status_margins, -status_margins, -status_margins).bottomLeft(),
                       GameStatusString[UIStatus]);
 
     //draw score
     painter->setPen  (QPen(Qt::black));
-    painter->drawText(this->rect().marginsRemoved(QMargins(status_margins, status_margins, status_margins, status_margins)).bottomRight(),
+    painter->drawText(this->rect().adjusted(status_margins, status_margins, -status_margins, -status_margins).bottomRight(),
                       ((GlobalBoard.delta_points > 0) ? QString("RED") : QString("BLUE")) + QString(": ") + QString::number(std::abs(GlobalBoard.delta_points))); 
 
     /*
@@ -155,7 +160,7 @@ void VisualWidget::DrawContent(QPainter *painter, QPaintEvent *event) {
     //draw grids
     for(int x = 0; x < Game::MAX_X; x++) for(int y = 0; y < Game::MAX_Y; y++) {
         QRect grid_cell = QRect(QPoint(y * grid_size, x * grid_size), QSize(grid_size, grid_size));
-        QRect grid_inner = grid_cell.marginsRemoved(QMargins(grid_inner_margins, grid_inner_margins, grid_inner_margins, grid_inner_margins));
+        QRect grid_inner = grid_cell.adjusted(grid_inner_margins, grid_inner_margins, -grid_inner_margins, -grid_inner_margins);
 
         //draw cell
         painter->setBrush(QBrush(Qt::white));
@@ -217,7 +222,7 @@ void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
 
     switch(UIStatus) {
         case GameStatus_Place_Red:
-            if(button == Qt::MouseButton::LeftButton) {
+            if(button == Qt::LeftButton) {
                 GlobalBoard.position[0][0] = grid_x;
                 GlobalBoard.position[0][1] = grid_y;
 
@@ -227,7 +232,7 @@ void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
         break;
 
         case GameStatus_Place_Blue:
-            if(button == Qt::MouseButton::LeftButton) {
+            if(button == Qt::LeftButton) {
                 GlobalBoard.position[1][0] = grid_x;
                 GlobalBoard.position[1][1] = grid_y;
 
@@ -240,7 +245,7 @@ void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
         case GameStatus_Move_Blue:
             bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
-            if(button == Qt::MouseButton::LeftButton) {
+            if(button == Qt::LeftButton) {
                 int x = GlobalBoard.position[who][0];
                 int y = GlobalBoard.position[who][1];
 
@@ -266,7 +271,7 @@ void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
                     }
                 }
             }
-            else if(button == Qt::MouseButton::RightButton) {
+            else if(button == Qt::RightButton) {
                 if(TimeLeft[who] >= Game::ACTION_OCCUPY_MS) {
                     if(Game::OP::can_occupy(GlobalBoard, who)) {
                         Game::OP::occupy(GlobalBoard, who);
@@ -330,7 +335,7 @@ void MainWindow::on_pbSearch_clicked()
     for(int i = 0; i < 10; i++) {
         bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
-        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who], 3000);
+        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who], 1000);
 
         for(int i = 0; i < strategies.size(); i++) {
             uint8_t st = strategies[i];

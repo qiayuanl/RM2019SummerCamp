@@ -19,11 +19,13 @@ VLocalization::VLocalization() {
     ros::NodeHandle node_priv;
 
     //Setup Comm
-    detect_sub = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("tag_detections", 100, &VLocalization::TagDetectionCallback, this);
-    vloc_pub   = node_priv.advertise<geometry_msgs::Pose>                  ("vloc", 100);
+    detect_0_sub = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("tag_detections_0", 100, &VLocalization::TagDetection_0_Callback, this);
+    detect_1_sub = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("tag_detections_1", 100, &VLocalization::TagDetection_1_Callback, this);
+
+    vloc_pub   = node_priv.advertise<geometry_msgs::Pose>                    ("vloc", 100);
 }
 
-void VLocalization::TagDetectionCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
+void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg, const std::string camera_frame) {
     //If no detection
     if (msg->detections.empty()) return;
 
@@ -36,7 +38,7 @@ void VLocalization::TagDetectionCallback(const apriltag_ros::AprilTagDetectionAr
     //Lookup Base -> Cam Transform
     tf::StampedTransform tf_base_cam;
     try{
-        tf_listener.lookupTransform("base", "cam", ros::Time(0), tf_base_cam);
+        tf_listener.lookupTransform("base", camera_frame, ros::Time(0), tf_base_cam);
     }
     catch (tf::TransformException ex) {
         ROS_ERROR("%s",ex.what());
@@ -130,4 +132,12 @@ void VLocalization::TagDetectionCallback(const apriltag_ros::AprilTagDetectionAr
     pose_tf.setRotation(pose_orientation_tf);
 
     tf_broadcaster.sendTransform(tf::StampedTransform(pose_tf, ros::Time(0), "map", "base_vodom"));
+}
+
+void VLocalization::TagDetection_0_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
+    FuseDetectedTags(msg, "cam_0");
+}
+
+void VLocalization::TagDetection_1_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
+    FuseDetectedTags(msg, "cam_1");
 }
