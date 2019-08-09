@@ -1,0 +1,11 @@
+.\obj\ml_math_func.o: MPU9250\DMP\ml_math_func.c
+.\obj\ml_math_func.o: MPU9250\DMP\mlmath.h
+.\obj\ml_math_func.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\obj\ml_math_func.o: MPU9250\DMP\ml_math_func.h
+.\obj\ml_math_func.o: MPU9250\DMP\mltypes.h
+.\obj\ml_math_func.o: MPU9250\DMP\stdint_invensense.h
+.\obj\ml_math_func.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\ml_math_func.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\ml_math_func.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\obj\ml_math_func.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+.\obj\ml_math_func.o: MPU9250\DMP\mlinclude.h

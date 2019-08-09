@@ -1,8 +1,6 @@
 #ifndef _MYIIC_H
 #define _MYIIC_H
 #include "System_Config.h"
-#define SDA2_IN()  {GPIOF->MODER&=~(3<<(0*2));GPIOF->MODER|=0<<0*2;}	//PH5输入模式
-#define SDA2_OUT() {GPIOF->MODER&=~(3<<(0*2));GPIOF->MODER|=1<<0*2;} //PH5输出模式
 #define IIC2_SCL   PFout(1) //SCL
 #define IIC2_SDA   PFout(0) //SDA
 #define READ_SDA2  PFin(0)  //输入SDA
