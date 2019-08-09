@@ -19,16 +19,22 @@ public:
     ~MainWindow();
 
 private Q_SLOTS:
+    void update();
+/*
     void on_pbPlaceBall_clicked();
     void on_pbPlaceCup_clicked();
 
     void on_pEndTurn_clicked();
 
     void on_pbSearch_clicked();
+*/
+
+    void on_pbSearch_clicked();
 
 private:
     Ui::MainWindow *ui;
     VisualWidget *canvas;
+    QTimer *timer;
 };
 
 #endif // MAINWINDOW_H

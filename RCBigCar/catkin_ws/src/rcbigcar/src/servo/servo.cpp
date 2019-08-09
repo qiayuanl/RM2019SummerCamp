@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh;
 
     //Read serial paramters
-    std::string SerialDevice = nh.param<std::string>("device", "/dev/ttyUSB0");
+    std::string SerialDevice = nh.param<std::string>("device", "/dev/ttyS0");
     int         SerialBaudRate = nh.param<int>        ("baudrate", 115200);
 
     //Open serial

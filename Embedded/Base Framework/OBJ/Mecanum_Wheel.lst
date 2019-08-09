@@ -1,0 +1,61 @@
+L 1 "App\Mecanum_Wheel.c"
+N#include "Mecanum_Wheel.h"
+L 1 "App\Mecanum_Wheel.h" 1
+N#ifndef __MECANUM_WHEEL_H__
+N#define __MECANUM_WHEEL_H__
+N#define A 0.0211f
+N#define B 0.0160f
+N#define WHEEL_R 0.0152f
+N#define PI 3.14159265358979f
+Nvoid Set_Speed(float speed_x,float speed_y,float speed_w);
+Nvoid Speed_To_Wheel(float vx_set, float vy_set,float wz_set,float wheel_speed[4]);
+N#endif
+L 2 "App\Mecanum_Wheel.c" 2
+N#include "User_Config.h"
+L 1 ".\USER\User_Config.h" 1
+N#ifndef __USER_CONFIG_H__
+N#define __USER_CONFIG_H__
+N
+N#define USING_MACHINE_ARM 1	//机械臂
+N#define USING_MANIFOLD 1	//妙算
+N#define USING_MECANUM_WHEEL 1	//麦轮
+N#define USING_TASK 1	//自定义任务
+N#define USING_PID 1	//PID
+N#define USING_OLED 1	//OLED
+N#define USING_PWM 1	//PWM
+N#define USING_REMOTE 1	//遥控器
+N#define USING_MOTOR 1	//电机
+N#define USING_RANDOM 1	//随机数生成器
+N#define USING_LED 1	//板载LED
+N#define USING_IIC_2 1	//I2C
+N#define USING_KEY 1	//板载按钮
+N#define USING_BEEP 1	//蜂鸣器
+N#define USING_POWER 1	//板上电源控制
+N#define USING_LASER 1	//激光瞄准
+N#define USING_ADC 1	//ADC
+N#define USING_CAN 1	//CAN
+N#define USING_DAC 1	//DAC
+N#define USING_STM_FLASH 1	//FLASH
+N#define USING_TIM 1	//定时器
+N#define USING_SPI 1	//SPI
+N#define USING_USART 1	//串口
+N
+N#endif	//__USER_CONFIG_H__
+L 3 "App\Mecanum_Wheel.c" 2
+N
+N#if(USING_MECANUM_WHEEL == 1)
+X#if(1 == 1)
+N
+Nvoid Speed_To_Wheel(float vx_set, float vy_set,float wz_set,float wheel_speed[4])
+N{
+N	  wheel_speed[0] = (float)(+vx_set - vy_set + wz_set*(A+B))/(WHEEL_R * PI)*19*6;
+X	  wheel_speed[0] = (float)(+vx_set - vy_set + wz_set*(0.0211f+0.0160f))/(0.0152f * 3.14159265358979f)*19*6;
+N    wheel_speed[1] = (float)(+vx_set + vy_set + wz_set*(A+B))/(WHEEL_R * PI)*19*6;
+X    wheel_speed[1] = (float)(+vx_set + vy_set + wz_set*(0.0211f+0.0160f))/(0.0152f * 3.14159265358979f)*19*6;
+N    wheel_speed[2] = (float)(-vx_set + vy_set + wz_set*(A+B))/(WHEEL_R * PI)*19*6;
+X    wheel_speed[2] = (float)(-vx_set + vy_set + wz_set*(0.0211f+0.0160f))/(0.0152f * 3.14159265358979f)*19*6;
+N    wheel_speed[3] = (float)(-vx_set - vy_set + wz_set*(A+B))/(WHEEL_R * PI)*19*6;
+X    wheel_speed[3] = (float)(-vx_set - vy_set + wz_set*(0.0211f+0.0160f))/(0.0152f * 3.14159265358979f)*19*6;
+N}
+N
+N#endif	//#if(USING_MECANUM_WHEEL == 1)

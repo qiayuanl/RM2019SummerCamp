@@ -22,6 +22,7 @@
 #include <vector>
 #include <sys/time.h>
 #include <stdint.h>
+#include <cmath>
 
 #define VAL_LIMIT(x, minv, maxv) std::max( std::min( (x), (maxv) ), (minv) )
 
@@ -94,18 +95,18 @@ namespace Game {
     {
         {-1,  0, -1, -1, -1,  1, -1, -1, -1},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1},
-        { 2, -1, -1, -1,  3, -1, -1, -1, -1},
+        { 2, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1},
-        {-1, -1, -1, -1, -1, -1, -1, -1,  4},
+        {-1, -1, -1, -1,  3, -1, -1, -1,  4},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1, -1, -1,  5, -1, -1, -1,  6, -1},
     },
     {
         {-1, -1, -1,  0, -1, -1, -1,  1, -1},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1},
-        {-1, -1, -1, -1, -1, -1, -1, -1,  4},
+        {-1, -1, -1, -1,  3, -1, -1, -1,  4},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1},
-        { 2, -1, -1, -1,  3, -1, -1, -1, -1},
+        { 2, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1,  5, -1, -1, -1,  6, -1, -1, -1},
     }
@@ -114,6 +115,7 @@ namespace Game {
     //Directions
     const int dx[4] = {1, 0, -1, 0};
     const int dy[4] = {0, 1, 0, -1};
+    const double diryaw[4] = {0, 0.5 * M_PI, 1.0 * M_PI, 1.5 * M_PI};
 
 /*
     const int dx_8[8] = {1, 0, -1, 0, 1,  1, -1, -1};
@@ -127,7 +129,7 @@ namespace Game {
     }
     inline int point_sign(bool x) { return (x == 0) ? 1 : -1; }
 
-    #define COORD_OK(x, y) (((x) >= 0) && ((y) >= 0) && ((x) < MAX_X) && ((y) < MAX_Y))
+    #define COORD_OK(x, y) (((x) >= 0) && ((y) >= 0) && ((x) < Game::MAX_X) && ((y) < Game::MAX_Y))
     #define COORD_SAME(xa, ya, xb, yb) ( ((xa) == (xb)) && ((ya) == (yb)) )
 
     //Bitboard Ops
@@ -538,7 +540,7 @@ namespace Game {
                         if(st.tot_time >= ACTION_PLACE_CUP_MS) {
                             if(b.cup[who]) {
                                 new_board = b;
-                                OP::place(new_board, who, 4);
+                                OP::place(new_board, who, 6);
                                 new_board.cup[who]--;
 
                                 expand(st_queue_id, st, new_board, 6, 0, ACTION_PLACE_CUP_MS);

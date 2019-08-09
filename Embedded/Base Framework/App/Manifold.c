@@ -1,28 +1,24 @@
 #include "User.h"
-
-#if (USING_MANIFOLD == 1)
-
-Manifold_Receve_Struct Manifold;
-extern UART_HandleTypeDef USART3_Handler;
-unsigned char Last_Possition_X, Last_Possition_Y;
-void Manifold_Analyze(void)
+#if ( USING_MANIFOLD == 1 )
+Summer_Camp_Info_t Summer_Camp_Info;
+Map_Data_t Map_Data;
+Chassis_Data_t Chassis_Data;
+void Wait_For_HandShake(void)
 {
-	if ((USART3_Receve_Handler.Buffer[0] & 0xc0) == 0x00 && (USART3_Receve_Handler.Buffer[1] & 0xc0) == 0x40)
+	static uint8_t Hand_Shake_Data[8] = {0x5a,0xa5,0x5a,0xa5,0x5a,0xa5,0x5a,0xa5};
+	Send_Data(PID_HAND_SHAKE, Hand_Shake_Data);
+	
+}
+void Communicate_Task(void * pvParameters)
+{
+	//Wait_For_HandShake();		//µÈ´ýÎÕÊÖ
+	while(1)
 	{
-		u8 Temp = 0x00;
-		Manifold.Possition_Row = (USART3_Receve_Handler.Buffer[0] & 0x3c) >> 2;
-		Temp = USART3_Receve_Handler.Buffer[0] & 0x03;
-		Manifold.Possition_Col = (Temp << 2) | ((USART3_Receve_Handler.Buffer[1] & 0x30) >> 4);
-		Manifold.Camera = (USART3_Receve_Handler.Buffer[1] & 0x0f) >> 2;
-		Manifold.Delay = (USART3_Receve_Handler.Buffer[1] & 0x02) >> 1;
+//		Cvt_Map_Data(&Summer_Camp_Info, &Map_Data);
+//		Send_Map_Data(&Map_Data);
+		Send_Chassis_Data(&Chassis_Data);
+		vTaskDelay(100);
 	}
 }
-void Manifold_Send(Manifold_Send_Struct send)
-{
-	unsigned char Manifold_Buffer[2];
-	Manifold_Buffer[0] = 0x00 | send.Possition_Row << 2 | send.Possition_Col >> 2;
-	Manifold_Buffer[1] = 0x40 | ((send.Possition_Col & 0x03) << 4) | send.Set_Disable << 3 | send.Enemy << 2 | send.Get << 1 | send.Teminal;
-	HAL_UART_Transmit(&USART3_Handler, Manifold_Buffer, sizeof(Manifold_Buffer), 1000);
-}
 
-#endif //#if(USING_MANIFOLD == 1)
+#endif	//#if(USING_MANIFOLD == 1)

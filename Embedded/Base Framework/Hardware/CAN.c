@@ -43,7 +43,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
   if(canHandle->Instance==CAN1)
   {
 		__HAL_RCC_GPIOD_CLK_ENABLE();
-		__HAL_RCC_CAN2_CLK_ENABLE();
     __HAL_RCC_CAN1_CLK_ENABLE();
     GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -60,7 +59,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
   {
 		__HAL_RCC_GPIOB_CLK_ENABLE();
 		__HAL_RCC_CAN2_CLK_ENABLE();
-    __HAL_RCC_CAN1_CLK_ENABLE();
     GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;

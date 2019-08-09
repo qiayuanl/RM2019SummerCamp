@@ -52,7 +52,7 @@
           <OutputName>Tempate</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\OBJ\</ListingPath>
@@ -336,9 +336,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32F4,USE_HAL_DRIVER,STM32F427xx,ARM_MATH_CM4,__CC_ARM,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING</Define>
+              <Define>STM32F4,USE_HAL_DRIVER,STM32F427xx,ARM_MATH_CM4,__CC_ARM,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,MPL_LOG_NDEBUG=1,EMPL,MPU9250,EMPL_TARGET_STM32F4</Define>
               <Undefine></Undefine>
-              <IncludePath>.\CORE;.\USER;.\HALLIB\STM32F4xx_HAL_Driver\Inc;.\SYSTEM;.\Hardware;.\App;.\DSP_LIB\Include;.\FATFS;.\FreeRTOS;.\DMP;.\DMP\eMPL</IncludePath>
+              <IncludePath>.\CORE;.\USER;.\HALLIB\STM32F4xx_HAL_Driver\Inc;.\SYSTEM;.\Hardware;.\App;.\DSP_LIB\Include;.\FreeRTOS;.\MPU9250\DMP;.\MPU9250</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -437,6 +437,11 @@
               <FileType>1</FileType>
               <FilePath>.\App\Tasks.c</FilePath>
             </File>
+            <File>
+              <FileName>Algorithm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\Algorithm.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -468,9 +473,9 @@
               <FilePath>.\App\Motor.c</FilePath>
             </File>
             <File>
-              <FileName>MPU.C</FileName>
+              <FileName>Odometer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\App\MPU.C</FilePath>
+              <FilePath>.\App\Odometer.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -548,9 +553,14 @@
               <FilePath>.\Hardware\USART.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_imu.c</FileName>
+              <FileName>Decrypt.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Hardware\bsp_imu.c</FilePath>
+              <FilePath>.\Hardware\Decrypt.c</FilePath>
+            </File>
+            <File>
+              <FileName>Encrypt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Encrypt.c</FilePath>
             </File>
           </Files>
         </Group>

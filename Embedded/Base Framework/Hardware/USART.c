@@ -6,7 +6,8 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 USART_Receve USART2_Receve_Handler;
 USART_Receve USART3_Receve_Handler;
-UART_HandleTypeDef USART3_Handler; //UART句柄
+UART_HandleTypeDef USART3_Handler; //UART3句柄
+UART_HandleTypeDef USART2_Handler; //UART2句柄
 u8 aRxBuffer3;
 #if 1
 #pragma import(__use_no_semihosting)             
@@ -30,7 +31,6 @@ int fputc(int ch, FILE *f)
 	return ch;
 }
 #endif 
-UART_HandleTypeDef USART2_Handler; //UART句柄
 u8 aRxBuffer;
 extern u8 aRxBuffer3;
 void USART2_init(u32 bound)
@@ -57,24 +57,36 @@ void USART2_init(u32 bound)
 	HAL_NVIC_SetPriority(USART2_IRQn,USART2_Priority,0);	//抢占优先级0，子优先级0
 	HAL_UART_Receive_IT(&USART2_Handler,&aRxBuffer, 1);
 }
+unsigned char Rcv_Flg=0; //若为1则已经收到过帧头
+unsigned char USART3_Rcv_Buffer[15];
+unsigned char RX_Counter=0x01;
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance==USART2)//如果是串口2
 	{
-		USART2_Receve_Handler.Receve_Flag = 1;
-		USART2_Receve_Handler.Buffer_Counter++;
-		USART2_Receve_Handler.Buffer[USART2_Receve_Handler.Buffer_Counter]=aRxBuffer;
-		if(USART2_Receve_Handler.Buffer_Counter==USART2_Receve_Length-1)
-			USART2_Receve_Handler.Buffer_Counter=-1;
+		
 	}
 	if(huart->Instance==USART3)//如果是串口3
 	{
-		USART3_Receve_Handler.Receve_Flag = 1;
-		USART3_Receve_Handler.Buffer_Counter++;
-		USART3_Receve_Handler.Buffer[USART3_Receve_Handler.Buffer_Counter]=aRxBuffer3;
-		if(USART3_Receve_Handler.Buffer_Counter==USART3_Receve_Length-1)
-			USART3_Receve_Handler.Buffer_Counter=-1;
-		Manifold_Analyze();
+		if(aRxBuffer3 == 0xff && Rcv_Flg == 1)
+		{
+			Rcv_Flg = 0;//结束收发
+			RX_Counter=1;
+			USART3_Rcv_Buffer[11]=0xff;
+			Received_CallBack((unsigned char *)&USART3_Rcv_Buffer);
+		}
+		else if(aRxBuffer3 == 0xff && Rcv_Flg == 0)
+		{
+			Rcv_Flg = 1;
+			RX_Counter=1;
+			memset(&USART3_Rcv_Buffer,0x00,sizeof(USART3_Rcv_Buffer));
+			USART3_Rcv_Buffer[0]=0xff;
+		}
+		else if(Rcv_Flg == 1)
+		{
+			USART3_Rcv_Buffer[RX_Counter] = aRxBuffer3;
+			RX_Counter++;
+		}
 	}
 }
 void USART2_IRQHandler(void)                	

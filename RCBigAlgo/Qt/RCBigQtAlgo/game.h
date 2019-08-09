@@ -405,26 +405,6 @@ namespace Game {
                 score += 15 * point_sign(who) * VAL_LIMIT(b.castle[i], (int8_t)-8, (int8_t)8);
             }
 
-            //calculate 8con
-            /* if(b.castle[i] != 0) {
-                int n8con = 0;
-
-                for(int dir = 0; dir < 8; dir++) {
-                    int tx = CASTLE_OCCU_COORD[!castle_owner][i][0] + dx_8[dir];
-                    int ty = CASTLE_OCCU_COORD[!castle_owner][i][1] + dy_8[dir];
-
-                    if(COORD_OK(tx, ty) && (CASTLE_ID[tx][ty] == -1)) {
-                        int8_t c8_cell_state = b.board_state(tx, ty);
-
-                        if(c8_cell_state != -1) {
-                            n8con += (c8_cell_state == castle_owner) ? 1 : -1;
-                        }
-                    }
-                }
-
-                score += 10 * point_sign(castle_owner) * n8con;
-            } */
-
             return score;
         }
 
