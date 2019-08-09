@@ -87,7 +87,6 @@ double Chassis::ReadGyroAngle()
   return -(Hardware()->gyro.angle / 180 * M_PI);
 }
 
-<<<<<<< HEAD
 void Chassis::CallbackVLocalization(const geometry_msgs::Pose::ConstPtr &pose)
 {
   if (AngularVelocity < Dyn_Config_VisualVel)
@@ -134,51 +133,6 @@ void Chassis::UpdateOdometry()
   theta = fmod(theta, 2 * M_PI);
 
   PublishPosition();
-=======
-void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
-	if(fabs(AngularVelocity) < Dyn_Config_VisualVel) {
-		//Update Coordinate
-		x = pose->position.x;
-		y = pose->position.y;
-		theta = YawFromQuaternion(pose->orientation);
-
-		//Correct Gyro
-		//GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
-
-		//Set Initial Pose
-		InitialPoseGot = true;
-	}
-}
-
-void Chassis::UpdateOdometry() {
-	//Must get initial position
-	if(!InitialPoseGot) {
-		return;
-	}
-
-	double d[4];
-
-	//calculate delta
-	for (int id = 0; id < 4; id++)
-	{
-		d[id] = motors[id]->getPosition() - last_position[id];
-		last_position[id] = motors[id]->getPosition();
-	}
-
-	double k = CHASSIS_WHEEL_R / 4.0;
-	double dx = k * (-d[0] + d[1] + d[2] - d[3]);
-	double dy = k * (-d[0] - d[1] + d[2] + d[3]);
-	double dtheta = k / (CHASSIS_LENGTH_A + CHASSIS_LENGTH_B) * (-d[0] - d[1] - d[2] - d[3]);
-
-	x += dx * cos(theta) - dy * sin(theta);
-	y += dx * sin(theta) + dy * cos(theta);
-
-	theta += dtheta;
-	//theta = ReadGyroAngle() + GyroCorrection;
-	theta = fmod(theta, 2 * M_PI);
-
-	PublishPosition();
->>>>>>> fd4fa42cf670e59d89f0f7790ec8256100dc13c6
 }
 
 void Chassis::PublishPosition()
