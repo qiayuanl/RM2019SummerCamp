@@ -47,7 +47,7 @@ const double MOTOR_CALIBRATION_POWER     = 0.04;
 const MotorPreset MOTOR_GM2006 = {
     10000,                                           //PWM Max Value
     (1.0 / 60.0) * 2.0 * M_PI / 36.0,                //RPM To rad/s
-    (1.0 / 8192.0) * 2.0 * M_PI / 36.0               //TICK to Meters
+    (1.0 / 8192.0) * 2.0 * M_PI / 36.0               //TICK to rad
 };
 
 const MotorPreset MOTOR_GM3508 = {
