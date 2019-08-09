@@ -5,6 +5,12 @@
 cmake_minimum_required(VERSION 2.8.0)
 project(rcbigalgo)
 
+add_compile_options(-Wall -Wextra -Wconversion -g)
+IF(CMAKE_COMPILER_IS_GNUCC)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+
 ##############################################################################
 # Catkin
 ##############################################################################

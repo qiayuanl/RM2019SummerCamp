@@ -50,8 +50,8 @@ void ResetGame() {
     GlobalBoard.ball[0] = GlobalBoard.ball[1] = 20;
     GlobalBoard.cup[0]  = GlobalBoard.cup[1]  = 10;
 
-    GlobalBoard.position[0][0] = 6;
-    GlobalBoard.position[0][1] = 8;
+    GlobalBoard.position[0][0] = 0;
+    GlobalBoard.position[0][1] = 0;
 
     GlobalBoard.position[1][0] = 0;
     GlobalBoard.position[1][1] = 8;

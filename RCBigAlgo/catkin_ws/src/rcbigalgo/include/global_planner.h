@@ -137,10 +137,10 @@ namespace GlobalPlanner {
                 //castle exists
                 if(castle_x != -1) {
                     //calculate yaw
-                    double yaw = atan2(
+                    double yaw = fmod( atan2(
                         XYToWorld[castle_x][castle_y][1] - XYToWorld[x][y][1],
                         XYToWorld[castle_x][castle_y][0] - XYToWorld[x][y][0]
-                    );
+                    ), 2.0 * M_PI);
 
                     //push occupy
                     actions.push_back({

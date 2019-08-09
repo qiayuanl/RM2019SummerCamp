@@ -7,9 +7,9 @@
 #include <nav_msgs/Odometry.h>
 
 //position threshold
-const double POSITION_THRESHOLD = 0.03;
+const double POSITION_THRESHOLD = 0.015;
 //angle threshold
-const double ANGLE_THRESHOLD = 3.0 / 180.0 * M_PI;
+const double ANGLE_THRESHOLD = 1.5 / 180.0 * M_PI;
 
 double YawFromQuaternion(const geometry_msgs::Quaternion &quat)
 {
@@ -96,6 +96,8 @@ namespace ActionExecuter
                 setpoint_pose.pose.orientation = tf::createQuaternionMsgFromYaw(CurAction.world_yaw);
             }
 
+            setpoint_pose.header.stamp = ros::Time::now();
+            setpoint_pose.header.frame_id = "map";
             setpoint_pub.publish( setpoint_pose );
         }
 
