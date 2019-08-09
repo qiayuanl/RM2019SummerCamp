@@ -5,7 +5,7 @@
 
 #include <ros/ros.h>
 #include <QTimer>
-//#include <rcbigcar/board.h>
+#include <ros/ros.h>
 
 ////////////////////////GAME/////////////////////////
 /*
@@ -65,6 +65,31 @@ void ResetGame() {
 
 ///////////////////////////////////////////////////////
 
+ros::Subscriber board_sub;
+
+void MainWindow::BoardCallback(const rcbigcar::board::ConstPtr &board) {
+    GlobalBoard.position[0][0] = board->robot_x[0];
+    GlobalBoard.position[0][1] = board->robot_y[0];
+
+    GlobalBoard.position[1][0] = board->robot_x[1];
+    GlobalBoard.position[1][1] = board->robot_y[1];
+
+    for(int i = 0; i < 7; i++) {
+        GlobalBoard.castle[i] = board->castle[i];
+    }
+
+    for(int x = 0; x < 7; x++) for(int y = 0; y < 9; y++) {
+        int8_t status = board->cell_status[x * 9 + y];
+
+        Game::set_bit(GlobalBoard.is_occupy, x, y, status != -1);
+        Game::set_bit(GlobalBoard.who,       x, y, (status == 0) ? 0 : 1);
+    }
+
+    Game::CC::recalc_strong(&GlobalBoard);
+
+    canvas->GameUpdate();
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -86,6 +111,10 @@ MainWindow::MainWindow(QWidget *parent) :
     canvas->GameStatusOut = ui->tGameStatus;
 
     ui->paintLayout->addWidget(canvas, 0);
+
+    ros::NodeHandle nh;
+
+    board_sub = nh.subscribe<rcbigcar::board>("board", 100, &MainWindow::BoardCallback, this);
 }
 
 MainWindow::~MainWindow()

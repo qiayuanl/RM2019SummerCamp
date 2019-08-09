@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <vector>
 #include "visualwidget.hpp"
+#include <rcbigcar/board.h>
 
 namespace Ui {
 class MainWindow;
@@ -35,6 +36,8 @@ private:
     Ui::MainWindow *ui;
     VisualWidget *canvas;
     QTimer *timer;
+
+    void BoardCallback(const rcbigcar::board::ConstPtr &board);
 };
 
 #endif // MAINWINDOW_H

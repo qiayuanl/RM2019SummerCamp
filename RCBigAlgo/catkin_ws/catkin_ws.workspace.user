@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.9.2, 2019-08-09T14:16:02. -->
+<!-- Written by QtCreator 4.9.2, 2019-08-09T21:17:56. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -118,7 +118,7 @@
      <value type="QString">ROS_PACKAGE_PATH=/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws/src:/opt/ros/kinetic/share</value>
      <value type="QString">ROS_ROOT=/opt/ros/kinetic/share/ros</value>
      <value type="QString">ROS_VERSION=1</value>
-     <value type="QString">SHLVL=100</value>
+     <value type="QString">SHLVL=136</value>
      <value type="QString">TERM=xterm</value>
      <value type="QString">_=/usr/bin/env</value>
     </valuelist>

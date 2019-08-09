@@ -17,7 +17,7 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 # qt_build provides the qt cmake glue, roscpp the comms for a default talker
 find_package(catkin REQUIRED COMPONENTS qt_build roscpp tf)
-include_directories(${catkin_INCLUDE_DIRS})
+include_directories(${catkin_INCLUDE_DIRS} ~/Documents/RM2019SummerCamp/RCBigCar/catkin_ws/devel/include)
 # Use this to define what the package will export (e.g. libs, headers).
 # Since the default here is to produce only a binary, we don't worry about
 # exporting anything. 
