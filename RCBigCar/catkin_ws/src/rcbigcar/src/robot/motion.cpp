@@ -78,14 +78,11 @@ void Motion::UpdatePublisher()
 
 void Motion::CallbackSetpoint(const std_msgs::Float64MultiArray::ConstPtr &setpoint)
 {
-	if (setpoint->data.size() < MOTION_MOTOR_COUNT)
-		return;
-
 	//reset watchdog
 	motionWatchdog = ros::Time::now();
 
 	//set setpoint
-	for (int i = 0; i < MOTION_MOTOR_COUNT; i++)
+	for (int i = 0; i < min(setpoint->data.size(), MOTION_MOTOR_COUNT); i++)
 	{
 		motors[i]->Setpoint = setpoint->data[i];
 	}

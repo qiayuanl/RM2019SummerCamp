@@ -2,6 +2,9 @@
 #define ACTION_EXECUTER
 
 #include "global_planner.h"
+#include "mechanical_definition.h"
+#include "mechanical_executer.h"
+
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
@@ -58,6 +61,10 @@ namespace ActionExecuter
         if (CurAction.type == GlobalPlanner::ACTION_NONE)
             return true;
 
+        //Mechanical Busy
+        if(MechanicalExecuter::IsBusy())
+            return false;
+
         //Angle settings
         if (CurAction.yaw_enabled) {
             if (fabs( AngularMinus(CurAction.world_yaw, YawFromQuaternion( current_pose.orientation )) ) > ANGLE_THRESHOLD)
@@ -113,6 +120,14 @@ namespace ActionExecuter
 
         //init next action
         CurActionLastTime = ros::Time::now();
+
+        //do mechanical ops
+        if(CurAction.type == GlobalPlanner::ACTION_PLACEBALL) {
+            MechanicalDefinition::PlaceBall();
+        }
+        else if(CurAction.type == GlobalPlanner::ACTION_PLACECUP) {
+            MechanicalDefinition::PlaceCup();
+        }
     }
 
     void OdometryCallback(const nav_msgs::Odometry::ConstPtr &odom) {
@@ -121,6 +136,11 @@ namespace ActionExecuter
     }
 
     void init() {
+        //init mechanical executer & definition
+        MechanicalExecuter::init();
+        MechanicalDefinition::init();
+
+        //init action executer
         ros::NodeHandle nh;
 
         odom_sub     = nh.subscribe<nav_msgs::Odometry>("odom", 100, &OdometryCallback);
