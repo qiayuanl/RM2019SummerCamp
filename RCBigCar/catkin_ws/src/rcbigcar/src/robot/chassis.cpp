@@ -86,7 +86,7 @@ double Chassis::ReadGyroAngle() {
 }
 
 void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
-	if(AngularVelocity < Dyn_Config_VisualVel) {
+	if(fabs(AngularVelocity) < Dyn_Config_VisualVel) {
 		//Update Coordinate
 		x = pose->position.x;
 		y = pose->position.y;
