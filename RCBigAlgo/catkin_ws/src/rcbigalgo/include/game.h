@@ -114,6 +114,7 @@ namespace Game {
     //Directions
     const int dx[4] = {1, 0, -1, 0};
     const int dy[4] = {0, 1, 0, -1};
+    const double diryaw[4] = {0, 90, 180, 270};
 
 /*
     const int dx_8[8] = {1, 0, -1, 0, 1,  1, -1, -1};

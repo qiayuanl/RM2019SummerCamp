@@ -119,28 +119,23 @@ namespace GlobalPlanner {
             //place ball / cup
             else if((strategy == 5) || (strategy == 6)) {
                 //find castle
-                int castle_x = -1;
-                int castle_y = -1;
+                int castle_dir = -1;
 
                 for(int i = 0; i < 4; i++) {
                     int tx = x + Game::dx[i];
                     int ty = y + Game::dy[i];
 
                     if(Game::CASTLE_ID[tx][ty] != -1) {
-                        castle_x = tx;
-                        castle_y = ty;
+                        castle_dir = i;
 
                         break;
                     }
                 }
 
                 //castle exists
-                if(castle_x != -1) {
+                if(castle_dir != -1) {
                     //calculate yaw
-                    double yaw = fmod( atan2(
-                        XYToWorld[castle_x][castle_y][1] - XYToWorld[x][y][1],
-                        XYToWorld[castle_x][castle_y][0] - XYToWorld[x][y][0]
-                    ), 2.0 * M_PI);
+                    double yaw = Game::diryaw[castle_dir];
 
                     //push occupy
                     actions.push_back({
@@ -152,6 +147,8 @@ namespace GlobalPlanner {
 
                         0.0
                     });
+
+                    printf("xy[%d %d] yaw: %lf\n", x, y, yaw);
                 }
             }
         }

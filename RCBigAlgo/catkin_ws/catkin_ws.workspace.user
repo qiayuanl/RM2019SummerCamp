@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.9.2, 2019-08-09T11:32:55. -->
+<!-- Written by QtCreator 4.9.2, 2019-08-09T14:16:02. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -108,7 +108,7 @@
      <value type="QString">CMAKE_PREFIX_PATH=/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws/devel:/opt/ros/kinetic</value>
      <value type="QString">LD_LIBRARY_PATH=/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws/devel/lib:/opt/ros/kinetic/lib:/opt/ros/kinetic/lib/x86_64-linux-gnu</value>
      <value type="QString">PATH=/opt/ros/kinetic/bin:/home/robomaster/bin:/home/robomaster/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin</value>
-     <value type="QString">PKG_CONFIG_PATH=/opt/ros/kinetic/lib/pkgconfig:/opt/ros/kinetic/lib/x86_64-linux-gnu/pkgconfig</value>
+     <value type="QString">PKG_CONFIG_PATH=/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws/devel/lib/pkgconfig:/opt/ros/kinetic/lib/pkgconfig:/opt/ros/kinetic/lib/x86_64-linux-gnu/pkgconfig</value>
      <value type="QString">PWD=/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws</value>
      <value type="QString">PYTHONPATH=/opt/ros/kinetic/lib/python2.7/dist-packages</value>
      <value type="QString">ROSLISP_PACKAGE_DIRECTORIES=/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws/devel/share/common-lisp</value>
@@ -118,7 +118,7 @@
      <value type="QString">ROS_PACKAGE_PATH=/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws/src:/opt/ros/kinetic/share</value>
      <value type="QString">ROS_ROOT=/opt/ros/kinetic/share/ros</value>
      <value type="QString">ROS_VERSION=1</value>
-     <value type="QString">SHLVL=6</value>
+     <value type="QString">SHLVL=100</value>
      <value type="QString">TERM=xterm</value>
      <value type="QString">_=/usr/bin/env</value>
     </valuelist>
@@ -367,7 +367,7 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable"></value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/home/robomaster/Documents/RM2019SummerCamp/RCBigAlgo/catkin_ws/devel/lib/rcbigalgo/rcbigalgo</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Custom Executable</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>

@@ -7,9 +7,9 @@
 #include <nav_msgs/Odometry.h>
 
 //position threshold
-const double POSITION_THRESHOLD = 0.015;
+const double POSITION_THRESHOLD = 0.03;
 //angle threshold
-const double ANGLE_THRESHOLD = 1.5 / 180.0 * M_PI;
+const double ANGLE_THRESHOLD = 3.0 / 180.0 * M_PI;
 
 double YawFromQuaternion(const geometry_msgs::Quaternion &quat)
 {
