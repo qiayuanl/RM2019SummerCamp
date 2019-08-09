@@ -19,18 +19,27 @@ Motor::Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopT
 	Kd = 0;
 	Kf = 0;
 	KmaxI = 1000;
+	KmaxO = 1.0;
 
 	//Initialize PID Variables
 	VError_Intergral = 0;
+
+	//Calibrate
+	isCalibrating = (CloseloopType == CLOSELOOP_POSITION);
+	CalibrateDuration = 0;
+	CalibrationValue = 0;
+
+	if(isCalibrating) ROS_INFO("Motor #%d Calibrating...", ID);
 }
 
-void Motor::setCoefficients(double _Kp, double _Ki, double _Kd, double _Kf, double _KmaxI)
+void Motor::setCoefficients(double _Kp, double _Ki, double _Kd, double _Kf, double _KmaxI, double _KmaxO)
 {
 	Kp = _Kp;
 	Ki = _Ki;
 	Kd = _Kd;
 	Kf = _Kf;
 	KmaxI = _KmaxI;
+	KmaxO = _KmaxO;
 }
 
 double Motor::getVelocity()
@@ -40,7 +49,7 @@ double Motor::getVelocity()
 
 double Motor::getPosition()
 {
-	return Hardware()->motors[ID].total_angle * Preset->TickToRad;
+	return (Hardware()->motors[ID].total_angle * Preset->TickToRad) - CalibrationValue;
 }
 
 void Motor::update()
@@ -59,6 +68,25 @@ void Motor::update()
 	if (!dt)
 	{
 		//Return at zero delta time
+		return;
+	}
+
+	//Position Calibrate
+	if(isCalibrating) {
+		Hardware()->motors[ID].power = (CalibrateDuration < (MOTOR_CALIBRATION_DURATION / 2.0)) ? (MOTOR_CALIBRATION_POWER * Preset->PWMMaxValue) : 0.0;
+
+		if(getVelocity() < MOTOR_CALIBRATION_THRESHOLD) {
+			CalibrateDuration += dt;
+		}
+
+		if(CalibrateDuration > MOTOR_CALIBRATION_DURATION) {
+			isCalibrating = false;
+
+			CalibrationValue = getPosition();
+
+			ROS_INFO("Motor #%d Calibration OK!", ID);
+		}
+
 		return;
 	}
 
@@ -104,8 +132,13 @@ void Motor::update()
 		 (c_ * c_ - 1.414 * c_ + 1) * VError_Derivative_Filtered.value[2] - (-2 * c_ * c_ + 2) * VError_Derivative_Filtered.value[1]);
 
 	//output power
-	double output = Kp * VError_Filtered.value[0] + Ki * VError_Intergral + Kd * VError_Derivative_Filtered.value[0] + Kf * set;
+	double output = Kp * VError_Filtered.value[0] + Ki * VError_Intergral + Kd * VError_Derivative_Filtered.value[0] + Kf;
 
+	//limit output
+	double output_sign = (output < 0.0) ? -1.0 : 1.0;
+	output = output_sign * std::min( std::abs(output), KmaxO );
+
+	//output pwm
 	int pwm_max_value = Preset->PWMMaxValue;
 	int out_power = (int)(output * pwm_max_value);
 

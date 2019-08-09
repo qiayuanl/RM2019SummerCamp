@@ -22,6 +22,8 @@
 #include <vector>
 #include <sys/time.h>
 
+#define VAL_LIMIT(x, minv, maxv) std::max( std::min( (x), (maxv) ), (minv) )
+
 namespace Game {
     //time consts
     const int GAME_TOTAL_STEP = 15;
@@ -285,6 +287,25 @@ namespace Game {
                 CC::recalc_strong(&board);
             }
         }
+
+        inline int get_score(Board &b, bool who) {
+            int score = 0;
+
+            //grid
+            for(int x = 0; x < MAX_X; x++) for(int y = 0; y < MAX_Y; y++) {
+                int8_t occupy_status = b.board_state(x, y);
+
+                if(occupy_status == who) {
+                    if(CASTLE_ID[x][y] != -1) score += 50;
+                    else score += get_bit(b.is_strong, x, y) ? 20 : 15;
+                }
+            }
+
+            //penalty
+            score += point_sign(who) * b.delta_points;
+
+            return score;
+        }
     };
 
     namespace Hash {
@@ -349,21 +370,21 @@ namespace Game {
              + Steps
 
              + 50 * TowersOccupied
-             + 5  * TowerDeltaSum
+             + 15  * TowerDeltaSum
 
              + 20 * GridStrongOccupied
              + 10  * GridOccupied
 
-             + (2*)10 * 8con Me Grids Beside opp Tower Zone
+             // + (2*)10 * 8con Me Grids Beside opp Tower Zone //experimental
 
-             - Penalty
+             - 2 * Penalty
         */
         inline int evaluate(bool who, Board &b, int time_left, int step_left) {
             int score = 0;
 
             score += step_left; //step
             score += time_left / 1000; //time
-            score += point_sign(who) * b.delta_points; //penalty
+            score += 2 * point_sign(who) * b.delta_points; //penalty
 
             //calculate grid occupy
             for(int x = 0; x < MAX_X; x++) for(int y = 0; y < MAX_Y; y++) if(CASTLE_ID[x][y] == -1) {
@@ -380,8 +401,8 @@ namespace Game {
             for(int i = 0; i < MAX_CASTLE; i++) if(b.castle[i]) {
                 bool castle_owner = (b.castle[i] > 0) ? 0 : 1;
 
-                score += (who == castle_owner) ? 100 : (-100);
-                score += 10 * point_sign(who) * b.castle[i];
+                score += (who == castle_owner) ? 50 : (-50);
+                score += 15 * point_sign(who) * VAL_LIMIT(b.castle[i], (int8_t)-8, (int8_t)8);
             }
 
             return score;
@@ -435,7 +456,7 @@ namespace Game {
                 }
 
                 //check if tle
-                if(++nodes_to_next_tcheck >= 2500000) {
+                if(++nodes_to_next_tcheck >= 1000000) {
                     nodes_to_next_tcheck = 0;
 
                     gettimeofday(&T_end, 0);
@@ -507,7 +528,7 @@ namespace Game {
             }
 
             //use eval func to find best decision
-            int max_eval = 0;
+            int max_eval = -2147483648;
             int state_id = 0;
             for(int i = 0; i < qT; i++) {
                 int eval = evaluate(who, Hash::status[Q[i].tt_id], Q[i].tot_time, Q[i].tot_step);

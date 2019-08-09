@@ -29,7 +29,6 @@ class Motion
 
     void CallbackDynamicParam(rcbigcar::MotionConfig &config, uint32_t level);
     void CallbackSetpoint(const std_msgs::Float64MultiArray::ConstPtr &setpoint);
-
   private:
     /*
      * Handles
