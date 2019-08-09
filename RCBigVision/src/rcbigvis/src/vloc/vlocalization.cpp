@@ -89,8 +89,8 @@ void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray:
         double Cur_Base_Z =   tf_world_base.getOrigin().getZ();
         double Cur_Base_Yaw = YawFromQuaternion(tf_world_base.getRotation());
 
-        //Ignore Flying Base (>0.25m)
-        if(std::abs(Cur_Base_Z) < 0.25) {
+        //Ignore Flying Base (>0.2m)
+        if(std::abs(Cur_Base_Z) < 0.2) {
             //Calc Weight
             double Cur_Weight = 1 / tag_cam_v.length();
 
