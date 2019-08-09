@@ -56,6 +56,7 @@ Chassis::Chassis()
   {
     dbg_spd_setpoint_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_set_spd", 50);
     dbg_spd_real_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_real_spd", 50);
+    dbg_pose_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_pose", 50);
   }
 }
 
@@ -89,14 +90,14 @@ double Chassis::ReadGyroAngle()
 
 void Chassis::CallbackVLocalization(const geometry_msgs::Pose::ConstPtr &pose)
 {
-  if (AngularVelocity < Dyn_Config_VisualVel)
+  if (fabs(AngularVelocity) < Dyn_Config_VisualVel)
   {
     // Update Coordinate
     x = pose->position.x;
     y = pose->position.y;
 
     // Correct Gyro
-    GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
+    // GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
 
     // Set Initial Pose
     InitialPoseGot = true;
@@ -128,8 +129,8 @@ void Chassis::UpdateOdometry()
   x += dx * cos(theta) - dy * sin(theta);
   y += dx * sin(theta) + dy * cos(theta);
 
-  // theta += dtheta;
-  theta = ReadGyroAngle() + GyroCorrection;
+  theta += dtheta;
+  // theta = ReadGyroAngle() + GyroCorrection;
   theta = fmod(theta, 2 * M_PI);
 
   PublishPosition();
@@ -238,7 +239,7 @@ void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t lev
   // Dynamic Params
   Dyn_Config_MaxVel = config.MaxVel;
   Dyn_Config_VisualVel = config.VisualVel;
-
+  Dyn_Config_TimeDelay = config.time_delay;
   // Dynamic Motor Params
   for (int i = 0; i < 4; i++)
   {
@@ -258,13 +259,16 @@ void Chassis::UpdateDebug()
 
   std_msgs::Float64MultiArray motorSetpoint;
   std_msgs::Float64MultiArray motorReal;
+  std_msgs::Float64MultiArray pose;
 
   for (int i = 0; i < 4; i++)
   {
     motorSetpoint.data.push_back(motors[i]->Setpoint);
     motorReal.data.push_back(motors[i]->getVelocity());
   }
-
+  pose.data.push_back(x);
+  pose.data.push_back(y);
   dbg_spd_setpoint_pub.publish(motorSetpoint);
   dbg_spd_real_pub.publish(motorReal);
+  dbg_pose_pub.publish(pose);
 }
