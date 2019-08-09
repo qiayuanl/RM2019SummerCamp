@@ -48,7 +48,7 @@ void RMUnpackCallback(uint8_t* data) {
                 int8_t status = -1;
 
                 //if occupied
-                if(info->region_occupy[y][x].status != 0) {
+                if((info->region_occupy[y][x].status != 0) && (info->region_occupy[y][x].belong != 2)) {
 
                     //red or blue
                     status = (info->region_occupy[y][x].belong == 1) ? 0 : 1;
