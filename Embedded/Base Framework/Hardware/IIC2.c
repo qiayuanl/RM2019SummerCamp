@@ -14,7 +14,23 @@ void IIC2_Init(void)
     IIC2_SDA=1;
     IIC2_SCL=1;  
 }
-
+void SDA2_OUT()
+{
+	GPIO_InitTypeDef GPIO_Initure;
+	GPIO_Initure.Pin=GPIO_PIN_0;
+  GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  //推挽输出
+  GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
+  GPIO_Initure.Speed=GPIO_SPEED_FAST;     //快速
+  HAL_GPIO_Init(GPIOF,&GPIO_Initure);
+}
+void SDA2_IN()
+{
+	GPIO_InitTypeDef GPIO_Initure;
+	GPIO_Initure.Pin=GPIO_PIN_0;
+  GPIO_Initure.Mode=GPIO_MODE_INPUT;
+	GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
+  HAL_GPIO_Init(GPIOF,&GPIO_Initure);
+}
 //产生IIC起始信号
 void IIC2_Start(void)
 {

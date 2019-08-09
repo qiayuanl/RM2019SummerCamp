@@ -31,5 +31,4 @@ Using Manifold 2 as microcontroller, this project eliminates involvement of embe
 
 #### Mechanics
 - Chen Wenxiao
-- Sun Chenghao
 - Qin Yuqin
