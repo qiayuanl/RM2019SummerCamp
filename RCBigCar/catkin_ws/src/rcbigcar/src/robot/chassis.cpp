@@ -86,13 +86,14 @@ double Chassis::ReadGyroAngle() {
 }
 
 void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose ) {
-	if(AngularVelocity < Dyn_Config_VisualVel) {
+	if(fabs(AngularVelocity) < Dyn_Config_VisualVel) {
 		//Update Coordinate
 		x = pose->position.x;
 		y = pose->position.y;
+		theta = YawFromQuaternion(pose->orientation);
 
 		//Correct Gyro
-		GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
+		//GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
 
 		//Set Initial Pose
 		InitialPoseGot = true;
@@ -122,8 +123,8 @@ void Chassis::UpdateOdometry() {
 	x += dx * cos(theta) - dy * sin(theta);
 	y += dx * sin(theta) + dy * cos(theta);
 
-	//theta += dtheta;
-	theta = ReadGyroAngle() + GyroCorrection;
+	theta += dtheta;
+	//theta = ReadGyroAngle() + GyroCorrection;
 	theta = fmod(theta, 2 * M_PI);
 
 	PublishPosition();
@@ -239,7 +240,7 @@ void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t lev
 	//Dynamic Motor Params
 	for (int i = 0; i < 4; i++)
 	{
-		motors[i]->setCoefficients(config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI);
+		motors[i]->setCoefficients(config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, 1.0);
 	}
 
 	ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, MaxVel = %lf, VisualVel = %lf]",

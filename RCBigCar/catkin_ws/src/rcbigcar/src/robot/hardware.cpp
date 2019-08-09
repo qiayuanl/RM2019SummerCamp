@@ -70,6 +70,7 @@ void RobotHardware::Motor_UpdateOffset(moto_measure_t *ptr, can_frame_t *frame)
     ptr->total_angle = ptr->round_cnt * 8192 + ptr->angle - ptr->offset_angle;
 }
 
+/*
 void RobotHardware::Motor_UpdateTotalAngle(moto_measure_t *p)
 {
     int res1, res2, delta;
@@ -92,6 +93,7 @@ void RobotHardware::Motor_UpdateTotalAngle(moto_measure_t *p)
     p->total_angle += delta;
     p->last_angle = p->angle;
 }
+*/
 
 void RobotHardware::CAN_ReceiveFrame(can_frame_t *frame)
 {
@@ -111,7 +113,7 @@ void RobotHardware::CAN_ReceiveFrame(can_frame_t *frame)
         if (idx < HW_MOTOR_COUNT)
         {
             Motor_UpdateOffset(&motors[idx], frame);
-            Motor_UpdateTotalAngle(&motors[idx]);
+            //Motor_UpdateTotalAngle(&motors[idx]);
 
             motors[idx].msg_cnt++;
         }

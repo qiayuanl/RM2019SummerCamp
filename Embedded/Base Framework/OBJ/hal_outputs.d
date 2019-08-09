@@ -1,0 +1,17 @@
+.\obj\hal_outputs.o: MPU9250\DMP\hal_outputs.c
+.\obj\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\hal_outputs.o: MPU9250\DMP\hal_outputs.h
+.\obj\hal_outputs.o: MPU9250\DMP\mltypes.h
+.\obj\hal_outputs.o: MPU9250\DMP\stdint_invensense.h
+.\obj\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\obj\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+.\obj\hal_outputs.o: MPU9250\DMP\log.h
+.\obj\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\obj\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\obj\hal_outputs.o: MPU9250\DMP\ml_math_func.h
+.\obj\hal_outputs.o: MPU9250\DMP\mlmath.h
+.\obj\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\obj\hal_outputs.o: MPU9250\DMP\start_manager.h
+.\obj\hal_outputs.o: MPU9250\DMP\data_builder.h
+.\obj\hal_outputs.o: MPU9250\DMP\results_holder.h

@@ -38,8 +38,8 @@ struct MotionMotor
 #define HW_CAN_ID "can0"
 
 const double MOTOR_CALIBRATION_THRESHOLD = 0.628;
-const double MOTOR_CALIBRATION_DURATION  = 0.5;
-const double MOTOR_CALIBRATION_POWER     = 0.1;
+const double MOTOR_CALIBRATION_DURATION  = 1.0;
+const double MOTOR_CALIBRATION_POWER     = 0.04;
 
 /*
  * Different Motor Presets
@@ -47,7 +47,7 @@ const double MOTOR_CALIBRATION_POWER     = 0.1;
 const MotorPreset MOTOR_GM2006 = {
     10000,                                           //PWM Max Value
     (1.0 / 60.0) * 2.0 * M_PI / 36.0,                //RPM To rad/s
-    (1.0 / 8192.0) * 2.0 * M_PI / 36.0               //TICK to Meters
+    (1.0 / 8192.0) * 2.0 * M_PI / 36.0               //TICK to rad
 };
 
 const MotorPreset MOTOR_GM3508 = {
@@ -64,29 +64,24 @@ const MotorPreset MOTOR_GM3510 = {
  * Chassis Paramters (SI Unit)
  */
 
-#define MOTOR_CHASSIS MOTOR_GM2006
+#define MOTOR_CHASSIS MOTOR_GM3508
 
 const double CHASSIS_WATCHDOG_TIMEOUT = 1.0;
 
-const double CHASSIS_WHEEL_R = 0.038;
-const double CHASSIS_LENGTH_A = 0.25;
-const double CHASSIS_LENGTH_B = 0.25;
+const double CHASSIS_WHEEL_R = 0.076;
+const double CHASSIS_LENGTH_A = 0.55;
+const double CHASSIS_LENGTH_B = 0.285;
 
 /*
  * Motion Paramters
  */
-#define MOTION_MOTOR_COUNT 2
+#define MOTION_MOTOR_COUNT 1
 const double MOTION_WATCHDOG_TIMEOUT = 1.0;
 
 const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
     {
         4,
         CLOSELOOP_POSITION,
-        &MOTOR_GM3510,
-    },
-    {
-        5,
-        CLOSELOOP_VELOCITY,
         &MOTOR_GM3508,
     }
 };

@@ -1,5 +1,7 @@
 #include <ros/ros.h>
 #include <std_msgs/Float64MultiArray.h>
+#include <unistd.h>
+#include <termios.h>
 
 namespace MK_Blocking {
     namespace Servo {
@@ -47,7 +49,9 @@ namespace MK_Blocking {
         }
 
         void init() {
-            ball_cnt[0] = ball_cnt[1] = ball_cnt[2] = 10;
+            ball_cnt[0] = 4;
+            ball_cnt[1] = 3;
+            ball_cnt[2] = 4;
 
             print();
         }
@@ -75,6 +79,37 @@ namespace MK_Blocking {
     }
 }
 
+ros::Publisher sigan_pub;
+
+// For non-blocking keyboard inputs
+int getch(void)
+{
+  int ch;
+  struct termios oldt;
+  struct termios newt;
+
+  // Store old settings, and copy to new settings
+  tcgetattr(STDIN_FILENO, &oldt);
+  newt = oldt;
+
+  // Make required changes and apply the settings
+  newt.c_lflag &= ~(ICANON | ECHO);
+  newt.c_iflag |= IGNBRK;
+  newt.c_iflag &= ~(INLCR | ICRNL | IXON | IXOFF);
+  newt.c_lflag &= ~(ICANON | ECHO | ECHOK | ECHOE | ECHONL | ISIG | IEXTEN);
+  newt.c_cc[VMIN] = 1;
+  newt.c_cc[VTIME] = 0;
+  tcsetattr(fileno(stdin), TCSANOW, &newt);
+
+  // Get the current character
+  ch = getchar();
+
+  // Reapply old settings
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+  return ch;
+}
+
 int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "mecanics");
@@ -85,9 +120,25 @@ int main(int argc, char **argv)
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
+    sigan_pub = nh.advertise<std_msgs::Float64MultiArray>("motor", 100);
+    std_msgs::Float64MultiArray sigan;
+    sigan.data.resize(1);
+
     MK_Blocking::init_all();
 	while (ros::ok())
 	{
-        MK_Blocking::Ball::place_ball();
+        int ch = getch();
+
+        if(ch == 0x20) {
+            MK_Blocking::Ball::place_ball();
+        }
+        else if(ch == 'w') {
+            sigan.data[0] = -85.0;
+            sigan_pub.publish(sigan);
+        }
+        else if(ch == 's') {
+            sigan.data[0] = -5.0;
+            sigan_pub.publish(sigan);
+        }
 	}
 }

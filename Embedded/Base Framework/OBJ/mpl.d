@@ -1,0 +1,16 @@
+.\obj\mpl.o: MPU9250\DMP\mpl.c
+.\obj\mpl.o: MPU9250\DMP\storage_manager.h
+.\obj\mpl.o: MPU9250\DMP\mltypes.h
+.\obj\mpl.o: MPU9250\DMP\stdint_invensense.h
+.\obj\mpl.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\mpl.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\mpl.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\obj\mpl.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+.\obj\mpl.o: MPU9250\DMP\log.h
+.\obj\mpl.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\obj\mpl.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\obj\mpl.o: MPU9250\DMP\mpl.h
+.\obj\mpl.o: MPU9250\DMP\start_manager.h
+.\obj\mpl.o: MPU9250\DMP\data_builder.h
+.\obj\mpl.o: MPU9250\DMP\results_holder.h
+.\obj\mpl.o: MPU9250\DMP\mlinclude.h
