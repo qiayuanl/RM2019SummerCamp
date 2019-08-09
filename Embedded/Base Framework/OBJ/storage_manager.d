@@ -1,0 +1,14 @@
+.\obj\storage_manager.o: MPU9250\DMP\storage_manager.c
+.\obj\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\storage_manager.o: MPU9250\DMP\storage_manager.h
+.\obj\storage_manager.o: MPU9250\DMP\mltypes.h
+.\obj\storage_manager.o: MPU9250\DMP\stdint_invensense.h
+.\obj\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\obj\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+.\obj\storage_manager.o: MPU9250\DMP\log.h
+.\obj\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\obj\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\obj\storage_manager.o: MPU9250\DMP\ml_math_func.h
+.\obj\storage_manager.o: MPU9250\DMP\mlmath.h
+.\obj\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

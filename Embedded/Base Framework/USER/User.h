@@ -1,6 +1,9 @@
 #ifndef _USER_H_
 #define _USER_H_
-#include "MPU.h"
+#include "Algorithm.h"
+#include "Odometer.h"
+#include "Encrypt.h"
+#include "Decrypt.h"
 #include "User_Config.h"
 #include "Tasks.h"
 #include "Machine_Arm.h"
@@ -33,7 +36,6 @@
 #include "PWM.h"
 #include "TIM.h"
 #include "arm_math.h"
-#include "STM_Flash.h" //从0x8180000往后0x80000字节均为可擦除的flash区
-#include "bsp_imu.h"
+#include "STM_Flash.h"   //从0x8180000往后0x80000字节均为可擦除的flash区
 void User_Code(void);
 #endif

@@ -24,6 +24,7 @@ void LED_Init(void)
 }
 void LED_Flash(void* pvParameters)
 {
+//	char Buffer[256];
 	while(1)
 	{
 		LED_R=1;
@@ -32,7 +33,9 @@ void LED_Flash(void* pvParameters)
 		LED_R=0;
 		LED_G=1;
 		vTaskDelay(500);
-		
+//		memset(&Buffer,' ',sizeof(Buffer));
+//		vTaskGetRunTimeStats(Buffer);
+//		printf("%s \r\n",Buffer);
 	}
 }
 

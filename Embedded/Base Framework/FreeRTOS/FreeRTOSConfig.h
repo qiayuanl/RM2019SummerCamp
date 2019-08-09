@@ -8,8 +8,8 @@
 #define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES			( 5 )
 #define configMINIMAL_STACK_SIZE		( ( unsigned short ) 128 )  //最小栈分配大小
-#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 48 * 1024 ) )  //96KB的栈空间用作程序分配
-#define configMAX_TASK_NAME_LEN			( 10 )
+#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 96 * 1024 ) )  //96KB的栈空间用作程序分配
+#define configMAX_TASK_NAME_LEN			( 16 )
 #define configUSE_TRACE_FACILITY		1
 #define configUSE_16_BIT_TICKS			0
 #define configIDLE_SHOULD_YIELD			1
@@ -20,7 +20,12 @@
 #define configUSE_MALLOC_FAILED_HOOK	0
 #define configUSE_APPLICATION_TASK_TAG	0
 #define configUSE_COUNTING_SEMAPHORES	1
-#define configGENERATE_RUN_TIME_STATS	0
+
+#define configGENERATE_RUN_TIME_STATS	1
+
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()  ConfigureTimeForRunTimeStats()
+#define portGET_RUN_TIME_COUNTER_VALUE() FreeRTOSRunTimeTicks
+
 #define configUSE_CO_ROUTINES 		0
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 #define configUSE_TIMERS				1
