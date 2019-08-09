@@ -77,9 +77,8 @@ namespace MechanicalExecuter {
                 //wait for angle
                 Finished = false;
 
-                int data_index = 3 * CurAction.actutator_id;
-                if(data_index <= MotorStatus.data.size() - 1) {
-                    Finished = fabs(CurAction.setpoint - MotorStatus.data[data_index]) < ANGULAR_TOLERANCE;
+                if((3 * CurAction.actutator_id) <= MotorStatus.data.size() - 1) {
+                    Finished = fabs(CurAction.setpoint - MotorStatus.data[3 * CurAction.actutator_id]) < ANGULAR_TOLERANCE;
                 }
             break;
 
@@ -96,6 +95,10 @@ namespace MechanicalExecuter {
         MotorStatus = *motor_status;
     }
 
+    void reset() {
+        MechanicalActions.clear();
+    }
+
     void init() {
         ros::NodeHandle nh;
 
@@ -105,10 +108,6 @@ namespace MechanicalExecuter {
         motor_status_sub   = nh.subscribe<std_msgs::Float64MultiArray>("motorstatus", 100, &CallbackMotorStatus);
 
         reset();
-    }
-
-    void reset() {
-        MechanicalActions.clear();
     }
 }
 
