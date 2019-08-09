@@ -90,9 +90,10 @@ void Chassis::CallbackVLocalization( const geometry_msgs::Pose::ConstPtr& pose )
 		//Update Coordinate
 		x = pose->position.x;
 		y = pose->position.y;
+		theta = YawFromQuaternion(pose->orientation);
 
 		//Correct Gyro
-		GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
+		//GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
 
 		//Set Initial Pose
 		InitialPoseGot = true;
@@ -122,8 +123,8 @@ void Chassis::UpdateOdometry() {
 	x += dx * cos(theta) - dy * sin(theta);
 	y += dx * sin(theta) + dy * cos(theta);
 
-	//theta += dtheta;
-	theta = ReadGyroAngle() + GyroCorrection;
+	theta += dtheta;
+	//theta = ReadGyroAngle() + GyroCorrection;
 	theta = fmod(theta, 2 * M_PI);
 
 	PublishPosition();

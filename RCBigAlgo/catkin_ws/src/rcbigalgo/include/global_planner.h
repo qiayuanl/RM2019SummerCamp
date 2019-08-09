@@ -125,7 +125,7 @@ namespace GlobalPlanner {
                     int tx = x + Game::dx[i];
                     int ty = y + Game::dy[i];
 
-                    if(Game::CASTLE_ID[tx][ty] != -1) {
+                    if(COORD_OK(tx, ty) && (Game::CASTLE_ID[tx][ty] != -1)) {
                         castle_dir = i;
 
                         break;
@@ -148,7 +148,7 @@ namespace GlobalPlanner {
                         0.0
                     });
 
-                    printf("xy[%d %d] yaw: %lf\n", x, y, yaw);
+                    fprintf(stderr, "xy[%d %d] yaw: %lf\n", x, y, yaw);
                 }
             }
         }
