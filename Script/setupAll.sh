@@ -48,7 +48,7 @@ echo "================= CONTROLLER ENABLED ================="
 #    sleep 1
 # done
 
-rosrun rcbigcar servo
+
 
 top
 

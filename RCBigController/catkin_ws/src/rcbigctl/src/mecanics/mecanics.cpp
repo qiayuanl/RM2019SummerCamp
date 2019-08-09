@@ -133,11 +133,11 @@ int main(int argc, char **argv)
             MK_Blocking::Ball::place_ball();
         }
         else if(ch == 'w') {
-            sigan.data[0] = -85;
+            sigan.data[0] = -85.0;
             sigan_pub.publish(sigan);
         }
         else if(ch == 's') {
-            sigan.data[1] = 0.0;
+            sigan.data[0] = -5.0;
             sigan_pub.publish(sigan);
         }
 	}

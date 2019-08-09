@@ -41,7 +41,7 @@
  <node pkg="rcbigvis" type="vloc" name="vloc" respawn="true" output="screen"/>
 
 <!-- Set static location of base to cam -->
-<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam" args="0.025 -0.230 0.645 -1.5707 0 -2.3561 base cam" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam" args="-0.06 -0.230 0.645 -1.5707 0 -2.3561 base cam" />
 
 <!-- Set static location of tags -->
 <node pkg="rcbigvis" type="tags_lut" name="tags_lut" respawn="true" output="screen"/>
