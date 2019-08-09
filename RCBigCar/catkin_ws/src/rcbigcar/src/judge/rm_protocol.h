@@ -64,14 +64,14 @@ typedef struct
     {
         uint8_t status : 2;     // 0 = no one, 1 = weak, 2 = strong
         uint8_t belong : 2;     // 0 = no one, 1 = red, 2 = blue
-        uint8_t have_robot : 2; // same as belong // resv
-        uint8_t resv : 2;
+        uint8_t resv : 4;
     } region_occupy[9][7];
 
     uint8_t car_location[2];
+    uint8_t round_step_move[2];
     uint8_t round_remain_tick;
-    uint8_t round_remain_cnt;
-    uint8_t round_team;
+    uint8_t round_remain_cnt : 7;
+    uint8_t round_team : 1;
     int16_t realtime_score[2];
 } summer_camp_info_t;
 

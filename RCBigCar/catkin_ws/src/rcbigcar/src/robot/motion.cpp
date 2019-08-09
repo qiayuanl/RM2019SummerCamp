@@ -82,7 +82,7 @@ void Motion::CallbackSetpoint(const std_msgs::Float64MultiArray::ConstPtr &setpo
 	motionWatchdog = ros::Time::now();
 
 	//set setpoint
-	for (int i = 0; i < min(setpoint->data.size(), MOTION_MOTOR_COUNT); i++)
+	for (int i = 0; i < std::min((int)setpoint->data.size(), MOTION_MOTOR_COUNT); i++)
 	{
 		motors[i]->Setpoint = setpoint->data[i];
 	}
