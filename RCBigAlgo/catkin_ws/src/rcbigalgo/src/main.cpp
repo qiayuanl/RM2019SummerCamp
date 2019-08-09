@@ -4,7 +4,11 @@
 
 int main(int argc, char *argv[])
 {
-    ros::init(argc, argv, "rcbigalgo");
+    std::map<std::string,std::string> remappings;
+    remappings["__master"] = "http://192.168.43.53:11311";
+    remappings["__hostname"] = "192.168.43.16";
+    ros::init(remappings, "rcbigalgo");
+
     ros::start();
 
     ros::AsyncSpinner spinner(1);

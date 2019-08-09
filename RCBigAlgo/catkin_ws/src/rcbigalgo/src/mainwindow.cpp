@@ -4,9 +4,11 @@
 #include "../include/action_executer.h"
 
 #include <ros/ros.h>
-#include <rcbigcar/board.h>
+#include <QTimer>
+//#include <rcbigcar/board.h>
 
 ////////////////////////GAME/////////////////////////
+/*
 enum GameUIStatus {
     GameStatus_Place_Red,
     GameStatus_Place_Blue,
@@ -22,9 +24,12 @@ QString GameStatusString[4] = {
     "BLUE"
 };
 
-Game::Board GlobalBoard;
 GameUIStatus UIStatus;
+*/
 
+Game::Board GlobalBoard;
+
+/*
 int TimeLeft[2], MoveLeft[2];
 int TurnCount = 0;
 
@@ -34,10 +39,10 @@ void ResetTurn() {
     //time & step
     TimeLeft[0] = TimeLeft[1] = Game::GAME_TOTAL_MS;
     MoveLeft[0] = MoveLeft[1] = Game::GAME_TOTAL_STEP;
-}
+}*/
 
 void ResetGame() {
-    TurnCount = 0;
+    //TurnCount = 0;
 
     //board
     memset(&GlobalBoard, 0, sizeof(GlobalBoard));
@@ -45,12 +50,19 @@ void ResetGame() {
     GlobalBoard.ball[0] = GlobalBoard.ball[1] = 20;
     GlobalBoard.cup[0]  = GlobalBoard.cup[1]  = 10;
 
+    GlobalBoard.position[0][0] = 6;
+    GlobalBoard.position[0][1] = 8;
+
+    GlobalBoard.position[1][0] = 0;
+    GlobalBoard.position[1][1] = 8;
+
     //turn
-    ResetTurn();
+    //ResetTurn();
 
     //ui
-    UIStatus = GameStatus_Place_Red;
+    //UIStatus = GameStatus_Place_Red;
 }
+
 ///////////////////////////////////////////////////////
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -59,6 +71,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ResetGame();
 
+    //Setup Auto
+    ActionExecuter::init();
+
+    //Setup Timer
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer->start(1000 / 20);
+
+    //Setup UI
     ui->setupUi(this);
 
     canvas = new VisualWidget(this);
@@ -69,8 +90,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete timer;
     delete canvas;
     delete ui;
+}
+
+void MainWindow::update() {
+    ActionExecuter::update();
 }
 
 ///////////////////////////Visual Widget///////////////////////////
@@ -83,7 +109,7 @@ void VisualWidget::GameUpdate(void) {
     //draw graph
     this->update();
 
-    bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
+    /* bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
     //draw text
     this->GameStatusOut->setPlainText(
@@ -97,7 +123,7 @@ void VisualWidget::GameUpdate(void) {
 
         QString("Score Red = ")  + QString::number(Game::OP::get_score(GlobalBoard, 0)) + QString("\n") +
         QString("Score Blue = ") + QString::number(Game::OP::get_score(GlobalBoard, 1)) + QString("\n")
-    );
+    ); */
 }
 
 void VisualWidget::paintEvent(QPaintEvent *event)
@@ -132,16 +158,18 @@ void VisualWidget::DrawContent(QPainter *painter, QPaintEvent *event) {
     painter->fillRect(event->rect(), QBrush(Qt::white));
 
     //draw status
-    int status_margins = std::min(this->size().width(), this->size().height()) * 0.1;
+    /* int status_margins = std::min(this->size().width(), this->size().height()) * 0.1;
     painter->setPen  (QPen(Qt::black));
 
     painter->drawText(this->rect().adjusted(status_margins, status_margins, -status_margins, -status_margins).bottomLeft(),
                       GameStatusString[UIStatus]);
+    */
 
     //draw score
-    painter->setPen  (QPen(Qt::black));
+    /* painter->setPen  (QPen(Qt::black));
     painter->drawText(this->rect().adjusted(status_margins, status_margins, -status_margins, -status_margins).bottomRight(),
                       ((GlobalBoard.delta_points > 0) ? QString("RED") : QString("BLUE")) + QString(": ") + QString::number(std::abs(GlobalBoard.delta_points))); 
+    */
 
     /*
     //draw eval
@@ -218,6 +246,7 @@ void VisualWidget::DrawContent(QPainter *painter, QPaintEvent *event) {
 }
 
 void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
+/*
     bool Update = false;
 
     switch(UIStatus) {
@@ -286,8 +315,10 @@ void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
     }
 
     if(Update) GameUpdate();
+*/
 }
 
+/*
 void MainWindow::on_pbPlaceBall_clicked() {
     bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
 
@@ -328,45 +359,33 @@ void MainWindow::on_pEndTurn_clicked() {
 
     ResetTurn();
     canvas->GameUpdate();
-}
+}*/
 
 void MainWindow::on_pbSearch_clicked()
 {
-    for(int i = 0; i < 10; i++) {
-        bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
+    bool who = 0;
 
-        std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, MoveLeft[who], TimeLeft[who], 1000);
+    std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, Game::GAME_TOTAL_STEP, Game::GAME_TOTAL_MS, 1000);
+    ActionExecuter::LoadActionList( GlobalPlanner::GetActions(who, GlobalBoard, strategies) );
 
-        for(int i = 0; i < strategies.size(); i++) {
-            uint8_t st = strategies[i];
+    for(int i = 0; i < strategies.size(); i++) {
+        uint8_t st = strategies[i];
 
-            if(st >= 0 && st <= 3) {
-                Game::OP::move(GlobalBoard, who, st);
-
-                TimeLeft[who] -= Game::ACTION_MOVE_MS;
-                MoveLeft[who] -= 1;
-            }
-            else if(st == 4) {
-                Game::OP::occupy(GlobalBoard, who);
-
-                TimeLeft[who] -= Game::ACTION_OCCUPY_MS;
-            }
-            else if(st == 5) {
-                Game::OP::place(GlobalBoard, who, 1);
-                GlobalBoard.ball[who]--;
-
-                TimeLeft[who] -= Game::ACTION_PLACE_BALL_MS;
-            }
-            else if(st == 6) {
-                Game::OP::place(GlobalBoard, who, 4);
-                GlobalBoard.cup[who]--;
-
-                TimeLeft[who] -= Game::ACTION_PLACE_CUP_MS;
-            }
-
-            canvas->GameUpdate();
+        if(st >= 0 && st <= 3) {
+            Game::OP::move(GlobalBoard, who, st);
         }
-    }
+        else if(st == 4) {
+            Game::OP::occupy(GlobalBoard, who);
+        }
+        else if(st == 5) {
+            Game::OP::place(GlobalBoard, who, 1);
+            GlobalBoard.ball[who]--;
+        }
+        else if(st == 6) {
+            Game::OP::place(GlobalBoard, who, 4);
+            GlobalBoard.cup[who]--;
+        }
 
-    on_pEndTurn_clicked();
+        canvas->GameUpdate();
+    }
 }
