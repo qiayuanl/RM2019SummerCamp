@@ -1,14 +1,20 @@
 #include "positionctl.h"
 
-double YawFromQuaternion(const geometry_msgs::Quaternion& quat)
+double YawFromQuaternion(const tf::Quaternion& quat)
 {
-  tf::Quaternion q_orient(quat.x, quat.y, quat.z, quat.w);
-  tf::Matrix3x3 m_orient(q_orient);
+  tf::Matrix3x3 m_orient(quat);
 
   double roll, pitch, yaw;
   m_orient.getRPY(roll, pitch, yaw);
 
   return yaw;
+}
+
+double YawFromQuaternion(const geometry_msgs::Quaternion &quat) {
+  tf::Quaternion quat_tf;
+  tf::quaternionMsgToTF(quat, quat_tf);
+
+  return YawFromQuaternion(quat_tf);
 }
 
 double AngularMinus(double a, double b)
@@ -38,10 +44,10 @@ PositionCtl::PositionCtl()
   DynamicParamServer.setCallback(boost::bind(&PositionCtl::CallbackDynamicParam, this, _1, _2));
 
   // Setup Comm
-  pos_sub = node_priv.subscribe<nav_msgs::Odometry>("odom", 100, &PositionCtl::CallbackPosition, this);
+  //pos_sub = node_priv.subscribe<nav_msgs::Odometry>("odom", 100, &PositionCtl::CallbackPosition, this);
   setpoint_sub = node_priv.subscribe<geometry_msgs::PoseStamped>("move_base_simple/goal", 100,
                                                                  &PositionCtl::CallbackSetpoint, this);
-  path_sub = node_priv.subscribe<nav_msgs::Path>("local_planner/path", 100, &PositionCtl::CallbackPath, this);
+  //path_sub = node_priv.subscribe<nav_msgs::Path>("local_planner/path", 100, &PositionCtl::CallbackPath, this);
   twist_pub = node_priv.advertise<geometry_msgs::Twist>("velocity", 100);
 }
 
@@ -51,6 +57,7 @@ PositionCtl::~PositionCtl()
 
 void PositionCtl::update()
 {
+  UpdateCloseloop();
 }
 
 void PositionCtl::CallbackDynamicParam(rcbigctl::ControllerConfig& config, uint32_t level)
@@ -75,6 +82,21 @@ void PositionCtl::CallbackDynamicParam(rcbigctl::ControllerConfig& config, uint3
 
 void PositionCtl::UpdateCloseloop()
 {
+  //lookup XYW From TF
+  tf::StampedTransform tf_map_base;
+  try {
+    tf_listener.lookupTransform("map", "base", ros::Time(0), tf_map_base);
+  }
+  catch (tf::TransformException ex) {
+    ROS_ERROR("%s",ex.what());
+    return;
+  }
+
+  X = tf_map_base.getOrigin().getX();
+  Y = tf_map_base.getOrigin().getY();
+  W = YawFromQuaternion(tf_map_base.getRotation());
+
+  //Closeloop Twist
   geometry_msgs::Twist twist;
   twist.linear.z = 0;
   twist.angular.x = 0;
@@ -92,7 +114,7 @@ void PositionCtl::UpdateCloseloop()
   geometry_msgs::Vector3Stamped vRobot;
   try
   {
-    tf_pos.transformVector("base_fused", vWorld, vRobot);
+    tf_listener.transformVector("base", vWorld, vRobot);
   }
   catch (tf::TransformException ex)
   {
@@ -106,6 +128,7 @@ void PositionCtl::UpdateCloseloop()
   twist_pub.publish(twist);
 }
 
+/* 
 void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom)
 {
   X = odom->pose.pose.position.x;
@@ -114,21 +137,26 @@ void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom)
 
   UpdateCloseloop();
 }
-
+*/
+/*
 void PositionCtl::setPoseSetpoint(const geometry_msgs::Pose& pose)
 {
   Set_X = pose.position.x;
   Set_Y = pose.position.y;
   Set_W = fmod(YawFromQuaternion(pose.orientation), 2 * M_PI);
 }
-
+*/
 void PositionCtl::CallbackSetpoint(const geometry_msgs::PoseStamped::ConstPtr& pose)
 {
-  setPoseSetpoint(pose->pose);
+  Set_X = pose->pose.position.x;
+  Set_Y = pose->pose.position.y;
+  Set_W = fmod(YawFromQuaternion(pose->pose.orientation), 2 * M_PI);
 }
 
+/* 
 void PositionCtl::CallbackPath(const nav_msgs::Path::ConstPtr& path)
 {
   int index = std::min(10 - 1, (int)path->poses.size() - 1);
   setPoseSetpoint(path->poses[index].pose);
 }
+*/

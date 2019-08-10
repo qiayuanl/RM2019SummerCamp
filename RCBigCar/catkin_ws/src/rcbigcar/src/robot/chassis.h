@@ -41,7 +41,7 @@ public:
   /* Callback Funcs */
   void CallbackDynamicParam(rcbigcar::ChassisConfig& config, uint32_t level);
   void CallbackVelocity(const geometry_msgs::Twist::ConstPtr& twist);
-  void CallbackVLocalization(const geometry_msgs::Pose::ConstPtr& pose);
+  //void CallbackVLocalization(const geometry_msgs::Pose::ConstPtr& pose);
 
 private:
   /*
@@ -50,16 +50,16 @@ private:
   bool Config_IsDebug;
 
   double Dyn_Config_MaxVel;
-  double Dyn_Config_VisualVel;
-  double Dyn_Config_TimeDelay;
+  //double Dyn_Config_VisualVel;
+  //double Dyn_Config_TimeDelay;
   /*
    * Handles
    */
-  ros::Publisher pos_pub;
-  ros::Subscriber vloc_sub;
+  //ros::Publisher pos_pub;
+  //ros::Subscriber vloc_sub;
   ros::Subscriber twist_sub;
   tf::TransformBroadcaster tf_pos_pub;
-  tf::TransformListener tf_delay_lis;
+  //tf::TransformListener tf_listener;
 
   /*
   * Motor
@@ -70,13 +70,13 @@ private:
   /*
   * Odometry
   */
-  bool InitialPoseGot;
+  /* bool InitialPoseGot;
   double GyroCorrection;
-  double AngularVelocity;
+  double AngularVelocity; */
 
   double x, y, theta;
-  double lastx, lasty, lasttheta;
-  ros::Time lastt;
+  //double lastx, lasty, lasttheta;
+  //ros::Time lastt;
 
   double last_position[4];
 
@@ -85,7 +85,7 @@ private:
   */
   ros::Publisher dbg_spd_setpoint_pub;
   ros::Publisher dbg_spd_real_pub;
-  ros::Publisher dbg_pose_pub;
+  //ros::Publisher dbg_pose_pub;
 };
 
 #endif
