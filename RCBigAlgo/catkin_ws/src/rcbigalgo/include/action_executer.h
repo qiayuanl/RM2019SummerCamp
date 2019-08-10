@@ -85,9 +85,29 @@ namespace ActionExecuter
             CurActionLastTime = ros::Time::now();
 
             CurAction.countdown -= dt;
-            return false;
         }
 
+        //Timeout
+        bool isTimeout = CurAction.countdown <= 0;
+        if(isTimeout) return true;
+
+        //Wait for feedback
+        bool Feedback_Done = true;
+
+        switch(CurAction.type) {
+            case GlobalPlanner::ACTION_OCCUPY:
+                Feedback_Done = GlobalBoard.board_state(CurAction.feedback.grid_x, CurAction.feedback.grid_y) == WhoAmI;
+            break;
+
+            case GlobalPlanner::ACTION_PLACEBALL:
+            case GlobalPlanner::ACTION_PLACECUP:
+                Feedback_Done = GlobalBoard.castle[CurAction.feedback.castle_id] != CurAction.feedback.castle_last_value;
+            break;
+        }
+
+        if(!Feedback_Done) return false;
+
+        //Else complete
         return true;
     }
 

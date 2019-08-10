@@ -80,6 +80,9 @@ namespace MechanicalExecuter {
                 if((3 * CurAction.actutator_id) <= (int)MotorStatus.data.size() - 1) {
                     Finished = fabs(CurAction.setpoint - MotorStatus.data[3 * CurAction.actutator_id]) < ANGULAR_TOLERANCE;
                 }
+
+                //timeout
+                Finished |= ros::Time::now() >= CurAction.target_time;
             break;
 
             default:

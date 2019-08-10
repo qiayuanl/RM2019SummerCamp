@@ -11,9 +11,7 @@
 
 bool JudgeBoardInitialized = false;
 rcbigcar::board JudgeBoard;
-Game::Board GlobalBoard;
 
-int WhoAmI = 0;
 int LastTurnWho = -1;
 
 void InitGlobalBoard() {

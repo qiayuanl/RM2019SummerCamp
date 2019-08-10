@@ -2,6 +2,7 @@
 #define GLOBAL_PLANNER_H
 
 #include "game.h"
+#include "global_board.h"
 #include <ros/ros.h>
 
 #include <tf/tf.h>
@@ -26,6 +27,12 @@ namespace GlobalPlanner {
         ACTION_PLACECUP
     };
 
+    struct FeedbackInfo {
+        int grid_x, grid_y;
+
+        int castle_id, castle_last_value;
+    };
+
     struct Action {
         ActionType type;
 
@@ -34,7 +41,8 @@ namespace GlobalPlanner {
         bool yaw_enabled;
         double world_yaw;
 
-        double countdown;
+        double countdown; //countdown & timeout
+        FeedbackInfo feedback;
     }; 
 
     typedef std::vector<Action>  ActionList;
@@ -78,7 +86,9 @@ namespace GlobalPlanner {
 
             false, 0.0,
 
-            0.0
+            0.0,
+
+            {}
         });
 
         for(int i = 0; i < st.size(); i++) {
@@ -102,7 +112,9 @@ namespace GlobalPlanner {
 
                         false, 0.0,
 
-                        0.0
+                        0.0,
+
+                        {}
                     });
                 }
             }
@@ -115,13 +127,19 @@ namespace GlobalPlanner {
 
                     false, 0.0,
 
-                    1.5
+                    2.0,
+
+                    {
+                        x, y,
+                        0, 0
+                    }
                 });
             }
             //place ball / cup
             else if((strategy == 5) || (strategy == 6)) {
                 //find castle
                 int castle_dir = -1;
+                int castle_id  = -1;
 
                 for(int i = 0; i < 4; i++) {
                     int tx = x + Game::dx[i];
@@ -129,6 +147,8 @@ namespace GlobalPlanner {
 
                     if(COORD_OK(tx, ty) && (Game::CASTLE_ID[tx][ty] != -1)) {
                         castle_dir = i;
+
+                        castle_id = Game::CASTLE_ID[tx][ty];
 
                         break;
                     }
@@ -150,7 +170,9 @@ namespace GlobalPlanner {
 
                         true, yaw,
 
-                        0.0
+                        0.0,
+
+                        {}
                     });
 
                     //push gofront
@@ -161,18 +183,31 @@ namespace GlobalPlanner {
 
                         false, 0.0,
 
-                        0.0
+                        0.0,
+
+                        {}
                     });
 
                     //push place
+                    ActionType place_action_type = (strategy == 5) ? ACTION_PLACEBALL : ACTION_PLACECUP;
                     actions.push_back({
-                        (strategy == 5) ? ACTION_PLACEBALL : ACTION_PLACECUP,
+                        place_action_type,
 
                         place_pos_x, place_pos_y,
 
                         false, 0.0,
 
-                        0.0
+                        (
+                            (place_action_type == ACTION_PLACEBALL)
+                             ? (2.0 * Game::ACTION_PLACE_BALL_MS)
+                             : (1.5 * Game::ACTION_PLACE_CUP_MS)
+                        ),
+
+                        {
+                            x, y,
+
+                            castle_id, GlobalBoard.castle[castle_id]
+                        }
                     });
 
                     //push goback
