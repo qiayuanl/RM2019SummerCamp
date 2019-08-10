@@ -9,11 +9,10 @@ Using Manifold 2 as microcontroller, this project eliminates involvement of embe
 
  - Documentation: The demand analysis and fundamental planning
  - RCBigCar: Motion control in ROS catkin workspace
- - RCBigController: High level control in ROS catkin workspace
+ - RCBigController: Middle level control in ROS catkin workspace
  - RCBigVision: Computer vision using AprilTags in ROS catkin workspace
  - Embedded: The backup base framework for remote control
- - localization_ws: Locating the robot using ROS
- - localmotion_ws: Drivers for chassis, etc
+ - locomotion_ws: some moden controller and planner of robot
  - Script: Common scripts for this project
 
 ## About
