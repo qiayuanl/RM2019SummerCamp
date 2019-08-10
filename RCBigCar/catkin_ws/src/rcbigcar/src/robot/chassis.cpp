@@ -10,6 +10,13 @@ double YawFromQuaternion(const geometry_msgs::Quaternion &quat)
 
   return yaw;
 }
+double YawFromQuaternion(const tf::Quaternion &quat)
+{
+  double roll, pitch, yaw;
+  tf::Matrix3x3 m(quat);
+  m.getEulerYPR(yaw, pitch, roll);
+  return yaw;
+}
 
 Chassis::Chassis()
 {
@@ -90,18 +97,28 @@ double Chassis::ReadGyroAngle()
 
 void Chassis::CallbackVLocalization(const geometry_msgs::Pose::ConstPtr &pose)
 {
-  if (fabs(AngularVelocity) < Dyn_Config_VisualVel)
+  tf::StampedTransform tf_map_base_delay;
+  tf::Vector3 v_base_delay;
+  try
   {
-    // Update Coordinate
-    x = pose->position.x;
-    y = pose->position.y;
-
-    // Correct Gyro
-    // GyroCorrection = -ReadGyroAngle() + YawFromQuaternion(pose->orientation);
-
-    // Set Initial Pose
-    InitialPoseGot = true;
+    tf_delay_lis.lookupTransform("map", "base_fused", ros::Time::now() - ros::Duration(Dyn_Config_TimeDelay),
+                                 tf_map_base_delay);
   }
+  catch (tf::TransformException ex)
+  {
+    ROS_ERROR("%s", ex.what());
+    ros::Duration(1.0).sleep();
+  }
+  v_base_delay = tf_map_base_delay.getOrigin();
+
+  double yaw_delay = YawFromQuaternion(tf_map_base_delay.getRotation());
+  // Update Coordinate
+  x = pose->position.x + v_base_delay.getX();
+  y = pose->position.y + v_base_delay.getY();
+  theta = YawFromQuaternion(pose->orientation) + yaw_delay;
+
+  // Set Initial Pose
+  InitialPoseGot = true;
 }
 
 void Chassis::UpdateOdometry()

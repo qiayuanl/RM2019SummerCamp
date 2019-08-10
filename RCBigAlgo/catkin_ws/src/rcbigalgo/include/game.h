@@ -35,13 +35,10 @@ namespace Game {
     const int ACTION_OCCUPY_MS = 1000;
 
     const int ACTION_PLACE_BALL_MS = 2000;
-    const int ACTION_PLACE_CUP_MS  = 4000;
+    const int ACTION_PLACE_CUP_MS  = 8000;
 
     //point consts
     const int POINTS_PENALTY_CROSS = 5;
-    const int POINTS_HAVE_TOWER = 50;
-    const int POINTS_OCCUPY = 15;
-    const int POINTS_STRONG_OCCUPY = 20;
 
     //Consts
     const int MAX_X = 7;
