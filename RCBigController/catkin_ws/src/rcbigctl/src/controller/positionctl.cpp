@@ -1,6 +1,6 @@
 #include "positionctl.h"
 
-double YawFromQuaternion(const geometry_msgs::Quaternion& quat)
+double YawFromQuaternion(const geometry_msgs::Quaternion &quat)
 {
   tf::Quaternion q_orient(quat.x, quat.y, quat.z, quat.w);
   tf::Matrix3x3 m_orient(q_orient);
@@ -53,7 +53,7 @@ void PositionCtl::update()
 {
 }
 
-void PositionCtl::CallbackDynamicParam(rcbigctl::ControllerConfig& config, uint32_t level)
+void PositionCtl::CallbackDynamicParam(rcbigctl::ControllerConfig &config, uint32_t level)
 {
   ROS_INFO("Position Controller Reconfigure: [Kp_X = %lf, Max_X = %lf, A_X = %lf, Kp_Y = %lf, Max_Y = %lf, A_Y = %lf, "
            "Kp_W = %lf, Max_W = %lf, A_W = %lf]",
@@ -106,7 +106,7 @@ void PositionCtl::UpdateCloseloop()
   twist_pub.publish(twist);
 }
 
-void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom)
+void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr &odom)
 {
   X = odom->pose.pose.position.x;
   Y = odom->pose.pose.position.y;
@@ -115,19 +115,19 @@ void PositionCtl::CallbackPosition(const nav_msgs::Odometry::ConstPtr& odom)
   UpdateCloseloop();
 }
 
-void PositionCtl::setPoseSetpoint(const geometry_msgs::Pose& pose)
+void PositionCtl::setPoseSetpoint(const geometry_msgs::Pose &pose)
 {
   Set_X = pose.position.x;
   Set_Y = pose.position.y;
   Set_W = fmod(YawFromQuaternion(pose.orientation), 2 * M_PI);
 }
 
-void PositionCtl::CallbackSetpoint(const geometry_msgs::PoseStamped::ConstPtr& pose)
+void PositionCtl::CallbackSetpoint(const geometry_msgs::PoseStamped::ConstPtr &pose)
 {
   setPoseSetpoint(pose->pose);
 }
 
-void PositionCtl::CallbackPath(const nav_msgs::Path::ConstPtr& path)
+void PositionCtl::CallbackPath(const nav_msgs::Path::ConstPtr &path)
 {
   int index = std::min(10 - 1, (int)path->poses.size() - 1);
   setPoseSetpoint(path->poses[index].pose);
