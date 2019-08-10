@@ -71,6 +71,12 @@ void MainWindow::UpdateStrategy() {
             int temp_time_left = JudgeBoard.time_left * 1000;
             int temp_move_left = JudgeBoard.move_left;
 
+            //pre-search
+            if(JudgeBoard.team != CurTurnWho) {
+                temp_time_left = Game::GAME_TOTAL_MS;
+                temp_move_left = Game::GAME_TOTAL_STEP;
+            }
+
             for(int i = 0; i < 3; i++) {
                 std::vector<uint8_t> strategy_piece = Game::Search::search(WhoAmI, temp_board, temp_move_left, temp_time_left, 1000);
 

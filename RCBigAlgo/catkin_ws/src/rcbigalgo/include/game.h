@@ -32,7 +32,7 @@ namespace Game {
     const int GAME_TOTAL_MS   = 40000;
 
     const int ACTION_MOVE_MS  = 1000;
-    const int ACTION_OCCUPY_MS = 1000;
+    const int ACTION_OCCUPY_MS = 1500;
 
     const int ACTION_PLACE_BALL_MS = 2000;
     const int ACTION_PLACE_CUP_MS  = 8000;
@@ -402,7 +402,7 @@ namespace Game {
                 bool castle_owner = (b.castle[i] > 0) ? 0 : 1;
 
                 score += (who == castle_owner) ? 50 : (-50);
-                score += 15 * point_sign(who) * VAL_LIMIT(b.castle[i], (int8_t)-8, (int8_t)8);
+                score += 5 * point_sign(who) * VAL_LIMIT(b.castle[i], (int8_t)-7, (int8_t)7);
             }
 
             //calculate 8con
