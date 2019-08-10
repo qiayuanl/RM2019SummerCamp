@@ -39,17 +39,17 @@ Chassis::Chassis()
 
   // Setup Comm
   twist_sub = node_priv.subscribe<geometry_msgs::Twist>("velocity", 100, &Chassis::CallbackVelocity, this);
-  vloc_sub = node_priv.subscribe<geometry_msgs::Pose>("vloc", 100, &Chassis::CallbackVLocalization, this);
-  pos_pub = node_priv.advertise<nav_msgs::Odometry>("odom", 100);
+  //vloc_sub = node_priv.subscribe<geometry_msgs::Pose>("vloc", 100, &Chassis::CallbackVLocalization, this);
+  //pos_pub = node_priv.advertise<nav_msgs::Odometry>("odom", 100);
 
   // Setup Odom
-  InitialPoseGot = false;
+  /* InitialPoseGot = false;
   GyroCorrection = 0.0;
-  AngularVelocity = 0.0;
+  AngularVelocity = 0.0; */
 
   x = y = theta = 0;
-  lastx = lasty = lasttheta = 0;
-  lastt = ros::Time::now();
+  //lastx = lasty = lasttheta = 0;
+  //lastt = ros::Time::now();
   for (int i = 0; i < 4; i++)
   {
     last_position[i] = motors[i]->getPosition();
@@ -63,7 +63,7 @@ Chassis::Chassis()
   {
     dbg_spd_setpoint_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_set_spd", 50);
     dbg_spd_real_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_real_spd", 50);
-    dbg_pose_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_pose", 50);
+    //dbg_pose_pub = node_priv.advertise<std_msgs::Float64MultiArray>("dbg_pose", 50);
   }
 }
 
@@ -95,7 +95,7 @@ double Chassis::ReadGyroAngle()
   return -(Hardware()->gyro.angle / 180 * M_PI);
 }
 
-void Chassis::CallbackVLocalization(const geometry_msgs::Pose::ConstPtr &pose)
+/*void Chassis::CallbackVLocalization(const geometry_msgs::Pose::ConstPtr &pose)
 {
   tf::StampedTransform tf_map_base_delay;
   tf::Vector3 v_base_delay;
@@ -119,15 +119,15 @@ void Chassis::CallbackVLocalization(const geometry_msgs::Pose::ConstPtr &pose)
 
   // Set Initial Pose
   InitialPoseGot = true;
-}
+}*/
 
 void Chassis::UpdateOdometry()
 {
   // Must get initial position
-  if (!InitialPoseGot)
+  /* if (!InitialPoseGot)
   {
     return;
-  }
+  }  */
 
   double d[4];
 
@@ -156,7 +156,7 @@ void Chassis::UpdateOdometry()
 void Chassis::PublishPosition()
 {
   // since all odometry is 6DOF we'll need a quaternion created from yaw
-  geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
+  /* geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 
   nav_msgs::Odometry odom;
   odom.header.stamp = ros::Time::now();
@@ -191,19 +191,15 @@ void Chassis::PublishPosition()
   AngularVelocity = odom.twist.twist.angular.z;
 
   // publish the message
-  pos_pub.publish(odom);
+  pos_pub.publish(odom);*/
 
   // publish tf message
-  geometry_msgs::TransformStamped odom_tf;
+  tf::Transform odom_base_tf;
 
-  odom_tf.header = odom.header;
-  odom_tf.child_frame_id = odom.child_frame_id;
-  odom_tf.transform.translation.x = odom.pose.pose.position.x;
-  odom_tf.transform.translation.y = odom.pose.pose.position.y;
-  odom_tf.transform.translation.z = odom.pose.pose.position.z;
-  odom_tf.transform.rotation = odom.pose.pose.orientation;
+  odom_base_tf.setOrigin(tf::Vector3(x, y, 0));
+  odom_base_tf.setRotation(tf::createQuaternionFromYaw(theta));
 
-  tf_pos_pub.sendTransform(odom_tf);
+  tf_pos_pub.sendTransform(tf::StampedTransform(odom_base_tf, ros::Time::now(), "odom", "base"));
 }
 
 void Chassis::CallbackVelocity(const geometry_msgs::Twist::ConstPtr &twist)
@@ -255,18 +251,16 @@ void Chassis::CallbackDynamicParam(rcbigcar::ChassisConfig &config, uint32_t lev
 {
   // Dynamic Params
   Dyn_Config_MaxVel = config.MaxVel;
-  Dyn_Config_VisualVel = config.VisualVel;
-  Dyn_Config_TimeDelay = config.time_delay;
+  //Dyn_Config_VisualVel = config.VisualVel;
+  //Dyn_Config_TimeDelay = config.time_delay;
   // Dynamic Motor Params
   for (int i = 0; i < 4; i++)
   {
     motors[i]->setCoefficients(config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, 1.0);
   }
 
-  ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, MaxVel = %lf, VisualVel = %lf, "
-           "TimeDelay = %lf]",
-           config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, config.MaxVel, config.VisualVel,
-           config.time_delay);
+  ROS_INFO("Chassis Reconfigure: [Kp = %lf, Ki = %lf, Kd = %lf, Kf = %lf, KmaxI = %lf, MaxVel = %lf]",
+           config.Kp, config.Ki, config.Kd, config.Kf, config.KmaxI, config.MaxVel);
 }
 
 void Chassis::UpdateDebug()
@@ -276,16 +270,18 @@ void Chassis::UpdateDebug()
 
   std_msgs::Float64MultiArray motorSetpoint;
   std_msgs::Float64MultiArray motorReal;
-  std_msgs::Float64MultiArray pose;
+  //std_msgs::Float64MultiArray pose;
 
   for (int i = 0; i < 4; i++)
   {
     motorSetpoint.data.push_back(motors[i]->Setpoint);
     motorReal.data.push_back(motors[i]->getVelocity());
   }
-  pose.data.push_back(x);
-  pose.data.push_back(y);
+
   dbg_spd_setpoint_pub.publish(motorSetpoint);
   dbg_spd_real_pub.publish(motorReal);
-  dbg_pose_pub.publish(pose);
+
+  /* pose.data.push_back(x);
+  pose.data.push_back(y);
+  dbg_pose_pub.publish(pose);*/
 }

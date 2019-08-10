@@ -1,0 +1,79 @@
+<launch>
+
+<arg name="debug" default="true" />
+<arg name="image_topic" default="image_rect" />
+
+<!--
+<arg name="node_namespace_front" default="apriltag_front" />
+<arg name="node_namespace_back"  default="apriltag_back" />
+-->
+
+<arg name="front_camera_device" default="/dev/video0" />
+<arg name="front_camera_name"   default="cam_front" />
+
+<arg name="back_camera_device" default="/dev/video1" />
+<arg name="back_camera_name"   default="cam_back" />
+
+<!-- Activate Front Camera Driver Node -->
+<node pkg="usb_cam" type="usb_cam_node" name="$(arg front_camera_name)">
+  <param name="camera_name" value="$(arg front_camera_name)" />
+  <param name="camera_frame_id" value="$(arg front_camera_name)" />
+
+  <param name="video_device" value="$(arg front_camera_device)" />
+
+  <param name="camera_info_url" value="package://rcbigvis/launch/$(arg front_camera_name).yaml" />
+
+  <param name="image_width" value="640" />
+  <param name="image_height" value="360" />
+  <param name="framerate" value="30" />
+</node>
+<node ns="$(arg front_camera_name)" pkg="image_proc" type="image_proc" name="image_proc" />
+
+<!-- Activate Front Camera Apriltags Node -->
+<rosparam ns="$(arg front_camera_name)/apriltag_ros_continuous_node" command="load" file="$(find rcbigvis)/launch/settings.yaml" />
+<rosparam ns="$(arg front_camera_name)/apriltag_ros_continuous_node" command="load" file="$(find rcbigvis)/launch/tags.yaml"     />
+
+<node     ns="$(arg front_camera_name)" pkg="apriltag_ros" type="apriltag_ros_continuous_node" name="apriltag_ros_continuous_node" clear_params="true" output="screen">
+  <param name="camera_frame" value="$(arg front_camera_name)" />
+
+  <param name="remove_duplicates" type="bool" value="true" />
+  <param name="publish_tag_detections_image" type="bool" value="$(arg debug)" />
+</node>
+
+<!-- Activate Back Camera Driver Node -->
+<node pkg="usb_cam" type="usb_cam_node" name="$(arg back_camera_name)">
+  <param name="camera_name" value="$(arg back_camera_name)" />
+  <param name="camera_frame_id" value="$(arg back_camera_name)" />
+
+  <param name="video_device" value="$(arg back_camera_device)" />
+
+  <param name="camera_info_url" value="package://rcbigvis/launch/$(arg back_camera_name).yaml" />
+
+  <param name="image_width" value="640" />
+  <param name="image_height" value="360" />
+  <param name="framerate" value="30" />
+</node>
+<node pkg="image_proc" type="image_proc" ns="$(arg back_camera_name)" name="image_proc" />
+
+<!-- Activate Back Camera Apriltags Node -->
+<rosparam ns="$(arg back_camera_name)/apriltag_ros_continuous_node" command="load" file="$(find rcbigvis)/launch/settings.yaml" />
+<rosparam ns="$(arg back_camera_name)/apriltag_ros_continuous_node" command="load" file="$(find rcbigvis)/launch/tags.yaml"     />
+
+<node     ns="$(arg back_camera_name)" pkg="apriltag_ros" type="apriltag_ros_continuous_node" name="apriltag_ros_continuous_node" clear_params="true" output="screen">
+  <param name="camera_frame" value="$(arg back_camera_name)" />
+
+  <param name="remove_duplicates" type="bool" value="true" />
+  <param name="publish_tag_detections_image" type="bool" value="$(arg debug)" />
+</node>
+
+<!-- Set static location of base to cam -->
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam_front" args="-0.06 -0.230 0.645 -1.5707 0 -2.3561 base cam_front" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam_back"  args="-0.06 -0.230 0.645 -1.5707 0 -2.3561 base cam_back" />
+
+<!-- Set static location of tags -->
+<node pkg="rcbigvis" type="tags_lut" name="tags_lut" respawn="true" output="screen"/>
+
+<!-- Visual Localization Node -->
+<node pkg="rcbigvis" type="vloc" name="vloc" respawn="true" output="screen"/>
+
+</launch>
