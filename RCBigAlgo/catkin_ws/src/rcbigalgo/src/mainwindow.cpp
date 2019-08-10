@@ -126,6 +126,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::update() {
     ActionExecuter::update();
+    MechanicalExecuter::update();
 }
 
 ///////////////////////////Visual Widget///////////////////////////

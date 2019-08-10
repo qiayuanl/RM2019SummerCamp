@@ -52,7 +52,7 @@ namespace MechanicalExecuter {
         switch(CurAction.type) {
             case ACTION_SERVO:
                 //send setpoint
-                if(CurAction.actutator_id > ServoSetpoint.data.size() - 1) {
+                if(CurAction.actutator_id > (int)ServoSetpoint.data.size() - 1) {
                     ServoSetpoint.data.resize(CurAction.actutator_id + 1);
                 }
 
@@ -66,7 +66,7 @@ namespace MechanicalExecuter {
 
             case ACTION_MOTOR:
                 //send setpoint
-                if(CurAction.actutator_id > MotorSetpoint.data.size() - 1) {
+                if(CurAction.actutator_id > (int)MotorSetpoint.data.size() - 1) {
                     MotorSetpoint.data.resize(CurAction.actutator_id + 1);
                 }
 
@@ -77,7 +77,7 @@ namespace MechanicalExecuter {
                 //wait for angle
                 Finished = false;
 
-                if((3 * CurAction.actutator_id) <= MotorStatus.data.size() - 1) {
+                if((3 * CurAction.actutator_id) <= (int)MotorStatus.data.size() - 1) {
                     Finished = fabs(CurAction.setpoint - MotorStatus.data[3 * CurAction.actutator_id]) < ANGULAR_TOLERANCE;
                 }
             break;
