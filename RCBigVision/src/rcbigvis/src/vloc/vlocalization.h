@@ -42,11 +42,17 @@ public:
 
     void FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg, const std::string camera_frame);
 
+    //Update Function
+    void update();
+
     //Callback Functions
     void TagDetection_Front_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
     void TagDetection_Back_Callback (const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
 private:
     std::vector<tf::Transform> TagTransforms;
+
+    tf::Transform TransformMapToOdom;
+    bool InitialTransformGot;
 
     MovingAverage<double,      3> Filter_X, Filter_Y, Filter_Yaw_X, Filter_Yaw_Y;
 
