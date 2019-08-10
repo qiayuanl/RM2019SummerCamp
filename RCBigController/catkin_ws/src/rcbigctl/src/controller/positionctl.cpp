@@ -114,7 +114,7 @@ void PositionCtl::UpdateCloseloop()
   geometry_msgs::Vector3Stamped vRobot;
   try
   {
-    tf_listener.transformVector("base_fused", vWorld, vRobot);
+    tf_listener.transformVector("base", vWorld, vRobot);
   }
   catch (tf::TransformException ex)
   {
