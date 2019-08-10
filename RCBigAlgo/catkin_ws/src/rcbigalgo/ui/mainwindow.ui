@@ -6,9 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
+    <width>1010</width>
     <height>577</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>11</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>RCBigAutocontroller</string>
@@ -24,32 +29,6 @@
      </rect>
     </property>
     <layout class="QVBoxLayout" name="paintLayout"/>
-   </widget>
-   <widget class="QPushButton" name="pbPlaceBall">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>500</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Place Ball</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pbPlaceCup">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>540</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Place Cup</string>
-    </property>
    </widget>
    <widget class="QLabel" name="lbGameStatus">
     <property name="geometry">
@@ -71,39 +50,67 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pEndTurn">
+   <widget class="QPushButton" name="pWhoAmI">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>440</y>
+      <x>820</x>
+      <y>460</y>
       <width>181</width>
       <height>51</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>END TURN</string>
+     <string>RED</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pbSearch">
+   <widget class="QLabel" name="lbSelTeam">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>10</y>
+      <x>820</x>
+      <y>390</y>
+      <width>181</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>SELECT TEAM</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pTeamOk">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>520</y>
       <width>181</width>
       <height>51</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>Machine Go</string>
+     <string>OK</string>
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="tGameStatus">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>70</y>
-      <width>181</width>
-      <height>361</height>
+      <x>823</x>
+      <y>9</y>
+      <width>171</width>
+      <height>391</height>
      </rect>
     </property>
    </widget>
