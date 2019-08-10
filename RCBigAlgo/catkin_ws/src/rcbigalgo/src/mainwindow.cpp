@@ -54,6 +54,9 @@ void LoadJudgeBoard() {
 void MainWindow::UpdateStrategy() {
     if(!JudgeBoardInitialized) return;
 
+    //load judge to global board
+    LoadJudgeBoard();
+
     int CurTurnWho = JudgeBoard.team;
     if((JudgeBoard.time_left == 0) || (JudgeBoard.move_left == 0)) CurTurnWho = !CurTurnWho;
 
@@ -181,7 +184,7 @@ void VisualWidget::GameUpdate(void) {
     this->update();
 
     //draw text
-  if(JudgeBoardInitialized) {
+    if(JudgeBoardInitialized) {
       this->GameStatusOut->setPlainText(
           QString("Move   = ") +    (( JudgeBoard.team == 0 ) ? QString("Red") : QString("Blue")) + QString("\n") +
 
@@ -194,7 +197,7 @@ void VisualWidget::GameUpdate(void) {
           QString("Score Red = ")  + QString::number( JudgeBoard.score[0] ) + QString("\n") +
           QString("Score Blue = ") + QString::number( JudgeBoard.score[1] ) + QString("\n")
       );
-  }
+    }
 }
 
 void VisualWidget::paintEvent(QPaintEvent *event)
