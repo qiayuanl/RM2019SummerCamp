@@ -77,17 +77,19 @@ class RobotHardware
 
     /* HW Interface */
     moto_measure_t motors[HW_MOTOR_COUNT] = {{0}};
-    single_gyro_t gyro = {0};
+    //single_gyro_t gyro = {0};
 
     /* HW Receiver */
-    void CAN_ReceiveFrame(can_frame_t *frame);
+    void CAN0_ReceiveFrame(can_frame_t *frame);
+    void CAN1_ReceiveFrame(can_frame_t *frame);
 
     /* HW Update */
     void update();
 
   private:
     /* HW Adapter */
-    SocketCAN adapter;
+    SocketCAN can0_adapter;
+    SocketCAN can1_adapter;
 
     /* Motor */
     void Motor_UpdateOffset(moto_measure_t *ptr, can_frame_t *frame);

@@ -20,6 +20,9 @@ inline std::string to_string(int x) {
 VLocalization::VLocalization() {
     ros::NodeHandle node_priv;
 
+    //Setup Variables
+    InitialTransformGot = false;
+
     //Setup Comm
     detect_front_sub = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("cam_front/tag_detections", 100, &VLocalization::TagDetection_Front_Callback, this);
     detect_back_sub  = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("cam_back/tag_detections",  100, &VLocalization::TagDetection_Back_Callback, this);
@@ -38,6 +41,12 @@ VLocalization::VLocalization() {
         catch (tf::TransformException ex) {
             ROS_ERROR("%s",ex.what());
         }
+    }
+}
+
+void VLocalization::update() {
+    if(InitialTransformGot) {
+        tf_broadcaster.sendTransform(tf::StampedTransform(TransformMapToOdom, ros::Time::now(), "map", "odom"));
     }
 }
 
@@ -156,8 +165,9 @@ void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray:
         ROS_ERROR("%s",ex.what());
     }
 
-    //publish map -> odom
-    tf_broadcaster.sendTransform(tf::StampedTransform(map_base_tf * base_odom_tf, ros::Time::now(), "map", "odom"));
+    //set map -> odom
+    InitialTransformGot = true;
+    TransformMapToOdom = map_base_tf * base_odom_tf;
 }
 
 void VLocalization::TagDetection_Front_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {

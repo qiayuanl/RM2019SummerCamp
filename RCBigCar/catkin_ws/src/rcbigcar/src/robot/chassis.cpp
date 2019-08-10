@@ -26,7 +26,7 @@ Chassis::Chassis()
   // Setup Motors
   for (int i = 0; i < 4; i++)
   {
-    motors[i] = new Motor(i, &MOTOR_CHASSIS, CLOSELOOP_VELOCITY);
+    motors[i] = new Motor(i, &MOTOR_CHASSIS, MOTOR_CHASSIS_PARAMTER);
   }
 
   // Setup Paramters
@@ -89,12 +89,12 @@ void Chassis::update()
   UpdateOdometry();
   UpdateDebug();
 }
-
+/*
 double Chassis::ReadGyroAngle()
 {
   return -(Hardware()->gyro.angle / 180 * M_PI);
 }
-
+*/
 /*void Chassis::CallbackVLocalization(const geometry_msgs::Pose::ConstPtr &pose)
 {
   tf::StampedTransform tf_map_base_delay;

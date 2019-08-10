@@ -1,11 +1,11 @@
 #include "motor.h"
 
-Motor::Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopType)
+Motor::Motor(int _ID, const MotorPreset *_Preset, MotorParamter _Paramter)
 {
 	//Initialize Self
 	ID = _ID;
 	Preset = _Preset;
-	CloseloopType = _CloseloopType;
+	Paramter = _Paramter;
 
 	//Initialize Time
 	last_looptime = ros::Time(0);
@@ -25,7 +25,7 @@ Motor::Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopT
 	VError_Intergral = 0;
 
 	//Calibrate
-	isCalibrating = (CloseloopType == CLOSELOOP_POSITION);
+	isCalibrating = Paramter.DoCalibration;
 	CalibrateDuration = 0;
 	CalibrationValue = 0;
 
@@ -73,7 +73,7 @@ void Motor::update()
 
 	//Position Calibrate
 	if(isCalibrating) {
-		Hardware()->motors[ID].power = (CalibrateDuration < (MOTOR_CALIBRATION_DURATION / 2.0)) ? (MOTOR_CALIBRATION_POWER * Preset->PWMMaxValue) : 0.0;
+		Hardware()->motors[ID].power = (CalibrateDuration < (MOTOR_CALIBRATION_DURATION / 2.0)) ? (Paramter.CalibrateCurrent * Preset->PWMMaxValue) : 0.0;
 
 		if(getVelocity() < MOTOR_CALIBRATION_THRESHOLD) {
 			CalibrateDuration += dt;
@@ -95,7 +95,7 @@ void Motor::update()
 	double c_ = 1.0;
 
 	//Calculate Error
-	double real = (CloseloopType == CLOSELOOP_VELOCITY) ? getVelocity() : getPosition();
+	double real = (Paramter.CloseloopType == CLOSELOOP_VELOCITY) ? getVelocity() : getPosition();
 	double set = Setpoint;
 
 	double error = set - real;

@@ -19,11 +19,20 @@ struct MotorPreset
     double TickToRad;
 };
 
+struct MotorParamter
+{
+    MotorCloseloopType CloseloopType;
+
+    bool DoCalibration;
+    double CalibrateCurrent;
+};
+
 struct MotionMotor
 {
     int ID;
-    MotorCloseloopType CloseloopType;
+
     const MotorPreset *Preset;
+    MotorParamter Paramter;
 };
 
 /* 
@@ -32,14 +41,14 @@ struct MotionMotor
 
 #define ROBOT_SAMPLING_RATE 200
 
-#define HW_MOTOR_COUNT 8
+#define HW_MOTOR_COUNT 10
 #define HW_CAN_MOTOR_ID_1 0x200
 #define HW_CAN_MOTOR_ID_2 0x1FF
-#define HW_CAN_ID "can0"
+#define HW_CAN0_ID "can0"
+#define HW_CAN1_ID "can1"
 
 const double MOTOR_CALIBRATION_THRESHOLD = 0.628;
 const double MOTOR_CALIBRATION_DURATION  = 1.0;
-const double MOTOR_CALIBRATION_POWER     = 0.04;
 
 /*
  * Different Motor Presets
@@ -61,10 +70,20 @@ const MotorPreset MOTOR_GM3510 = {
     (1.0 / 8192.0) * 2.0 * M_PI};
 
 /*
+ * Default Motor Paramter
+ */
+const MotorParamter MOTOR_PARAMTER_DEFAULT = {
+    CLOSELOOP_VELOCITY,
+    false,
+    0.0
+};
+
+/*
  * Chassis Paramters (SI Unit)
  */
 
 #define MOTOR_CHASSIS MOTOR_GM3508
+#define MOTOR_CHASSIS_PARAMTER MOTOR_PARAMTER_DEFAULT
 
 const double CHASSIS_WATCHDOG_TIMEOUT = 1.0;
 
@@ -79,10 +98,16 @@ const double CHASSIS_LENGTH_B = 0.285;
 const double MOTION_WATCHDOG_TIMEOUT = 1.0;
 
 const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
+    //Main screw pole
     {
         4,
-        CLOSELOOP_POSITION,
         &MOTOR_GM3508,
+
+        {
+            CLOSELOOP_POSITION,
+            true,
+            0.04
+        }
     }
 };
 

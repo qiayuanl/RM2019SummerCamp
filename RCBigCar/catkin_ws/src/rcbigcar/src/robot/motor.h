@@ -11,7 +11,7 @@ struct ErrorList
 class Motor
 {
   public:
-    Motor(int _ID, const MotorPreset *_Preset, MotorCloseloopType _CloseloopType);
+    Motor(int _ID, const MotorPreset *_Preset, MotorParamter _Paramter);
 
     void update();
 
@@ -21,10 +21,10 @@ class Motor
     double getPosition();
 
     /* Setpoint */
-    MotorCloseloopType CloseloopType;
-
     double Setpoint;
 
+    /* Paramter */
+    MotorParamter Paramter;
   private:
     /* ID  */
     int ID;

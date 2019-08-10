@@ -8,7 +8,7 @@ Motion::Motion()
 	//Setup Motors
 	for (int i = 0; i < MOTION_MOTOR_COUNT; i++)
 	{
-		motors[i] = new Motor(MOTION_MOTOR_PRESET[i].ID, MOTION_MOTOR_PRESET[i].Preset, MOTION_MOTOR_PRESET[i].CloseloopType);
+		motors[i] = new Motor(MOTION_MOTOR_PRESET[i].ID, MOTION_MOTOR_PRESET[i].Preset, MOTION_MOTOR_PRESET[i].Paramter);
 	}
 
 	//Setup Reconfigurable Paramters
@@ -48,7 +48,7 @@ void Motion::UpdateWatchdog()
 		//Zero motor powers
 		for (int i = 0; i < MOTION_MOTOR_COUNT; i++)
 		{
-			if (motors[i]->CloseloopType == CLOSELOOP_VELOCITY)
+			if (motors[i]->Paramter.CloseloopType == CLOSELOOP_VELOCITY)
 				motors[i]->Setpoint = 0;
 		}
 	}
