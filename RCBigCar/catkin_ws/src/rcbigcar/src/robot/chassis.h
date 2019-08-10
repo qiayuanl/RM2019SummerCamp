@@ -27,7 +27,7 @@ public:
   ~Chassis();
 
   /* Internal Funcs */
-  double ReadGyroAngle();
+  //double ReadGyroAngle();
 
   /* Update Funcs */
   void update();
