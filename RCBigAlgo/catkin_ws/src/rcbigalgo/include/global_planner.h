@@ -14,6 +14,8 @@ inline std::string to_string(int x) {
 }
 
 namespace GlobalPlanner {
+    const double PLACE_DELTA_DISTANCE = 0.05;
+
     enum ActionType {
         ACTION_NONE,
 
@@ -134,12 +136,15 @@ namespace GlobalPlanner {
 
                 //castle exists
                 if(castle_dir != -1) {
-                    //calculate yaw
+                    //calculate yaw & place pos
                     double yaw = Game::diryaw[castle_dir];
 
-                    //push occupy
+                    double place_pos_x = XYToWorld[x][y][0] + cos(yaw) * PLACE_DELTA_DISTANCE;
+                    double place_pos_y = XYToWorld[x][y][1] + sin(yaw) * PLACE_DELTA_DISTANCE;
+
+                    //push turn
                     actions.push_back({
-                        (strategy == 5) ? ACTION_PLACEBALL : ACTION_PLACECUP,
+                        ACTION_MOVETO,
 
                         XYToWorld[x][y][0], XYToWorld[x][y][1],
 
@@ -148,7 +153,39 @@ namespace GlobalPlanner {
                         0.0
                     });
 
-                    fprintf(stderr, "xy[%d %d] yaw: %lf\n", x, y, yaw);
+                    //push gofront
+                    actions.push_back({
+                        ACTION_MOVETO,
+
+                        place_pos_x, place_pos_y,
+
+                        false, 0.0,
+
+                        0.0
+                    });
+
+                    //push place
+                    actions.push_back({
+                        (strategy == 5) ? ACTION_PLACEBALL : ACTION_PLACECUP,
+
+                        place_pos_x, place_pos_y,
+
+                        false, 0.0,
+
+                        0.0
+                    });
+
+                    //push goback
+                    actions.push_back({
+                        ACTION_MOVETO,
+
+                        XYToWorld[x][y][0],
+                        XYToWorld[x][y][1],
+
+                        false, 0.0,
+
+                        0.0
+                    });
                 }
             }
         }
