@@ -49,23 +49,23 @@ public:
     void update();
     void UpdateCloseloop();
 
-    void setPoseSetpoint(const geometry_msgs::Pose &pose);
+    //void setPoseSetpoint(const geometry_msgs::Pose &pose);
 
     /* Callback Funcs */
     void CallbackDynamicParam( rcbigctl::ControllerConfig &config, uint32_t level );
-    void CallbackPosition(     const nav_msgs::Odometry::ConstPtr& odom    );
+    //void CallbackPosition(     const nav_msgs::Odometry::ConstPtr& odom    );
     void CallbackSetpoint(     const geometry_msgs::PoseStamped::ConstPtr& pose    );
 
-    void CallbackPath(     const nav_msgs::Path::ConstPtr& path    );
+    //void CallbackPath(     const nav_msgs::Path::ConstPtr& path    );
 private:
     /*
      * Handles
     */
-    ros::Subscriber pos_sub;
+    //ros::Subscriber pos_sub;
     ros::Subscriber setpoint_sub;
-    ros::Subscriber path_sub;
+    //ros::Subscriber path_sub;
     ros::Publisher	twist_pub;
-    tf::TransformListener tf_pos;
+    tf::TransformListener tf_listener;
 
     /*
      * Closeloop Paramters
