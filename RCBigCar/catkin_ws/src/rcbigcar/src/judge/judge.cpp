@@ -28,11 +28,11 @@ void RMUnpackCallback(uint8_t* data) {
             board.robot_x.resize(2);
             board.robot_y.resize(2);
 
-            board.robot_x[0] = (info->car_location[0] >> 4) & 0xF;
-            board.robot_y[0] =  info->car_location[0] & 0xF;
+            board.robot_x[0] =  info->car_location[0] & 0xF;
+            board.robot_y[0] = (info->car_location[0] >> 4) & 0xF;
 
-            board.robot_x[1] = (info->car_location[1] >> 4) & 0xF;
-            board.robot_y[1] =  info->car_location[1] & 0xF;
+            board.robot_x[1] =  info->car_location[1] & 0xF;
+            board.robot_y[1] = (info->car_location[1] >> 4) & 0xF;
 
             //castle info
             board.castle.resize(7);
@@ -51,7 +51,7 @@ void RMUnpackCallback(uint8_t* data) {
                 if((info->region_occupy[y][x].status != 0) && (info->region_occupy[y][x].belong != 2)) {
 
                     //red or blue
-                    status = (info->region_occupy[y][x].belong == 1) ? 0 : 1;
+                    status = (info->region_occupy[y][x].belong == 0) ? 0 : 1;
                 }
 
                 board.cell_status[id++] = status;
