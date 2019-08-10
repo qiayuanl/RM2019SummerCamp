@@ -17,11 +17,10 @@ class VisualWidget : public QWidget
 
 public:
     VisualWidget(QWidget *parent);
-
-    void GameUpdate();
-    void GamePlaceObject(int point);
-
     QPlainTextEdit *GameStatusOut;
+
+private Q_SLOTS:
+    void GameUpdate();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

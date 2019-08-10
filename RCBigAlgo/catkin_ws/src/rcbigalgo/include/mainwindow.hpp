@@ -21,23 +21,20 @@ public:
 
 private Q_SLOTS:
     void update();
-/*
-    void on_pbPlaceBall_clicked();
-    void on_pbPlaceCup_clicked();
 
-    void on_pEndTurn_clicked();
+    void on_pWhoAmI_clicked();
 
-    void on_pbSearch_clicked();
-*/
-
-    void on_pbSearch_clicked();
+    void on_pTeamOk_clicked();
 
 private:
     Ui::MainWindow *ui;
     VisualWidget *canvas;
     QTimer *timer;
+    QTimer *ui_update_timer;
 
     void BoardCallback(const rcbigcar::board::ConstPtr &board);
+
+    void UpdateStrategy();
 };
 
 #endif // MAINWINDOW_H
