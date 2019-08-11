@@ -1,0 +1,38 @@
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_lisp
+[  3%] Generating dynamic reconfigure files from cfg/ChassisConfig.cfg: /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel/include/rcbigcar/ChassisConfigConfig.h /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel/lib/python2.7/dist-packages/rcbigcar/cfg/ChassisConfigConfig.py
+[  6%] Generating dynamic reconfigure files from cfg/MotionConfig.cfg: /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel/include/rcbigcar/MotionConfigConfig.h /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel/lib/python2.7/dist-packages/rcbigcar/cfg/MotionConfigConfig.py
+[ 30%] Built target judge
+[ 30%] Built target std_msgs_generate_messages_cpp
+[ 30%] Built target std_msgs_generate_messages_eus
+[ 46%] Built target servo
+[ 46%] Built target _rcbigcar_generate_messages_check_deps_board
+[ 50%] Built target rcbigcar_generate_messages_lisp
+[ 53%] Built target rcbigcar_generate_messages_cpp
+[ 60%] Built target rcbigcar_generate_messages_py
+Generating reconfiguration files for Chassis in rcbigcar
+Wrote header file in /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel/include/rcbigcar/ChassisConfig.h
+[ 63%] Built target rcbigcar_generate_messages_nodejs
+[ 70%] Built target rcbigcar_generate_messages_eus
+Generating reconfiguration files for Motion in rcbigcar
+Wrote header file in /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel/include/rcbigcar/MotionConfig.h
+[ 70%] Built target rcbigcar_generate_messages
+[ 70%] Built target rcbigcar_gencfg
+Scanning dependencies of target robot
+[ 73%] Building CXX object rcbigcar/CMakeFiles/robot.dir/src/robot/chassis.cpp.o
+[ 80%] Building CXX object rcbigcar/CMakeFiles/robot.dir/src/robot/motion.cpp.o
+[ 80%] Building CXX object rcbigcar/CMakeFiles/robot.dir/src/robot/robot.cpp.o
+[ 83%] Linking CXX executable /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel/lib/rcbigcar/robot
+[100%] Built target robot
+Base path: /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws
+Source space: /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/src
+Build space: /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/build
+Devel space: /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/devel
+Install space: /home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/install
+####
+#### Running command: "make cmake_check_build_system" in "/home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/build"
+####
+####
+#### Running command: "make -j6 -l6" in "/home/dji/RM2019SummerCamp/RCBigCar/catkin_ws/build"
+####
