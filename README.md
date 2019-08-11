@@ -12,7 +12,7 @@ Using Manifold 2 as microcontroller, this project eliminates involvement of embe
  - RCBigController: Middle level control in ROS catkin workspace
  - RCBigVision: Computer vision using AprilTags in ROS catkin workspace
  - Embedded: The backup base framework for remote control
- - locomotion_ws: some moden controller and planner of robot
+ - locomotion_ws: Advanced controller and planner of robot
  - Script: Common scripts for this project
 
 ## About
