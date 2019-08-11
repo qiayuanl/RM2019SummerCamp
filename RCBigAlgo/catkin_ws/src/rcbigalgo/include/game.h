@@ -11,11 +11,9 @@
 #define TT_SIZE      20000000
 
 //OPTIMIZATION
-/*
-#pragma GCC optimize(3)
-#pragma GCC optimize("Ofast")
-#pragma GCC optimize("inline")
-*/
+//#pragma GCC optimize(3)
+//#pragma GCC optimize("Ofast")
+//#pragma GCC optimize("inline")
 
 //BEGIN
 #include <cstring>
@@ -39,8 +37,8 @@ namespace Game {
     const int ACTION_MOVE_MS  = 1000;
     const int ACTION_OCCUPY_MS = 1500;
 
-    const int ACTION_PLACE_BALL_MS = 3000;
-    //const int ACTION_PLACE_CUP_MS  = 8000;
+    const int ACTION_PLACE_BALL_MS = 2000;
+    const int ACTION_PLACE_CUP_MS  = 8000;
 
     //point consts
     const int POINTS_PENALTY_CROSS = 5;

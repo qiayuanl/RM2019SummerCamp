@@ -70,7 +70,7 @@ void MainWindow::UpdateStrategy() {
     else {
         //if our team
         //if no strategy
-        bool HaveStrategy = (MechanicalExecuter::IsBusy()) || (!ActionExecuter::ActionList.empty()) || (ActionExecuter::CurAction.type != GlobalPlanner::ACTION_NONE);
+        bool HaveStrategy = (MechanicalExecuter::IsBusy()) || (ActionExecuter::ActionList.size() >= 2) || (!ActionExecuter::CurActionFinished());
 
         if(!HaveStrategy) {
             //recalc strategy
@@ -110,13 +110,13 @@ void MainWindow::UpdateStrategy() {
 
                     temp_board.ball[WhoAmI]--;
                 }
-                else if(st == 6) {
+                /*else if(st == 6) {
                     Game::OP::place(temp_board, WhoAmI, 6);
 
                     temp_time_left -= Game::ACTION_PLACE_CUP_MS;
 
                     temp_board.cup[WhoAmI]--;
-                }
+                }*/
 
                 //push to all strategy list
                 all_strategies.push_back(st);
@@ -169,6 +169,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_update_timer = new QTimer(this);
     connect(ui_update_timer, SIGNAL(timeout()), canvas, SLOT(GameUpdate()));
     ui_update_timer->start(1000 / 10);
+
+    ui->pWhoAmI->setText( (WhoAmI == 0) ? "RED" : "BLUE" );
 }
 
 MainWindow::~MainWindow()
@@ -316,8 +318,6 @@ void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
 
 void MainWindow::on_pWhoAmI_clicked()
 {
-    WhoAmI = !WhoAmI;
-    ui->pWhoAmI->setText( (WhoAmI == 0) ? "RED" : "BLUE" );
 }
 
 void MainWindow::on_pTeamOk_clicked()
@@ -340,3 +340,15 @@ void MainWindow::on_pTestSeq_clicked()
     ActionExecuter::LoadActionList( GlobalPlanner::GetActions(WhoAmI, GlobalBoard, all_strategies) );
 }
 */
+
+void MainWindow::on_pbTestSeq_clicked()
+{
+  const uint8_t strategy_list[] = {0, 0, 1, 1, 1, 1, 5, 1, 1, 1, 1, 5};
+
+  std::vector<uint8_t> all_strategies(strategy_list, strategy_list + sizeof(strategy_list) / sizeof(uint8_t));
+
+  GlobalBoard.position[WhoAmI][0] = 0;
+  GlobalBoard.position[WhoAmI][1] = 0;
+
+  ActionExecuter::LoadActionList( GlobalPlanner::GetActions(WhoAmI, GlobalBoard, all_strategies) );
+}

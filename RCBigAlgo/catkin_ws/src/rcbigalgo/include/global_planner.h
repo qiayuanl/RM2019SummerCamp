@@ -15,8 +15,10 @@ inline std::string to_string(int x) {
 }
 
 namespace GlobalPlanner {
-    const double PLACE_DELTA_DISTANCE = 0.40;
-    const double MOVE_ZERO_COUNTDOWN =  1.0;
+    const double PLACE_DELTA_DISTANCE = 0.45;
+    const double MOVE_ZERO_COUNTDOWN =  1.5;
+    const double MOVE_INFINITY_COUNTDOWN = 100.0;
+    const double WAIT_FEEDBACK_TIMEOUT = 3.0;
 
     enum ActionType {
         ACTION_NONE,
@@ -87,7 +89,7 @@ namespace GlobalPlanner {
 
             false, 0.0,
 
-            0.0, MOVE_ZERO_COUNTDOWN,
+            0.0, MOVE_INFINITY_COUNTDOWN,
 
             {}
         });
@@ -113,7 +115,7 @@ namespace GlobalPlanner {
 
                         false, 0.0,
 
-                        0.0, MOVE_ZERO_COUNTDOWN,
+                        0.0, MOVE_INFINITY_COUNTDOWN,
 
                         {}
                     });
@@ -128,7 +130,7 @@ namespace GlobalPlanner {
 
                     false, 0.0,
 
-                    2.0, MOVE_ZERO_COUNTDOWN,
+                    2.0, MOVE_INFINITY_COUNTDOWN,
 
                     {
                         x, y,
@@ -171,7 +173,7 @@ namespace GlobalPlanner {
 
                         true, yaw,
 
-                        0.0, MOVE_ZERO_COUNTDOWN,
+                        0.0, MOVE_INFINITY_COUNTDOWN,
 
                         {}
                     });
@@ -198,17 +200,13 @@ namespace GlobalPlanner {
 
                         false, 0.0,
 
-                        (
-                            (place_action_type == ACTION_PLACEBALL)
-                             ? (2.0 * Game::ACTION_PLACE_BALL_MS)
-                             : (1.5 * Game::ACTION_PLACE_CUP_MS)
-                        ),
+                        WAIT_FEEDBACK_TIMEOUT,
                         MOVE_ZERO_COUNTDOWN,
 
                         {
                             x, y,
 
-                            castle_id, GlobalBoard.castle[castle_id]
+                            castle_id, GlobalBoard.castle_we_placed[castle_id]
                         }
                     });
 
@@ -220,7 +218,7 @@ namespace GlobalPlanner {
 
                         false, 0.0,
 
-                        0.0, MOVE_ZERO_COUNTDOWN,
+                        0.0, MOVE_INFINITY_COUNTDOWN,
 
                         {}
                     });

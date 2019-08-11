@@ -114,6 +114,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="pbTestSeq">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>360</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>test</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

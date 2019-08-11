@@ -119,20 +119,22 @@ namespace ActionExecuter
             //stable
             CurAction.zero_countdown -= dt;
         }
-        if(CurAction.zero_countdown <= 0) return true;
 
-        //Angle settings
-        if (CurAction.yaw_enabled) {
-            if (fabs( AngularMinus(CurAction.world_yaw, Pose.yaw ) ) > ANGLE_THRESHOLD)
-                return false;
-        }
+        //if not zero speed
+        if(CurAction.zero_countdown > 0) {
+          //Angle settings
+          if (CurAction.yaw_enabled) {
+              if (fabs( AngularMinus(CurAction.world_yaw, Pose.yaw ) ) > ANGLE_THRESHOLD)
+                  return false;
+          }
 
-        //Position settings
-        if( 
-            (fabs( Pose.x - CurAction.world_x ) > POSITION_THRESHOLD) ||
-            (fabs( Pose.y - CurAction.world_y ) > POSITION_THRESHOLD)
-        ) {
-            return false;
+          //Position settings
+          if(
+              (fabs( Pose.x - CurAction.world_x ) > POSITION_THRESHOLD) ||
+              (fabs( Pose.y - CurAction.world_y ) > POSITION_THRESHOLD)
+          ) {
+              return false;
+          }
         }
 
         //Normal Timeout
@@ -149,7 +151,7 @@ namespace ActionExecuter
 
             case GlobalPlanner::ACTION_PLACEBALL:
             case GlobalPlanner::ACTION_PLACECUP:
-                Feedback_Done = GlobalBoard.castle[CurAction.feedback.castle_id] != CurAction.feedback.castle_last_value;
+                Feedback_Done = GlobalBoard.castle_we_placed[CurAction.feedback.castle_id] != CurAction.feedback.castle_last_value;
             break;
         }
 

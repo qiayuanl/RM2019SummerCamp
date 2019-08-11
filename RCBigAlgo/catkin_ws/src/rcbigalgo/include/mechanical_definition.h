@@ -72,9 +72,13 @@ namespace MechanicalDefinition {
 
     //@TODO: W.I.P
     bool PlaceCup() {
+      return PlaceBall();
+    }
+
+    /*bool PlaceCup() {
         return PlaceBall();
 
-        /* if(MechanicalExecuter::IsBusy()) return false;
+         if(MechanicalExecuter::IsBusy()) return false;
 
         if(!CupCount) return false;
         CupCount--;
@@ -106,8 +110,8 @@ namespace MechanicalDefinition {
             });
         }
 
-        return true; */
-    }
+        return true;
+    }*/
 }
 
 #endif

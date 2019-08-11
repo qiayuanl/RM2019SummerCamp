@@ -28,6 +28,8 @@ private Q_SLOTS:
 
     //void on_pTestSeq_clicked();
 
+    void on_pbTestSeq_clicked();
+
 private:
     Ui::MainWindow *ui;
     VisualWidget *canvas;
