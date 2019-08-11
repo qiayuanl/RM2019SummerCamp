@@ -15,7 +15,8 @@ inline std::string to_string(int x) {
 }
 
 namespace GlobalPlanner {
-    const double PLACE_DELTA_DISTANCE = 0.05;
+    const double PLACE_DELTA_DISTANCE = 0.40;
+    const double MOVE_ZERO_COUNTDOWN =  1.0;
 
     enum ActionType {
         ACTION_NONE,
@@ -38,10 +39,10 @@ namespace GlobalPlanner {
 
         double world_x, world_y;
         
-        bool yaw_enabled;
-        double world_yaw;
+        bool yaw_enabled; double world_yaw;
 
         double countdown; //countdown & timeout
+        double zero_countdown;
         FeedbackInfo feedback;
     }; 
 
@@ -86,7 +87,7 @@ namespace GlobalPlanner {
 
             false, 0.0,
 
-            0.0,
+            0.0, MOVE_ZERO_COUNTDOWN,
 
             {}
         });
@@ -112,7 +113,7 @@ namespace GlobalPlanner {
 
                         false, 0.0,
 
-                        0.0,
+                        0.0, MOVE_ZERO_COUNTDOWN,
 
                         {}
                     });
@@ -127,7 +128,7 @@ namespace GlobalPlanner {
 
                     false, 0.0,
 
-                    2.0,
+                    2.0, MOVE_ZERO_COUNTDOWN,
 
                     {
                         x, y,
@@ -170,7 +171,7 @@ namespace GlobalPlanner {
 
                         true, yaw,
 
-                        0.0,
+                        0.0, MOVE_ZERO_COUNTDOWN,
 
                         {}
                     });
@@ -183,7 +184,7 @@ namespace GlobalPlanner {
 
                         false, 0.0,
 
-                        0.0,
+                        0.0, MOVE_ZERO_COUNTDOWN,
 
                         {}
                     });
@@ -202,6 +203,7 @@ namespace GlobalPlanner {
                              ? (2.0 * Game::ACTION_PLACE_BALL_MS)
                              : (1.5 * Game::ACTION_PLACE_CUP_MS)
                         ),
+                        MOVE_ZERO_COUNTDOWN,
 
                         {
                             x, y,
@@ -214,12 +216,13 @@ namespace GlobalPlanner {
                     actions.push_back({
                         ACTION_MOVETO,
 
-                        XYToWorld[x][y][0],
-                        XYToWorld[x][y][1],
+                        XYToWorld[x][y][0], XYToWorld[x][y][1],
 
                         false, 0.0,
 
-                        0.0
+                        0.0, MOVE_ZERO_COUNTDOWN,
+
+                        {}
                     });
                 }
             }

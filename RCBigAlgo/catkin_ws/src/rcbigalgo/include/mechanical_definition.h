@@ -19,7 +19,7 @@ namespace MechanicalDefinition {
     int BallCount;
     int CupCount;
 
-    void reset() {
+    void init() {
         CupCount = 10;
 
         CupBallCount[0] = 4;
@@ -27,10 +27,6 @@ namespace MechanicalDefinition {
         CupBallCount[2] = 4;
 
         BallCount = 10;
-    }
-
-    void init() {
-        reset();
     }
 
     bool PlaceBall() {

@@ -35,9 +35,11 @@ void RMUnpackCallback(uint8_t* data) {
             board.robot_y[1] = (info->car_location[1] >> 4) & 0xF;
 
             //castle info
-            board.castle.resize(7);
+            board.castle_0.resize(7);
+            board.castle_1.resize(7);
             for(int i = 0; i < 7; i++) {
-                board.castle[i] = info->castle_energy[i].energy[0] - info->castle_energy[i].energy[1];
+                board.castle_0[i] = info->castle_energy[i].energy[0];
+                board.castle_1[i] = info->castle_energy[i].energy[1];
             }
 
             //cell info

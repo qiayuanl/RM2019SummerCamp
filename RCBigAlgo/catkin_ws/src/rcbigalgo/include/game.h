@@ -11,9 +11,11 @@
 #define TT_SIZE      20000000
 
 //OPTIMIZATION
+/*
 #pragma GCC optimize(3)
 #pragma GCC optimize("Ofast")
 #pragma GCC optimize("inline")
+*/
 
 //BEGIN
 #include <cstring>
@@ -27,6 +29,9 @@
 #define VAL_LIMIT(x, minv, maxv) std::max( std::min( (x), (maxv) ), (minv) )
 
 namespace Game {
+    //lim
+    const int MAX_PLACE_COUNT = 2;
+
     //time consts
     const int GAME_TOTAL_STEP = 15;
     const int GAME_TOTAL_MS   = 40000;
@@ -34,8 +39,8 @@ namespace Game {
     const int ACTION_MOVE_MS  = 1000;
     const int ACTION_OCCUPY_MS = 1500;
 
-    const int ACTION_PLACE_BALL_MS = 2000;
-    const int ACTION_PLACE_CUP_MS  = 8000;
+    const int ACTION_PLACE_BALL_MS = 3000;
+    //const int ACTION_PLACE_CUP_MS  = 8000;
 
     //point consts
     const int POINTS_PENALTY_CROSS = 5;
@@ -54,6 +59,7 @@ namespace Game {
         {-1, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1, -1,  5, -1, -1, -1,  6, -1, -1},
     };
+
     const int CASTLE_COORD[MAX_CASTLE][2] = {
         {0, 2},
         {0, 6},
@@ -65,6 +71,7 @@ namespace Game {
         {6, 2},
         {6, 6}
     };
+
     /* const int CASTLE_OCCU_COORD[2][MAX_CASTLE][2] = {{
         {0, 1},
         {0, 5},
@@ -88,6 +95,7 @@ namespace Game {
         {6, 5}
     }
     };*/
+
     const int CASTLE_PLACE_ID[2][MAX_X][MAX_Y] = {
     {
         {-1,  0, -1, -1, -1,  1, -1, -1, -1},
@@ -142,6 +150,7 @@ namespace Game {
 
         // --castle
         int8_t castle[8];
+        int8_t castle_we_placed[8];
 
         // --position
         int8_t position[2][2];
@@ -264,7 +273,7 @@ namespace Game {
             int y = board.position[who][1];
             int castle_id = CASTLE_PLACE_ID[who][x][y];
 
-            return (castle_id != -1);
+            return (castle_id != -1) && (board.castle_we_placed[castle_id] < MAX_PLACE_COUNT);
         }
 
         inline void place(Board &board, bool who, int8_t cnt) {
@@ -274,6 +283,7 @@ namespace Game {
 
             int sgn_old = sgn(board.castle[castle_id]);
             board.castle[castle_id] += point_sign(who) * cnt;
+            board.castle_we_placed[castle_id]++;
             int sgn_new = sgn(board.castle[castle_id]);
 
             if(sgn_old != sgn_new) {
@@ -476,7 +486,7 @@ namespace Game {
                 }
 
                 //check if tle
-                if(++nodes_to_next_tcheck >= 1000000) {
+                if(++nodes_to_next_tcheck >= 100000) {
                     nodes_to_next_tcheck = 0;
 
                     gettimeofday(&T_end, 0);
@@ -527,14 +537,14 @@ namespace Game {
                         //place ball
                         if(b.ball[who]) {
                             new_board = b;
-                            OP::place(new_board, who, 1);
+                            OP::place(new_board, who, 2);
                             new_board.ball[who]--;
 
                             expand(st_queue_id, st, new_board, 5, 0, ACTION_PLACE_BALL_MS);
                         }
 
                         //place cup
-                        if(st.tot_time >= ACTION_PLACE_CUP_MS) {
+                        /*if(st.tot_time >= ACTION_PLACE_CUP_MS) {
                             if(b.cup[who]) {
                                 new_board = b;
                                 OP::place(new_board, who, 6);
@@ -542,7 +552,7 @@ namespace Game {
 
                                 expand(st_queue_id, st, new_board, 6, 0, ACTION_PLACE_CUP_MS);
                             }
-                        }
+                        }*/
                     }
                 }
             }

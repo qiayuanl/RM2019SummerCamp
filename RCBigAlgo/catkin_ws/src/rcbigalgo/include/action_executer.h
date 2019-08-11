@@ -14,6 +14,9 @@
 const double POSITION_THRESHOLD = 0.05;
 //angle threshold
 const double ANGLE_THRESHOLD = 5.0 / 180.0 * M_PI;
+//speed threshold
+const double POSITION_SPEED_THRESHOLD = 0.03;
+const double ANGLE_SPEED_THRESHOLD    = 10.0 / 180.0 * M_PI;
 
 double YawFromQuaternion(const tf::Quaternion &q_orient)
 {
@@ -41,6 +44,14 @@ namespace ActionExecuter
     //Communication
     ros::Publisher  setpoint_pub;
 
+    //Pose & Velocity
+    struct Pose {
+        double x, y, yaw;
+        ros::Time stamp;
+    } Pose, PoseLast, Velocity;
+    bool PoseInitialized = false;
+
+    //Pose Setpoint
     geometry_msgs::PoseStamped setpoint_pose;
 
     //Actions
@@ -54,55 +65,79 @@ namespace ActionExecuter
         CurAction.type = GlobalPlanner::ACTION_NONE;
     }
 
-    bool CurActionFinished()
-    {
-        if (CurAction.type == GlobalPlanner::ACTION_NONE)
-            return true;
-
-        //Mechanical Busy
-        if(MechanicalExecuter::IsBusy())
-            return false;
-
+    void UpdatePose() {
         //Read Pose
         static tf::TransformListener tf_listener;
         tf::StampedTransform tf_map_base;
+
         try {
             tf_listener.lookupTransform("map", "base", ros::Time(0), tf_map_base);
         }
         catch (tf::TransformException ex) {
             ROS_ERROR("%s",ex.what());
-            return false;
+            return;
         }
 
-        double pose_x   = tf_map_base.getOrigin().getX();
-        double pose_y   = tf_map_base.getOrigin().getY();
-        double pose_yaw = YawFromQuaternion(tf_map_base.getRotation());
+        //Current Pose
+        PoseInitialized = true;
+
+        Pose.x   = tf_map_base.getOrigin().getX();
+        Pose.y   = tf_map_base.getOrigin().getY();
+        Pose.yaw = YawFromQuaternion(tf_map_base.getRotation());
+        Pose.stamp = ros::Time::now();
+
+        //Velocity
+        double dt = (Pose.stamp - PoseLast.stamp).toSec();
+        Velocity.x = (Pose.x - PoseLast.x) / dt;
+        Velocity.y = (Pose.y - PoseLast.y) / dt;
+        Velocity.yaw = AngularMinus(Pose.yaw, PoseLast.yaw) / dt;
+
+        PoseLast = Pose;
+    }
+
+    bool CurActionFinished()
+    {
+        double dt = (ros::Time::now() - CurActionLastTime).toSec();
+        CurActionLastTime = ros::Time::now();
+
+        if (CurAction.type == GlobalPlanner::ACTION_NONE)
+            return true;
+
+        //Initial Pose
+        if(!PoseInitialized) return false;
+
+        //Mechanical Busy
+        if(MechanicalExecuter::IsBusy())
+            return false;
+
+        //ZeroVel Timeout
+        if( 
+            (fabs(Velocity.x)   < POSITION_SPEED_THRESHOLD) &&
+            (fabs(Velocity.y)   < POSITION_SPEED_THRESHOLD) &&
+            (fabs(Velocity.yaw) < ANGLE_SPEED_THRESHOLD)
+        ) {
+            //stable
+            CurAction.zero_countdown -= dt;
+        }
+        if(CurAction.zero_countdown <= 0) return true;
 
         //Angle settings
         if (CurAction.yaw_enabled) {
-            if (fabs( AngularMinus(CurAction.world_yaw, pose_yaw ) ) > ANGLE_THRESHOLD)
+            if (fabs( AngularMinus(CurAction.world_yaw, Pose.yaw ) ) > ANGLE_THRESHOLD)
                 return false;
         }
 
         //Position settings
         if( 
-            (fabs( pose_x - CurAction.world_x ) > POSITION_THRESHOLD) ||
-            (fabs( pose_y - CurAction.world_y ) > POSITION_THRESHOLD)
+            (fabs( Pose.x - CurAction.world_x ) > POSITION_THRESHOLD) ||
+            (fabs( Pose.y - CurAction.world_y ) > POSITION_THRESHOLD)
         ) {
             return false;
         }
 
-        //Countdown
-        if(CurAction.countdown > 0) {
-            double dt = (ros::Time::now() - CurActionLastTime).toSec();
-            CurActionLastTime = ros::Time::now();
-
-            CurAction.countdown -= dt;
-        }
-
-        //Timeout
-        bool isTimeout = CurAction.countdown <= 0;
-        if(isTimeout) return true;
+        //Normal Timeout
+        if(CurAction.countdown > 0) CurAction.countdown -= dt;
+        if(CurAction.countdown <= 0) return true;
 
         //Wait for feedback
         bool Feedback_Done = true;
@@ -126,6 +161,8 @@ namespace ActionExecuter
 
     void update()
     {
+        UpdatePose();
+
         //broadcast pose
         if(CurAction.type != GlobalPlanner::ACTION_NONE) {
             setpoint_pose.pose.position.x = CurAction.world_x;
@@ -174,6 +211,11 @@ namespace ActionExecuter
         setpoint_pub = nh.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 100);
 
         setpoint_pose.pose.orientation = tf::createQuaternionMsgFromYaw(0.0);
+    }
+
+    void reset() {
+        ActionList.clear();
+        CurAction.type = GlobalPlanner::ACTION_NONE;
     }
 } // namespace ActionExecuter
 

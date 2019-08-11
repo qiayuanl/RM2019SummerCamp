@@ -9,17 +9,17 @@
 
 ////////////////////////GAME/////////////////////////
 
+const int STRATEGY_PIECE_SIZE = 5;
+
 bool JudgeBoardInitialized = false;
 rcbigcar::board JudgeBoard;
-
-int LastTurnWho = -1;
 
 void InitGlobalBoard() {
     //board
     memset(&GlobalBoard, 0, sizeof(GlobalBoard));
 
     GlobalBoard.ball[0] = GlobalBoard.ball[1] = 20;
-    GlobalBoard.cup[0]  = GlobalBoard.cup[1]  = 10;
+    GlobalBoard.cup[0]  = GlobalBoard.cup[1]  = 0;
 
     GlobalBoard.position[0][0] = 0;
     GlobalBoard.position[0][1] = 0;
@@ -35,8 +35,12 @@ void LoadJudgeBoard() {
     GlobalBoard.position[1][0] = JudgeBoard.robot_x[1];
     GlobalBoard.position[1][1] = JudgeBoard.robot_y[1];
 
+    GlobalBoard.ball[WhoAmI] = MechanicalDefinition::BallCount;
+
     for(int i = 0; i < 7; i++) {
-        GlobalBoard.castle[i] = JudgeBoard.castle[i];
+        GlobalBoard.castle[i] = JudgeBoard.castle_0[i] - JudgeBoard.castle_1[i];
+
+        GlobalBoard.castle_we_placed[i] = (WhoAmI == 0) ? JudgeBoard.castle_0[i] : JudgeBoard.castle_1[i];
     }
 
     for(int x = 0; x < 7; x++) for(int y = 0; y < 9; y++) {
@@ -58,9 +62,17 @@ void MainWindow::UpdateStrategy() {
     int CurTurnWho = JudgeBoard.team;
     if((JudgeBoard.time_left == 0) || (JudgeBoard.move_left == 0)) CurTurnWho = !CurTurnWho;
 
-    //If switched and turn on our team
-    if(CurTurnWho != LastTurnWho) {
-        if(CurTurnWho == WhoAmI) {
+    //not our team, then clear decisions
+    if(CurTurnWho != WhoAmI) {
+        MechanicalExecuter::reset();
+        ActionExecuter::reset();
+    }
+    else {
+        //if our team
+        //if no strategy
+        bool HaveStrategy = (MechanicalExecuter::IsBusy()) || (!ActionExecuter::ActionList.empty()) || (ActionExecuter::CurAction.type != GlobalPlanner::ACTION_NONE);
+
+        if(!HaveStrategy) {
             //recalc strategy
             std::vector<uint8_t> all_strategies;
 
@@ -69,54 +81,50 @@ void MainWindow::UpdateStrategy() {
             int temp_time_left = JudgeBoard.time_left * 1000;
             int temp_move_left = JudgeBoard.move_left;
 
-            //pre-search
+            //pre-search checking
             if(JudgeBoard.team != CurTurnWho) {
                 temp_time_left = Game::GAME_TOTAL_MS;
                 temp_move_left = Game::GAME_TOTAL_STEP;
             }
 
-            for(int i = 0; i < 3; i++) {
-                std::vector<uint8_t> strategy_piece = Game::Search::search(WhoAmI, temp_board, temp_move_left, temp_time_left, 1000);
+            std::vector<uint8_t> strategy_piece = Game::Search::search(WhoAmI, temp_board, temp_move_left, temp_time_left, 500);
 
-                for(int i = 0; i < strategy_piece.size(); i++) {
-                    uint8_t st = strategy_piece[i];
+            for(int i = 0; i < std::min(STRATEGY_PIECE_SIZE, (int)strategy_piece.size()); i++) {
+                uint8_t st = strategy_piece[i];
 
-                    if(st >= 0 && st <= 3) {
-                        Game::OP::move(temp_board, WhoAmI, st);
+                if(st >= 0 && st <= 3) {
+                    Game::OP::move(temp_board, WhoAmI, st);
 
-                        temp_move_left--;
-                        temp_time_left -= Game::ACTION_MOVE_MS;
-                    }
-                    else if(st == 4) {
-                        Game::OP::occupy(temp_board, WhoAmI);
-
-                        temp_time_left -= Game::ACTION_OCCUPY_MS;
-                    }
-                    else if(st == 5) {
-                        Game::OP::place(temp_board, WhoAmI, 1);
-
-                        temp_time_left -= Game::ACTION_PLACE_BALL_MS;
-
-                        temp_board.ball[WhoAmI]--;
-                    }
-                    else if(st == 6) {
-                        Game::OP::place(temp_board, WhoAmI, 6);
-
-                        temp_time_left -= Game::ACTION_PLACE_CUP_MS;
-
-                        temp_board.cup[WhoAmI]--;
-                    }
-
-                    //push to all strategy list
-                    all_strategies.push_back(st);
+                    temp_move_left--;
+                    temp_time_left -= Game::ACTION_MOVE_MS;
                 }
+                else if(st == 4) {
+                    Game::OP::occupy(temp_board, WhoAmI);
+
+                    temp_time_left -= Game::ACTION_OCCUPY_MS;
+                }
+                else if(st == 5) {
+                    Game::OP::place(temp_board, WhoAmI, 1);
+
+                    temp_time_left -= Game::ACTION_PLACE_BALL_MS;
+
+                    temp_board.ball[WhoAmI]--;
+                }
+                else if(st == 6) {
+                    Game::OP::place(temp_board, WhoAmI, 6);
+
+                    temp_time_left -= Game::ACTION_PLACE_CUP_MS;
+
+                    temp_board.cup[WhoAmI]--;
+                }
+
+                //push to all strategy list
+                all_strategies.push_back(st);
             }
 
             //apply strategy
             ActionExecuter::LoadActionList( GlobalPlanner::GetActions(WhoAmI, GlobalBoard, all_strategies) );
         }
-
-        LastTurnWho = CurTurnWho;
     }
 }
 ///////////////////////////////////////////////////////
@@ -319,9 +327,10 @@ void MainWindow::on_pTeamOk_clicked()
     ui->lbSelTeam->setVisible(false);
 }
 
+/*
 void MainWindow::on_pTestSeq_clicked()
 {
-    const uint8_t strategy_list[] = {0, 0, 1, 1, 1, 1, 5};
+    const uint8_t strategy_list[] = {0, 0, 1, 1, 1, 1, 5, 1, 1, 1, 1, 5};
 
     std::vector<uint8_t> all_strategies(strategy_list, strategy_list + sizeof(strategy_list) / sizeof(uint8_t));
 
@@ -330,3 +339,4 @@ void MainWindow::on_pTestSeq_clicked()
 
     ActionExecuter::LoadActionList( GlobalPlanner::GetActions(WhoAmI, GlobalBoard, all_strategies) );
 }
+*/
