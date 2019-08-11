@@ -1,6 +1,6 @@
 <launch>
     <!-- Robot Hardware -->
-    <!-- <node pkg="rcbigcar" type="robot" name="robot"></node> -->
+    <node pkg="rcbigcar" type="robot" name="robot"></node>
 
     <!-- Servo Controller -->
     <node pkg="rcbigcar" type="servo" name="servo"></node>

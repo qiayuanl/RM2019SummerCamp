@@ -8,7 +8,7 @@ Motion::Motion()
 	//Setup Motors
 	for (int i = 0; i < MOTION_MOTOR_COUNT; i++)
 	{
-		motors[i] = new Motor(MOTION_MOTOR_PRESET[i].ID, MOTION_MOTOR_PRESET[i].Preset, MOTION_MOTOR_PRESET[i].Paramter);
+		motors[i] = new Motor(MOTION_MOTOR_PRESET[i].ID_Main, MOTION_MOTOR_PRESET[i].Preset, MOTION_MOTOR_PRESET[i].Paramter);
 	}
 
 	//Setup Reconfigurable Paramters

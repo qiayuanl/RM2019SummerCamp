@@ -29,7 +29,8 @@ struct MotorParamter
 
 struct MotionMotor
 {
-    int ID;
+    int ID_Main;
+    int ID_Sub;
 
     const MotorPreset *Preset;
     MotorParamter Paramter;
@@ -94,13 +95,13 @@ const double CHASSIS_LENGTH_B = 0.285;
 /*
  * Motion Paramters
  */
-#define MOTION_MOTOR_COUNT 1
+#define MOTION_MOTOR_COUNT 6
 const double MOTION_WATCHDOG_TIMEOUT = 1.0;
 
 const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
     //Main screw pole
     {
-        4,
+        4, -1,
         &MOTOR_GM3508,
 
         {
@@ -108,7 +109,66 @@ const MotionMotor MOTION_MOTOR_PRESET[MOTION_MOTOR_COUNT] = {
             true,
             0.04
         }
-    }
+    },
+
+    //Place ball 0
+    {
+        5, -1,
+        &MOTOR_GM2006,
+
+        {
+            CLOSELOOP_POSITION,
+            false,
+            0.0
+        }
+    },
+
+    //Place ball 1
+    {
+        6, -1,
+        &MOTOR_GM2006,
+
+        {
+            CLOSELOOP_POSITION,
+            false,
+            0.0
+        }
+    },
+
+    //Cup release screw pole
+    {
+        7, -1,
+        &MOTOR_GM2006,
+
+        {
+            CLOSELOOP_POSITION,
+            false,
+            0.0
+        }
+    },
+
+    //Cup move screw pole
+    {
+        8, 9,
+        &MOTOR_GM2006,
+
+        {
+            CLOSELOOP_POSITION,
+            true,
+            0.05
+        }
+    },
+
+    {
+        9, -1,
+        &MOTOR_GM2006,
+
+        {
+            CLOSELOOP_POSITION,
+            true,
+            0.05
+        }
+    },
 };
 
 #endif

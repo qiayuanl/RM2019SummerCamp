@@ -25,6 +25,9 @@ class Motor
 
     /* Paramter */
     MotorParamter Paramter;
+
+    /* PID */
+    double Kp, Ki, Kd, Kf, KmaxI, KmaxO;
   private:
     /* ID  */
     int ID;
@@ -34,9 +37,6 @@ class Motor
 
     /* Time */
     ros::Time last_looptime;
-
-    /* PID */
-    double Kp, Ki, Kd, Kf, KmaxI, KmaxO;
 
     /* PID Variables */
     ErrorList VError = {{0}};

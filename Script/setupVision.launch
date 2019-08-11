@@ -1,4 +1,4 @@
 <launch>
     <!-- Visual Localization -->
-    <include file="$(find rcbigvis)/launch/rcbigvis.launch"></include>
+    <include file="$(find rcbigvis)/launch/drcbigvis.launch"></include>
 </launch>
