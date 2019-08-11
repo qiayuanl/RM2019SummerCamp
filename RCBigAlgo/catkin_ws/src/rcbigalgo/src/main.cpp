@@ -5,8 +5,8 @@
 int main(int argc, char *argv[])
 {
     std::map<std::string,std::string> remappings;
-    if(argc >= 2) remappings["__master"] = argv[1]; //"http://192.168.10.164:11311";
-    if(argc >= 3) remappings["__hostname"] = argv[2]; //"192.168.10.131";
+    remappings["__master"] = "http://192.168.10.164:11311";
+    remappings["__hostname"] = "192.168.10.131";
     ros::init(remappings, "rcbigalgo");
 
     ros::start();

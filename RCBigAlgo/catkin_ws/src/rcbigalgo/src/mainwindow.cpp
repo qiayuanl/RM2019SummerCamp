@@ -5,45 +5,18 @@
 
 #include <ros/ros.h>
 #include <QTimer>
-//#include <rcbigcar/board.h>
+#include <ros/ros.h>
 
 ////////////////////////GAME/////////////////////////
-/*
-enum GameUIStatus {
-    GameStatus_Place_Red,
-    GameStatus_Place_Blue,
 
-    GameStatus_Move_Red,
-    GameStatus_Move_Blue
-};
-
-QString GameStatusString[4] = {
-    "START RED",
-    "START BLUE",
-    "RED",
-    "BLUE"
-};
-
-GameUIStatus UIStatus;
-*/
-
+bool JudgeBoardInitialized = false;
+rcbigcar::board JudgeBoard;
 Game::Board GlobalBoard;
 
-/*
-int TimeLeft[2], MoveLeft[2];
-int TurnCount = 0;
+int WhoAmI = 0;
+int LastTurnWho = -1;
 
-void ResetTurn() {
-    TurnCount++;
-
-    //time & step
-    TimeLeft[0] = TimeLeft[1] = Game::GAME_TOTAL_MS;
-    MoveLeft[0] = MoveLeft[1] = Game::GAME_TOTAL_STEP;
-}*/
-
-void ResetGame() {
-    //TurnCount = 0;
-
+void InitGlobalBoard() {
     //board
     memset(&GlobalBoard, 0, sizeof(GlobalBoard));
 
@@ -55,26 +28,125 @@ void ResetGame() {
 
     GlobalBoard.position[1][0] = 0;
     GlobalBoard.position[1][1] = 8;
-
-    //turn
-    //ResetTurn();
-
-    //ui
-    //UIStatus = GameStatus_Place_Red;
 }
 
+void LoadJudgeBoard() {
+    GlobalBoard.position[0][0] = JudgeBoard.robot_x[0];
+    GlobalBoard.position[0][1] = JudgeBoard.robot_y[0];
+
+    GlobalBoard.position[1][0] = JudgeBoard.robot_x[1];
+    GlobalBoard.position[1][1] = JudgeBoard.robot_y[1];
+
+    for(int i = 0; i < 7; i++) {
+        GlobalBoard.castle[i] = JudgeBoard.castle[i];
+    }
+
+    for(int x = 0; x < 7; x++) for(int y = 0; y < 9; y++) {
+        int8_t status = JudgeBoard.cell_status[x * 9 + y];
+
+        Game::set_bit(GlobalBoard.is_occupy, x, y, status != -1);
+        Game::set_bit(GlobalBoard.who,       x, y, (status == 0) ? 0 : 1);
+    }
+
+    Game::CC::recalc_strong(&GlobalBoard);
+}
+
+void MainWindow::UpdateStrategy() {
+    if(!JudgeBoardInitialized) return;
+
+    //load judge to global board
+    LoadJudgeBoard();
+
+    int CurTurnWho = JudgeBoard.team;
+    if((JudgeBoard.time_left == 0) || (JudgeBoard.move_left == 0)) CurTurnWho = !CurTurnWho;
+
+    //If switched and turn on our team
+    if(CurTurnWho != LastTurnWho) {
+        if(CurTurnWho == WhoAmI) {
+            //recalc strategy
+            std::vector<uint8_t> all_strategies;
+
+            Game::Board temp_board = GlobalBoard;
+
+            int temp_time_left = JudgeBoard.time_left * 1000;
+            int temp_move_left = JudgeBoard.move_left;
+
+            //pre-search
+            if(JudgeBoard.team != CurTurnWho) {
+                temp_time_left = Game::GAME_TOTAL_MS;
+                temp_move_left = Game::GAME_TOTAL_STEP;
+            }
+
+            for(int i = 0; i < 3; i++) {
+                std::vector<uint8_t> strategy_piece = Game::Search::search(WhoAmI, temp_board, temp_move_left, temp_time_left, 1000);
+
+                for(int i = 0; i < strategy_piece.size(); i++) {
+                    uint8_t st = strategy_piece[i];
+
+                    if(st >= 0 && st <= 3) {
+                        Game::OP::move(temp_board, WhoAmI, st);
+
+                        temp_move_left--;
+                        temp_time_left -= Game::ACTION_MOVE_MS;
+                    }
+                    else if(st == 4) {
+                        Game::OP::occupy(temp_board, WhoAmI);
+
+                        temp_time_left -= Game::ACTION_OCCUPY_MS;
+                    }
+                    else if(st == 5) {
+                        Game::OP::place(temp_board, WhoAmI, 1);
+
+                        temp_time_left -= Game::ACTION_PLACE_BALL_MS;
+
+                        temp_board.ball[WhoAmI]--;
+                    }
+                    else if(st == 6) {
+                        Game::OP::place(temp_board, WhoAmI, 6);
+
+                        temp_time_left -= Game::ACTION_PLACE_CUP_MS;
+
+                        temp_board.cup[WhoAmI]--;
+                    }
+
+                    //push to all strategy list
+                    all_strategies.push_back(st);
+                }
+            }
+
+            //apply strategy
+            ActionExecuter::LoadActionList( GlobalPlanner::GetActions(WhoAmI, GlobalBoard, all_strategies) );
+        }
+
+        LastTurnWho = CurTurnWho;
+    }
+}
 ///////////////////////////////////////////////////////
+
+ros::Subscriber board_sub;
+
+void MainWindow::BoardCallback(const rcbigcar::board::ConstPtr &board) {
+    JudgeBoard = *board;
+
+    JudgeBoardInitialized = true;
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ResetGame();
+    ros::NodeHandle nh;
+
+    InitGlobalBoard();
 
     //Setup Auto
+    MechanicalExecuter::init();
     ActionExecuter::init();
 
-    //Setup Timer
+    //Setup Comm
+    board_sub = nh.subscribe<rcbigcar::board>("board", 100, &MainWindow::BoardCallback, this);
+
+    //Setup Tick Timer
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start(1000 / 20);
@@ -86,6 +158,11 @@ MainWindow::MainWindow(QWidget *parent) :
     canvas->GameStatusOut = ui->tGameStatus;
 
     ui->paintLayout->addWidget(canvas, 0);
+
+    //Setup UI Update Timer
+    ui_update_timer = new QTimer(this);
+    connect(ui_update_timer, SIGNAL(timeout()), canvas, SLOT(GameUpdate()));
+    ui_update_timer->start(1000 / 10);
 }
 
 MainWindow::~MainWindow()
@@ -96,7 +173,10 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::update() {
+    MechanicalExecuter::update();
     ActionExecuter::update();
+
+    UpdateStrategy();
 }
 
 ///////////////////////////Visual Widget///////////////////////////
@@ -109,21 +189,21 @@ void VisualWidget::GameUpdate(void) {
     //draw graph
     this->update();
 
-    /* bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
-
     //draw text
-    this->GameStatusOut->setPlainText(
-        QString("Turn No   = ") + QString::number(TurnCount) + QString("\n") +
+    if(JudgeBoardInitialized) {
+      this->GameStatusOut->setPlainText(
+          QString("Move   = ") +    (( JudgeBoard.team == 0 ) ? QString("Red") : QString("Blue")) + QString("\n") +
 
-        QString("Time Left = ") + QString::number(TimeLeft[who] / 1000) + QString("\n") + 
-        QString("Move Left = ") + QString::number(MoveLeft[who]) + QString("\n") + 
+          QString("Time Left = ") + QString::number( JudgeBoard.time_left ) + QString("\n") +
+          QString("Move Left = ") + QString::number( JudgeBoard.move_left ) + QString("\n") +
 
-        QString("Ball Left = ") + QString::number(GlobalBoard.ball[who]) + QString("\n") + 
-        QString("Cup Left  = ") + QString::number(GlobalBoard.cup [who]) + QString("\n") +
+          QString("Ball Left = ") + QString::number(  GlobalBoard.ball[WhoAmI] ) + QString("\n") +
+          QString("Cup Left  = ") + QString::number(  GlobalBoard.cup [WhoAmI] ) + QString("\n") +
 
-        QString("Score Red = ")  + QString::number(Game::OP::get_score(GlobalBoard, 0)) + QString("\n") +
-        QString("Score Blue = ") + QString::number(Game::OP::get_score(GlobalBoard, 1)) + QString("\n")
-    ); */
+          QString("Score Red = ")  + QString::number( JudgeBoard.score[0] ) + QString("\n") +
+          QString("Score Blue = ") + QString::number( JudgeBoard.score[1] ) + QString("\n")
+      );
+    }
 }
 
 void VisualWidget::paintEvent(QPaintEvent *event)
@@ -156,29 +236,6 @@ void VisualWidget::mousePressEvent(QMouseEvent *event) {
 void VisualWidget::DrawContent(QPainter *painter, QPaintEvent *event) {
     //fill bg
     painter->fillRect(event->rect(), QBrush(Qt::white));
-
-    //draw status
-    /* int status_margins = std::min(this->size().width(), this->size().height()) * 0.1;
-    painter->setPen  (QPen(Qt::black));
-
-    painter->drawText(this->rect().adjusted(status_margins, status_margins, -status_margins, -status_margins).bottomLeft(),
-                      GameStatusString[UIStatus]);
-    */
-
-    //draw score
-    /* painter->setPen  (QPen(Qt::black));
-    painter->drawText(this->rect().adjusted(status_margins, status_margins, -status_margins, -status_margins).bottomRight(),
-                      ((GlobalBoard.delta_points > 0) ? QString("RED") : QString("BLUE")) + QString(": ") + QString::number(std::abs(GlobalBoard.delta_points))); 
-    */
-
-    /*
-    //draw eval
-    int eval_margins = std::min(this->size().width(), this->size().height()) * 0.3;
-    painter->setPen  (QPen(Qt::black));
-    painter->drawText(this->rect().marginsRemoved(QMargins(eval_margins, eval_margins, eval_margins, eval_margins)).bottomRight(),
-                      QString("Red = ")    + QString::number(Game::Search::evaluate(0, GlobalBoard, 0, 0))
-                    + QString("   Blue = ") + QString::number(Game::Search::evaluate(1, GlobalBoard, 0, 0))
-    ); */
 
     //draw board
     QSize size = this->size();
@@ -246,146 +303,20 @@ void VisualWidget::DrawContent(QPainter *painter, QPaintEvent *event) {
 }
 
 void VisualWidget::OnClick(int button, int grid_x, int grid_y) {
-/*
-    bool Update = false;
 
-    switch(UIStatus) {
-        case GameStatus_Place_Red:
-            if(button == Qt::LeftButton) {
-                GlobalBoard.position[0][0] = grid_x;
-                GlobalBoard.position[0][1] = grid_y;
-
-                UIStatus = GameStatus_Place_Blue;
-                Update   = true;
-            }
-        break;
-
-        case GameStatus_Place_Blue:
-            if(button == Qt::LeftButton) {
-                GlobalBoard.position[1][0] = grid_x;
-                GlobalBoard.position[1][1] = grid_y;
-
-                UIStatus = GameStatus_Move_Red;
-                Update   = true;
-            }
-        break;
-
-        case GameStatus_Move_Red:
-        case GameStatus_Move_Blue:
-            bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
-
-            if(button == Qt::LeftButton) {
-                int x = GlobalBoard.position[who][0];
-                int y = GlobalBoard.position[who][1];
-
-                //get dir
-                int dir = -1;
-                if(x == grid_x) {
-                    if(y > grid_y) dir = 3;
-                    else           dir = 1;
-                }
-                else if(y == grid_y) {
-                    if(x > grid_x) dir = 2;
-                    else           dir = 0;
-                }
-
-                if(dir != -1) {
-                    if((TimeLeft[who] >= Game::ACTION_MOVE_MS) && (MoveLeft[who] >= 1)) {
-                        if(Game::OP::can_move(GlobalBoard, who, dir)) {
-                            Game::OP::move(GlobalBoard, who, dir);
-
-                            TimeLeft[who] -= Game::ACTION_MOVE_MS;
-                            MoveLeft[who] -= 1;
-                        }
-                    }
-                }
-            }
-            else if(button == Qt::RightButton) {
-                if(TimeLeft[who] >= Game::ACTION_OCCUPY_MS) {
-                    if(Game::OP::can_occupy(GlobalBoard, who)) {
-                        Game::OP::occupy(GlobalBoard, who);
-
-                        TimeLeft[who] -= Game::ACTION_OCCUPY_MS;
-                    }
-                }
-            }
-
-            Update   = true;
-        break;
-    }
-
-    if(Update) GameUpdate();
-*/
-}
-
-/*
-void MainWindow::on_pbPlaceBall_clicked() {
-    bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
-
-    if((TimeLeft[who] >= Game::ACTION_PLACE_BALL_MS) && (GlobalBoard.ball[who])) {
-        if(Game::OP::can_place(GlobalBoard, who)) {
-            Game::OP::place(GlobalBoard, who, 1);
-
-            GlobalBoard.ball[who]--;
-            TimeLeft[who] -= Game::ACTION_PLACE_BALL_MS;
-        }
-    }
-
-    canvas->GameUpdate();
-}
-
-void MainWindow::on_pbPlaceCup_clicked() {
-    bool who = (UIStatus == GameStatus_Move_Red) ? 0 : 1;
-
-    if((TimeLeft[who] >= Game::ACTION_PLACE_CUP_MS) && (GlobalBoard.cup[who])) {
-        if(Game::OP::can_place(GlobalBoard, who)) {
-            Game::OP::place(GlobalBoard, who, 4);
-
-            GlobalBoard.cup[who]--;
-            TimeLeft[who] -= Game::ACTION_PLACE_CUP_MS;
-        }
-    }
-
-    canvas->GameUpdate();
 }
 
 ////////////////////////////////////////////////////////////////////
 
-void MainWindow::on_pEndTurn_clicked() {
-    if(UIStatus == GameStatus_Move_Red)
-        UIStatus = GameStatus_Move_Blue;
-    else if(UIStatus == GameStatus_Move_Blue)
-        UIStatus = GameStatus_Move_Red;
-
-    ResetTurn();
-    canvas->GameUpdate();
-}*/
-
-void MainWindow::on_pbSearch_clicked()
+void MainWindow::on_pWhoAmI_clicked()
 {
-    bool who = 0;
+    WhoAmI = !WhoAmI;
+    ui->pWhoAmI->setText( (WhoAmI == 0) ? "RED" : "BLUE" );
+}
 
-    std::vector<uint8_t> strategies = Game::Search::search(who, GlobalBoard, Game::GAME_TOTAL_STEP, Game::GAME_TOTAL_MS, 1000);
-    ActionExecuter::LoadActionList( GlobalPlanner::GetActions(who, GlobalBoard, strategies) );
-
-    for(int i = 0; i < strategies.size(); i++) {
-        uint8_t st = strategies[i];
-
-        if(st >= 0 && st <= 3) {
-            Game::OP::move(GlobalBoard, who, st);
-        }
-        else if(st == 4) {
-            Game::OP::occupy(GlobalBoard, who);
-        }
-        else if(st == 5) {
-            Game::OP::place(GlobalBoard, who, 1);
-            GlobalBoard.ball[who]--;
-        }
-        else if(st == 6) {
-            Game::OP::place(GlobalBoard, who, 4);
-            GlobalBoard.cup[who]--;
-        }
-
-        canvas->GameUpdate();
-    }
+void MainWindow::on_pTeamOk_clicked()
+{
+    ui->pWhoAmI->setDisabled(true);
+    ui->pTeamOk->setDisabled(true);
+    ui->lbSelTeam->setVisible(false);
 }

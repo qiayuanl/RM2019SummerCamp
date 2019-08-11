@@ -34,23 +34,34 @@ void RobotHardware::update()
 
 ///////////////////////////HW Implementation/////////////////////////////
 
-void ReceiveHandlerProxy(can_frame_t *frame, void *ptr)
+void CAN0_ReceiveHandlerProxy(can_frame_t *frame, void *ptr)
 {
-    ((RobotHardware *)ptr)->CAN_ReceiveFrame(frame);
+    ((RobotHardware *)ptr)->CAN0_ReceiveFrame(frame);
+}
+
+void CAN1_ReceiveHandlerProxy(can_frame_t *frame, void *ptr)
+{
+    ((RobotHardware *)ptr)->CAN1_ReceiveFrame(frame);
 }
 
 RobotHardware::RobotHardware()
 {
     //Initialize HW
-    adapter.reception_handler_data = (void *)this;
-    adapter.reception_handler = &ReceiveHandlerProxy;
+    can0_adapter.reception_handler_data = (void *)this;
+    can0_adapter.reception_handler = &CAN0_ReceiveHandlerProxy;
 
-    adapter.open(HW_CAN_ID);
+    can0_adapter.open(HW_CAN0_ID);
+
+    can1_adapter.reception_handler_data = (void *)this;
+    can1_adapter.reception_handler = &CAN1_ReceiveHandlerProxy;
+
+    can1_adapter.open(HW_CAN1_ID);
 }
 
 RobotHardware::~RobotHardware()
 {
-    adapter.close();
+    can0_adapter.close();
+    can1_adapter.close();
 }
 
 void RobotHardware::Motor_UpdateOffset(moto_measure_t *ptr, can_frame_t *frame)
@@ -70,32 +81,7 @@ void RobotHardware::Motor_UpdateOffset(moto_measure_t *ptr, can_frame_t *frame)
     ptr->total_angle = ptr->round_cnt * 8192 + ptr->angle - ptr->offset_angle;
 }
 
-/*
-void RobotHardware::Motor_UpdateTotalAngle(moto_measure_t *p)
-{
-    int res1, res2, delta;
-    if (p->angle < p->last_angle)
-    {
-        res1 = p->angle + 8192 - p->last_angle;
-        res2 = p->angle - p->last_angle;
-    }
-    else
-    {
-        res1 = p->angle - 8192 - p->last_angle;
-        res2 = p->angle - p->last_angle;
-    }
-
-    if (abs(res1) < abs(res2))
-        delta = res1;
-    else
-        delta = res2;
-
-    p->total_angle += delta;
-    p->last_angle = p->angle;
-}
-*/
-
-void RobotHardware::CAN_ReceiveFrame(can_frame_t *frame)
+void RobotHardware::CAN0_ReceiveFrame(can_frame_t *frame)
 {
     switch (frame->can_id)
     {
@@ -108,23 +94,39 @@ void RobotHardware::CAN_ReceiveFrame(can_frame_t *frame)
     case CAN_3510Moto7_ID:
     case CAN_3510Moto8_ID:
     {
-        uint8_t idx = frame->can_id - CAN_3510Moto1_ID;
+        uint8_t idx = frame->can_id - CAN_3510Moto1_ID; //first 8 motors
 
         if (idx < HW_MOTOR_COUNT)
         {
             Motor_UpdateOffset(&motors[idx], frame);
-            //Motor_UpdateTotalAngle(&motors[idx]);
-
             motors[idx].msg_cnt++;
         }
 
         break;
     }
+    }
+}
 
-    case SINGLE_GYRO_ID:
+void RobotHardware::CAN1_ReceiveFrame(can_frame_t *frame)
+{
+    switch (frame->can_id)
     {
-        gyro.angle = 0.001f * ((int32_t)((frame->data[0] << 24) | (frame->data[1] << 16) | (frame->data[2] << 8) | (frame->data[3])));
-        gyro.gyro = 0.001f * ((int32_t)((frame->data[4] << 24) | (frame->data[5] << 16) | (frame->data[6] << 8) | (frame->data[7])));
+    case CAN_3510Moto1_ID:
+    case CAN_3510Moto2_ID:
+    case CAN_3510Moto3_ID:
+    case CAN_3510Moto4_ID:
+    case CAN_3510Moto5_ID:
+    case CAN_3510Moto6_ID:
+    case CAN_3510Moto7_ID:
+    case CAN_3510Moto8_ID:
+    {
+        uint8_t idx = frame->can_id - CAN_3510Moto1_ID + 8; //last 8 motors
+
+        if (idx < HW_MOTOR_COUNT)
+        {
+            Motor_UpdateOffset(&motors[idx], frame);
+            motors[idx].msg_cnt++;
+        }
 
         break;
     }
@@ -133,16 +135,13 @@ void RobotHardware::CAN_ReceiveFrame(can_frame_t *frame)
 
 void RobotHardware::CAN_Motor_Update()
 {
-    if (!adapter.is_open())
-        return;
-
     can_frame_t frame;
 
-    //Transmit Frame 1
+    //CAN0 Transmit Frame 1
     frame.can_id = HW_CAN_MOTOR_ID_1;
     frame.can_dlc = 8;
 
-    for (int id = 0; id < std::min(HW_MOTOR_COUNT, 4); id++)
+    for (int id = 0; id < std::min(4, HW_MOTOR_COUNT); id++)
     {
         int16_t power = (int16_t)motors[id].power;
 
@@ -150,15 +149,15 @@ void RobotHardware::CAN_Motor_Update()
         frame.data[2 * id + 1] = (uint8_t)(power);
     }
 
-    adapter.transmit(&frame);
+    if (can0_adapter.is_open()) can0_adapter.transmit(&frame);
 
+    //CAN0 Transmit Frame 2
     if (HW_MOTOR_COUNT > 4)
     {
-        //Transmit Frame 2
         frame.can_id = HW_CAN_MOTOR_ID_2;
         frame.can_dlc = 8;
 
-        for (int id = 4; id < HW_MOTOR_COUNT; id++)
+        for (int id = 4; id < std::min(8, HW_MOTOR_COUNT); id++)
         {
             int16_t power = (int16_t)motors[id].power;
 
@@ -166,6 +165,40 @@ void RobotHardware::CAN_Motor_Update()
             frame.data[2 * (id - 4) + 1] = (uint8_t)(power);
         }
 
-        adapter.transmit(&frame);
+        if (can0_adapter.is_open()) can0_adapter.transmit(&frame);
+    }
+
+    //CAN1 Transmit Frame 1
+    if (HW_MOTOR_COUNT > 8)
+    {
+        frame.can_id = HW_CAN_MOTOR_ID_1;
+        frame.can_dlc = 8;
+
+        for (int id = 8; id < std::min(12, HW_MOTOR_COUNT); id++)
+        {
+            int16_t power = (int16_t)motors[id].power;
+
+            frame.data[2 * (id - 8)] = (uint8_t)(power >> 8);
+            frame.data[2 * (id - 8) + 1] = (uint8_t)(power);
+        }
+
+        if (can1_adapter.is_open()) can1_adapter.transmit(&frame);
+    }
+
+    //CAN1 Transmit Frame 2
+    if (HW_MOTOR_COUNT > 12)
+    {
+        frame.can_id = HW_CAN_MOTOR_ID_2;
+        frame.can_dlc = 8;
+
+        for (int id = 12; id < std::min(16, HW_MOTOR_COUNT); id++)
+        {
+            int16_t power = (int16_t)motors[id].power;
+
+            frame.data[2 * (id - 12)] = (uint8_t)(power >> 8);
+            frame.data[2 * (id - 12) + 1] = (uint8_t)(power);
+        }
+
+        if (can1_adapter.is_open()) can1_adapter.transmit(&frame);
     }
 }

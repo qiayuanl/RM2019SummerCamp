@@ -42,15 +42,23 @@ public:
 
     void FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg, const std::string camera_frame);
 
+    //Update Function
+    void update();
+
     //Callback Functions
-    void TagDetection_0_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
-    void TagDetection_1_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
+    void TagDetection_Front_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
+    void TagDetection_Back_Callback (const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg);
 private:
+    std::vector<tf::Transform> TagTransforms;
+
+    tf::Transform TransformMapToOdom;
+    bool InitialTransformGot;
+
     MovingAverage<double,      3> Filter_X, Filter_Y, Filter_Yaw_X, Filter_Yaw_Y;
 
-    ros::Subscriber detect_0_sub;
-    ros::Subscriber detect_1_sub;
-    ros::Publisher  vloc_pub;
+    ros::Subscriber detect_front_sub;
+    ros::Subscriber detect_back_sub;
+    //ros::Publisher  vloc_pub;
 
     tf::TransformListener    tf_listener;
     tf::TransformBroadcaster tf_broadcaster;

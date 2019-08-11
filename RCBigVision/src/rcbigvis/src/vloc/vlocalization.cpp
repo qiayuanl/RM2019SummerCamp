@@ -1,5 +1,7 @@
 #include "vlocalization.h"
 
+const int TAG_COUNT = 7 * 9;
+
 double YawFromQuaternion(const tf::Quaternion &quat) {
 	tf::Matrix3x3  m_orient(quat);
 
@@ -18,11 +20,34 @@ inline std::string to_string(int x) {
 VLocalization::VLocalization() {
     ros::NodeHandle node_priv;
 
-    //Setup Comm
-    detect_0_sub = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("tag_detections_0", 100, &VLocalization::TagDetection_0_Callback, this);
-    detect_1_sub = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("tag_detections_1", 100, &VLocalization::TagDetection_1_Callback, this);
+    //Setup Variables
+    InitialTransformGot = false;
 
-    vloc_pub   = node_priv.advertise<geometry_msgs::Pose>                    ("vloc", 100);
+    //Setup Comm
+    detect_front_sub = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("cam_front/tag_detections", 100, &VLocalization::TagDetection_Front_Callback, this);
+    detect_back_sub  = node_priv.subscribe<apriltag_ros::AprilTagDetectionArray> ("cam_back/tag_detections",  100, &VLocalization::TagDetection_Back_Callback, this);
+
+    //Load tag pos
+    TagTransforms.resize(TAG_COUNT);
+    for(int id = 0; id < TAG_COUNT; id++) {
+        //Lookup TF
+        tf::StampedTransform tf_map_tag;
+        try {
+            tf_listener.waitForTransform("map", "tag_" + to_string(id), ros::Time(0), ros::Duration(1));
+            tf_listener.lookupTransform ("map", "tag_" + to_string(id), ros::Time(0), tf_map_tag);
+
+            TagTransforms[id] = tf_map_tag;
+        }
+        catch (tf::TransformException ex) {
+            ROS_ERROR("%s",ex.what());
+        }
+    }
+}
+
+void VLocalization::update() {
+    if(InitialTransformGot) {
+        tf_broadcaster.sendTransform(tf::StampedTransform(TransformMapToOdom, ros::Time::now(), "map", "odom"));
+    }
 }
 
 void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg, const std::string camera_frame) {
@@ -63,8 +88,22 @@ void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray:
         tf::Matrix3x3 tag_base_r = tag_cam_r*(base_cam_r.transpose());
         tf::Vector3   tag_base_v = tag_cam_v-tag_base_r*base_cam_v;
 
-        //Time
-        ros::Time tf_time = ros::Time::now();
+        //Tag To Base
+        tf::Quaternion tag_base_q;
+        tf::Transform  tag_base_transform;
+
+        tag_base_r.getRotation(tag_base_q);
+        tag_base_transform.setRotation(tag_base_q);
+        tag_base_transform.setOrigin(tag_base_v);
+
+        //Base To Map
+        tf::Transform tf_map_base;
+        tf_map_base = TagTransforms[ID] * tag_base_transform;
+
+        //Send Current Tag Location
+        tf_broadcaster.sendTransform(tf::StampedTransform(tf_map_base, ros::Time::now(), "map", "base_vloc_tag_" + to_string(ID)));
+
+        /* ros::Time tf_time = ros::Time::now();
 
         //Send TF
         tf::Quaternion tag_base_q;
@@ -78,19 +117,19 @@ void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray:
         tf::StampedTransform tf_world_base;
         try {
             tf_listener.waitForTransform("map", "base_vloc_tag_" + to_string(ID), tf_time, ros::Duration(0.1), ros::Duration(0.001));
-            tf_listener.lookupTransform("map", "base_vloc_tag_" + to_string(ID), tf_time, tf_world_base);
+            tf_listener.lookupTransform ("map", "base_vloc_tag_" + to_string(ID), tf_time, tf_world_base);
         }
         catch (tf::TransformException ex) {
             ROS_ERROR("%s",ex.what());
-        }
+        } */
 
-        double Cur_Base_X =   tf_world_base.getOrigin().getX();
-        double Cur_Base_Y =   tf_world_base.getOrigin().getY();
-        double Cur_Base_Z =   tf_world_base.getOrigin().getZ();
-        double Cur_Base_Yaw = YawFromQuaternion(tf_world_base.getRotation());
+        double Cur_Base_X =   tf_map_base.getOrigin().getX();
+        double Cur_Base_Y =   tf_map_base.getOrigin().getY();
+        double Cur_Base_Z =   tf_map_base.getOrigin().getZ();
+        double Cur_Base_Yaw = YawFromQuaternion(tf_map_base.getRotation());
 
-        //Ignore Flying Base (>0.25m)
-        if(std::abs(Cur_Base_Z) < 0.25) {
+        //Ignore Flying Base (>0.2m)
+        if(std::abs(Cur_Base_Z) < 0.2) {
             //Calc Weight
             double Cur_Weight = 1 / tag_cam_v.length();
 
@@ -105,39 +144,36 @@ void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray:
 
     if(!Loc_Weight_Sum) return;
 
-    //Broadcast Pose
-    geometry_msgs::Pose pose;
-
-    pose.position.x = Filter_X.filter(Loc_X / Loc_Weight_Sum);
-    pose.position.y = Filter_Y.filter(Loc_Y / Loc_Weight_Sum);
-    pose.position.z = 0;
-
-    geometry_msgs::Quaternion orientation_quat = tf::createQuaternionMsgFromYaw(atan2(
+    //get weighted pose (map -> base)
+    tf::Transform map_base_tf;
+    map_base_tf.setOrigin(tf::Vector3(
+        Filter_X.filter(Loc_X / Loc_Weight_Sum),
+        Filter_Y.filter(Loc_Y / Loc_Weight_Sum),
+        0
+    ));
+    map_base_tf.setRotation(tf::createQuaternionFromYaw(atan2(
         Filter_Yaw_Y.filter(Loc_Yaw_Y / Loc_Weight_Sum),
         Filter_Yaw_X.filter(Loc_Yaw_X / Loc_Weight_Sum)
-    ));
-    pose.orientation = orientation_quat;
+    )));
 
-    vloc_pub.publish(pose);
+    //get base -> odom
+    tf::StampedTransform base_odom_tf;
+    try {
+        tf_listener.lookupTransform("base", "odom", ros::Time(0), base_odom_tf);
+    }
+    catch (tf::TransformException ex) {
+        ROS_ERROR("%s",ex.what());
+    }
 
-    //Broadcast Pose TF
-    tf::Transform pose_tf;
-    tf::Vector3 pose_position_tf;
-    tf::Quaternion pose_orientation_tf;
-
-    tf::pointMsgToTF(pose.position, pose_position_tf);
-    tf::quaternionMsgToTF(pose.orientation, pose_orientation_tf);
-
-    pose_tf.setOrigin(pose_position_tf);
-    pose_tf.setRotation(pose_orientation_tf);
-
-    tf_broadcaster.sendTransform(tf::StampedTransform(pose_tf, ros::Time(0), "map", "base_vodom"));
+    //set map -> odom
+    InitialTransformGot = true;
+    TransformMapToOdom = map_base_tf * base_odom_tf;
 }
 
-void VLocalization::TagDetection_0_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
-    FuseDetectedTags(msg, "cam_0");
+void VLocalization::TagDetection_Front_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
+    FuseDetectedTags(msg, "cam_front");
 }
 
-void VLocalization::TagDetection_1_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
-    FuseDetectedTags(msg, "cam_1");
+void VLocalization::TagDetection_Back_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
+    FuseDetectedTags(msg, "cam_back");
 }
