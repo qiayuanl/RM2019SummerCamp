@@ -160,14 +160,14 @@ void VLocalization::FuseDetectedTags(const apriltag_ros::AprilTagDetectionArray:
     tf::StampedTransform base_odom_tf;
     try {
         tf_listener.lookupTransform("base", "odom", ros::Time(0), base_odom_tf);
+
+        //set map -> odom
+        InitialTransformGot = true;
+        TransformMapToOdom  = map_base_tf * base_odom_tf;
     }
     catch (tf::TransformException ex) {
         ROS_ERROR("%s",ex.what());
     }
-
-    //set map -> odom
-    InitialTransformGot = true;
-    TransformMapToOdom = map_base_tf * base_odom_tf;
 }
 
 void VLocalization::TagDetection_Front_Callback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg) {
