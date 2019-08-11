@@ -5,6 +5,7 @@
 #include <std_msgs/Float64MultiArray.h>
 
 namespace MechanicalExecuter {
+    const int QUEUE_NUMBER = 5;
     const double ANGULAR_TOLERANCE = 5.0 / 180.0 * M_PI; //rad
 
     enum ActionType {
@@ -34,64 +35,69 @@ namespace MechanicalExecuter {
     std_msgs::Float64MultiArray ServoSetpoint;
 
     //Action List
-    std::vector<Action> MechanicalActions;
+    std::vector<Action> MechanicalActions[QUEUE_NUMBER];
 
     bool IsBusy() {
-        return !MechanicalActions.empty();
+        for(int i = 0; i < QUEUE_NUMBER; i++) {
+            if(!MechanicalActions[i].empty())
+                return true;
+        }
+
+        return false;
     }
 
     void update() {
-        if(MechanicalActions.empty()) return;
+        for(int i = 0; i < QUEUE_NUMBER; i++) if(!MechanicalActions[i].empty()) {
+            bool Finished = false;
 
-        bool Finished = false;
+            //get first action
+            Action &CurAction = *MechanicalActions[i].begin();
 
-        //get first action
-        Action &CurAction = *MechanicalActions.begin();
+            //send setpoint
+            switch(CurAction.type) {
+                case ACTION_SERVO:
+                    //send setpoint
+                    if(CurAction.actutator_id > (int)ServoSetpoint.data.size() - 1) {
+                        ServoSetpoint.data.resize(CurAction.actutator_id + 1);
+                    }
 
-        //send setpoint
-        switch(CurAction.type) {
-            case ACTION_SERVO:
-                //send setpoint
-                if(CurAction.actutator_id > (int)ServoSetpoint.data.size() - 1) {
-                    ServoSetpoint.data.resize(CurAction.actutator_id + 1);
-                }
+                    ServoSetpoint.data[CurAction.actutator_id] = CurAction.setpoint;
 
-                ServoSetpoint.data[CurAction.actutator_id] = CurAction.setpoint;
+                    servo_setpoint_pub.publish(ServoSetpoint);
 
-                servo_setpoint_pub.publish(ServoSetpoint);
+                    //wait countdown
+                    Finished = ros::Time::now() >= CurAction.target_time;
+                break;
 
-                //wait countdown
-                Finished = ros::Time::now() >= CurAction.target_time;
-            break;
+                case ACTION_MOTOR:
+                    //send setpoint
+                    if(CurAction.actutator_id > (int)MotorSetpoint.data.size() - 1) {
+                        MotorSetpoint.data.resize(CurAction.actutator_id + 1);
+                    }
 
-            case ACTION_MOTOR:
-                //send setpoint
-                if(CurAction.actutator_id > (int)MotorSetpoint.data.size() - 1) {
-                    MotorSetpoint.data.resize(CurAction.actutator_id + 1);
-                }
+                    MotorSetpoint.data[CurAction.actutator_id] = CurAction.setpoint;
 
-                MotorSetpoint.data[CurAction.actutator_id] = CurAction.setpoint;
+                    motor_setpoint_pub.publish(MotorSetpoint);
 
-                motor_setpoint_pub.publish(MotorSetpoint);
+                    //wait for angle
+                    Finished = false;
 
-                //wait for angle
-                Finished = false;
+                    if((3 * CurAction.actutator_id) <= (int)MotorStatus.data.size() - 1) {
+                        Finished = fabs(CurAction.setpoint - MotorStatus.data[3 * CurAction.actutator_id]) < ANGULAR_TOLERANCE;
+                    }
 
-                if((3 * CurAction.actutator_id) <= (int)MotorStatus.data.size() - 1) {
-                    Finished = fabs(CurAction.setpoint - MotorStatus.data[3 * CurAction.actutator_id]) < ANGULAR_TOLERANCE;
-                }
+                    //timeout
+                    Finished |= ros::Time::now() >= CurAction.target_time;
+                break;
 
-                //timeout
-                Finished |= ros::Time::now() >= CurAction.target_time;
-            break;
+                default:
+                    Finished = true;
+                break;
+            }
 
-            default:
-                Finished = true;
-            break;
+            //remove if finished
+            if(Finished) MechanicalActions[i].erase(MechanicalActions[i].begin());
         }
-
-        //remove if finished
-        if(Finished) MechanicalActions.erase(MechanicalActions.begin());
     }
 
     void CallbackMotorStatus(const std_msgs::Float64MultiArray::ConstPtr &motor_status) {
@@ -99,7 +105,9 @@ namespace MechanicalExecuter {
     }
 
     void reset() {
-        MechanicalActions.clear();
+        for(int i = 0; i < QUEUE_NUMBER; i++) {
+            MechanicalActions[i].clear();
+        }
     }
 
     void init() {

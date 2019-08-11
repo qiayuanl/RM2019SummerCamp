@@ -318,3 +318,15 @@ void MainWindow::on_pTeamOk_clicked()
     ui->pTeamOk->setDisabled(true);
     ui->lbSelTeam->setVisible(false);
 }
+
+void MainWindow::on_pTestSeq_clicked()
+{
+    const uint8_t strategy_list[] = {0, 0, 1, 1, 1, 1, 5};
+
+    std::vector<uint8_t> all_strategies(strategy_list, strategy_list + sizeof(strategy_list) / sizeof(uint8_t));
+
+    GlobalBoard.position[WhoAmI][0] = 0;
+    GlobalBoard.position[WhoAmI][1] = 0;
+
+    ActionExecuter::LoadActionList( GlobalPlanner::GetActions(WhoAmI, GlobalBoard, all_strategies) );
+}

@@ -5,6 +5,7 @@
 #include "mechanical_definition.h"
 #include "mechanical_executer.h"
 
+#include <tf/tf.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
@@ -14,9 +15,8 @@ const double POSITION_THRESHOLD = 0.05;
 //angle threshold
 const double ANGLE_THRESHOLD = 5.0 / 180.0 * M_PI;
 
-double YawFromQuaternion(const geometry_msgs::Quaternion &quat)
+double YawFromQuaternion(const tf::Quaternion &q_orient)
 {
-    tf::Quaternion q_orient(quat.x, quat.y, quat.z, quat.w);
     tf::Matrix3x3 m_orient(q_orient);
 
     double roll, pitch, yaw;
@@ -39,10 +39,8 @@ double AngularMinus(double a, double b)
 namespace ActionExecuter
 {
     //Communication
-    ros::Subscriber odom_sub;
     ros::Publisher  setpoint_pub;
 
-    geometry_msgs::Pose current_pose;
     geometry_msgs::PoseStamped setpoint_pose;
 
     //Actions
@@ -65,16 +63,31 @@ namespace ActionExecuter
         if(MechanicalExecuter::IsBusy())
             return false;
 
+        //Read Pose
+        static tf::TransformListener tf_listener;
+        tf::StampedTransform tf_map_base;
+        try {
+            tf_listener.lookupTransform("map", "base", ros::Time(0), tf_map_base);
+        }
+        catch (tf::TransformException ex) {
+            ROS_ERROR("%s",ex.what());
+            return false;
+        }
+
+        double pose_x   = tf_map_base.getOrigin().getX();
+        double pose_y   = tf_map_base.getOrigin().getY();
+        double pose_yaw = YawFromQuaternion(tf_map_base.getRotation());
+
         //Angle settings
         if (CurAction.yaw_enabled) {
-            if (fabs( AngularMinus(CurAction.world_yaw, YawFromQuaternion( current_pose.orientation )) ) > ANGLE_THRESHOLD)
+            if (fabs( AngularMinus(CurAction.world_yaw, pose_yaw ) ) > ANGLE_THRESHOLD)
                 return false;
         }
 
         //Position settings
         if( 
-            (fabs( current_pose.position.x - CurAction.world_x ) > POSITION_THRESHOLD) ||
-            (fabs( current_pose.position.y - CurAction.world_y ) > POSITION_THRESHOLD)
+            (fabs( pose_x - CurAction.world_x ) > POSITION_THRESHOLD) ||
+            (fabs( pose_y - CurAction.world_y ) > POSITION_THRESHOLD)
         ) {
             return false;
         }
@@ -150,11 +163,6 @@ namespace ActionExecuter
         }
     }
 
-    void OdometryCallback(const nav_msgs::Odometry::ConstPtr &odom) {
-        current_pose.orientation = odom->pose.pose.orientation;
-        current_pose.position    = odom->pose.pose.position;
-    }
-
     void init() {
         //init mechanical executer & definition
         MechanicalExecuter::init();
@@ -163,7 +171,6 @@ namespace ActionExecuter
         //init action executer
         ros::NodeHandle nh;
 
-        odom_sub     = nh.subscribe<nav_msgs::Odometry>("odom", 100, &OdometryCallback);
         setpoint_pub = nh.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 100);
 
         setpoint_pose.pose.orientation = tf::createQuaternionMsgFromYaw(0.0);

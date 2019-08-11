@@ -26,6 +26,8 @@ private Q_SLOTS:
 
     void on_pTeamOk_clicked();
 
+    void on_pTestSeq_clicked();
+
 private:
     Ui::MainWindow *ui;
     VisualWidget *canvas;

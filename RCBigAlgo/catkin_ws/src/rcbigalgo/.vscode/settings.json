@@ -3,6 +3,7 @@
         "/opt/ros/kinetic/lib/python2.7/dist-packages"
     ],
     "files.associations": {
-        "qtimer": "cpp"
+        "qtimer": "cpp",
+        "initializer_list": "cpp"
     }
 }
