@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 
 	while (ros::ok())
 	{
-		if ((ros::Time::now() - t).toSec() >= 1.5)
+		if ((ros::Time::now() - t).toSec() >= 1.0)
 		{
 			t = ros::Time::now();
 

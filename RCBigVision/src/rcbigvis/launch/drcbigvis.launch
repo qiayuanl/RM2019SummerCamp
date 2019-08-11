@@ -67,8 +67,8 @@
 </node>
 
 <!-- Set static location of base to cam -->
-<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam_front" args="-0.06 -0.230 0.645 -1.5707 0 -2.3561 base cam_front" />
-<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam_back"  args="-0.06 -0.230 0.645 -1.5707 0 -2.3561 base cam_back" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam_front" args="0.09 -0.2 0.41 -1.5707 0 -1.9897 base cam_front" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_cam_back"  args="-0.075 0.205 0.475 1.5707 0 -2.1118 base cam_back" />
 
 <!-- Set static location of tags -->
 <node pkg="rcbigvis" type="tags_lut" name="tags_lut" respawn="true" output="screen"/>

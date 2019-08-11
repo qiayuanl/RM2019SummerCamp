@@ -86,6 +86,15 @@ void Motion::CallbackSetpoint(const std_msgs::Float64MultiArray::ConstPtr &setpo
 	{
 		motors[i]->Setpoint = setpoint->data[i];
 	}
+
+	//set setpoint group
+	for (int i = 0; i < std::min((int)setpoint->data.size(), MOTION_MOTOR_COUNT); i++) if(MOTION_MOTOR_PRESET[i].ID_Sub != -1)
+	{
+		//set sub motor coefficients
+		for (int k = 0; k < MOTION_MOTOR_COUNT; k++) if(MOTION_MOTOR_PRESET[k].ID_Main == MOTION_MOTOR_PRESET[i].ID_Sub) {
+			motors[k]->Setpoint = motors[i]->Setpoint;
+		}
+	}
 }
 
 #define DynamicParamSet(id)                                                                                             \
@@ -101,4 +110,18 @@ void Motion::CallbackDynamicParam(rcbigcar::MotionConfig &config, uint32_t level
 	DynamicParamSet(0);
 	DynamicParamSet(1);
 	DynamicParamSet(2);
+	DynamicParamSet(3);
+	DynamicParamSet(4);
+	DynamicParamSet(5);
+
+	//set setpoint group
+	for (int i = 0; i < MOTION_MOTOR_COUNT; i++) if(MOTION_MOTOR_PRESET[i].ID_Sub != -1)
+	{
+		//set sub motor coefficients
+		for (int k = 0; k < MOTION_MOTOR_COUNT; k++) if(MOTION_MOTOR_PRESET[k].ID_Main == MOTION_MOTOR_PRESET[i].ID_Sub) {
+			motors[k]->setCoefficients(
+				motors[i]->Kp, motors[i]->Ki, motors[i]->Kd, motors[i]->Kf, motors[i]->KmaxI, motors[i]->KmaxO
+			);
+		}
+	}
 }
