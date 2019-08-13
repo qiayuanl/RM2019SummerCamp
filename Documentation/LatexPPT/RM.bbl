@@ -1,0 +1,25 @@
+\begin{thebibliography}{1}
+
+\bibitem{bezanson2017julia}
+Jeff Bezanson, Alan Edelman, Stefan Karpinski, and Viral~B Shah.
+\newblock Julia: A fresh approach to numerical computing.
+\newblock {\em SIAM review}, 59(1):65--98, 2017.
+
+\bibitem{conceicao2010predictive}
+Andre~GS Conceicao, Carlos~ET Dorea, and J{\'u}lio CL~Barreto Sb.
+\newblock Predictive control of an omnidirectional mobile robot with friction
+  compensation.
+\newblock In {\em 2010 Latin American Robotics Symposium and Intelligent
+  Robotics Meeting}, pages 30--35. IEEE, 2010.
+
+\bibitem{Roehrig2017@motion}
+Christof Roehrig, Daniel Heß, and Frank Künemund.
+\newblock Motion controller design for a mecanum wheeled mobile manipulator.
+\newblock 08 2017.
+
+\bibitem{osqp}
+B.~Stellato, G.~Banjac, P.~Goulart, A.~Bemporad, and S.~Boyd.
+\newblock {OSQP}: An operator splitting solver for quadratic programs.
+\newblock {\em ArXiv e-prints}, November 2017.
+
+\end{thebibliography}

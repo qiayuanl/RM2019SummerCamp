@@ -1,0 +1,7 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{locomotion}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Kinematic}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Dynamics}{4}{0}{1}
+\beamer@subsectionintoc {1}{3}{Path Planning}{5}{0}{1}
+\beamer@subsectionintoc {1}{4}{Control}{6}{0}{1}
+\beamer@subsectionintoc {1}{5}{Model Predictive Control}{8}{0}{1}
