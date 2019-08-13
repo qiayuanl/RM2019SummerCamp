@@ -2,5 +2,6 @@
     "files.associations": {
         "cmath": "cpp",
         "cstdlib": "cpp"
-    }
+    },
+    "licenser.license": "MIT"
 }
