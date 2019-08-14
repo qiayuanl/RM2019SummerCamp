@@ -11,3 +11,4 @@
 RCBigCar/catkin_ws/src/CMakeLists.txt
 Script/assessment.txt
 **/*.pro.user*
+*.pdf
