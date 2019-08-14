@@ -23,6 +23,32 @@
   \frametitle{Outline}
   \tableofcontents
 \end{frame}
+
+\section{Manipulation}
+
+\begin{frame}
+  \frametitle{Manipulation}
+  \vspace{-2.0cm}
+  \begin{columns}
+    \column{0.5\textwidth}
+    PD + feedforward control of ball screw linear actuator:
+    \begin{itemize}
+      \item Large Load
+      \item High Speed Requirement
+    \end{itemize}
+
+    \column{0.4\textwidth}
+    \begin{figure}
+      \includegraphics[width = 0.8\textwidth]{fig/screw.jpg}
+      \caption{Basll screw actuator and its load}
+    \end{figure}
+  \end{columns}
+  \begin{equation}
+    \tau = k_p(z_{ref}-z_{now})+k_d(\dot{z}_{ref}-\dot{z}_{now})+ \frac{mgh}{2\pi \eta}
+  \end{equation}
+  where $h$ is feed screw lead, $\eta$ is positive efficiency of feed screw
+\end{frame}
+
 \section{locomotion}
 \subsection{Kinematic}
 \begin{frame}
@@ -52,7 +78,6 @@
     \includegraphics[width = \textwidth]{fig/pose.png}
     \caption{Definition of pose $\textbf{x} = (x, y, \theta)^T$, word and robot frame \cite{Roehrig2017@motion}}
   \end{figure}
-  \column{0.5\textwidth}
   \end{columns}
 \end{frame}
 
@@ -159,7 +184,7 @@ and $^W\mathbf{R}_{ref}$
 
 \begin{frame}
   \frametitle{MPC: Theory}
-  for each $t = k$, solve the optimization problem: 
+  for each $t = k$, solve the optimization problem:
   \small
   \begin{eqnarray}
     l(x(i),u(i)) &=& \sum\limits_{i = 1}^N(x(k+i))-x_{ref}(k+i))^T\mathbf{Q}(x(k+i))-x_{ref}(k+i)) \nonumber \\
