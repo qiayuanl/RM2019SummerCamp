@@ -130,15 +130,21 @@ int main(int argc, char **argv)
         int ch = getch();
 
         if(ch == 0x20) {
-            MK_Blocking::Ball::place_ball();
-        }
-        else if(ch == 'w') {
-            sigan.data[0] = -85.0;
-            sigan_pub.publish(sigan);
-        }
-        else if(ch == 's') {
-            sigan.data[0] = -5.0;
-            sigan_pub.publish(sigan);
+            ball.data[0] = 0;
+            ball.data[1] = -1.0;
+            ball.data[2] = 1.0;
+            ball_pub.publish(ball);
+
+            usleep(1000 * 1000);
+
+            ball.data[0] = 0;
+            ball.data[1] = 0.0;
+            ball.data[2] = 0.0;
+            ball_pub.publish(ball);
+
+            usleep(1000 * 1000);
+
+            printf("Placed\n");
         }
 	}
 }
