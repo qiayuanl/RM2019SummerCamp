@@ -3,40 +3,50 @@
 \headcommand {\beamer@framepages {1}{1}}
 \headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
 \headcommand {\beamer@framepages {2}{2}}
-\headcommand {\sectionentry {1}{Manipulation}{3}{Manipulation}{0}}
+\headcommand {\sectionentry {1}{Hardware}{3}{Hardware}{0}}
 \headcommand {\beamer@sectionpages {1}{2}}
 \headcommand {\beamer@subsectionpages {1}{2}}
-\headcommand {\beamer@subsectionentry {0}{1}{1}{3}{PD+feedforward}}\headcommand {\beamer@subsectionpages {3}{2}}
-\headcommand {\slideentry {1}{1}{1}{3/3}{PD+feedforward}{0}}
+\headcommand {\slideentry {1}{0}{1}{3/3}{}{0}}
 \headcommand {\beamer@framepages {3}{3}}
-\headcommand {\sectionentry {2}{locomotion}{4}{locomotion}{0}}
+\headcommand {\sectionentry {2}{Localization}{4}{Localization}{0}}
 \headcommand {\beamer@sectionpages {3}{3}}
 \headcommand {\beamer@subsectionpages {3}{3}}
-\headcommand {\beamer@subsectionentry {0}{2}{1}{4}{Kinematic}}\headcommand {\beamer@subsectionpages {4}{3}}
-\headcommand {\slideentry {2}{1}{1}{4/4}{Kinematic}{0}}
+\headcommand {\slideentry {2}{0}{1}{4/4}{}{0}}
 \headcommand {\beamer@framepages {4}{4}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{5}{Dynamics}}\headcommand {\beamer@subsectionpages {4}{4}}
-\headcommand {\slideentry {2}{2}{1}{5/5}{Dynamics}{0}}
+\headcommand {\sectionentry {3}{Manipulation}{5}{Manipulation}{0}}
+\headcommand {\beamer@sectionpages {4}{4}}
+\headcommand {\beamer@subsectionpages {4}{4}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{5}{PD+feedforward}}\headcommand {\beamer@subsectionpages {5}{4}}
+\headcommand {\slideentry {3}{1}{1}{5/5}{PD+feedforward}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\beamer@subsectionentry {0}{2}{3}{6}{Path Planning}}\headcommand {\beamer@subsectionpages {5}{5}}
-\headcommand {\slideentry {2}{3}{1}{6/6}{Path Planning}{0}}
+\headcommand {\sectionentry {4}{locomotion}{6}{locomotion}{0}}
+\headcommand {\beamer@sectionpages {5}{5}}
+\headcommand {\beamer@subsectionpages {5}{5}}
+\headcommand {\beamer@subsectionentry {0}{4}{1}{6}{Kinematic}}\headcommand {\beamer@subsectionpages {6}{5}}
+\headcommand {\slideentry {4}{1}{1}{6/6}{Kinematic}{0}}
 \headcommand {\beamer@framepages {6}{6}}
-\headcommand {\beamer@subsectionentry {0}{2}{4}{7}{Control}}\headcommand {\beamer@subsectionpages {6}{6}}
-\headcommand {\slideentry {2}{4}{1}{7/7}{Control}{0}}
+\headcommand {\beamer@subsectionentry {0}{4}{2}{7}{Dynamics}}\headcommand {\beamer@subsectionpages {6}{6}}
+\headcommand {\slideentry {4}{2}{1}{7/7}{Dynamics}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\slideentry {2}{4}{2}{8/8}{Control}{0}}
+\headcommand {\beamer@subsectionentry {0}{4}{3}{8}{Path Planning}}\headcommand {\beamer@subsectionpages {7}{7}}
+\headcommand {\slideentry {4}{3}{1}{8/8}{Path Planning}{0}}
 \headcommand {\beamer@framepages {8}{8}}
-\headcommand {\beamer@subsectionentry {0}{2}{5}{9}{Model Predictive Control}}\headcommand {\beamer@subsectionpages {7}{8}}
-\headcommand {\slideentry {2}{5}{1}{9/9}{Model Predictive Control}{0}}
+\headcommand {\beamer@subsectionentry {0}{4}{4}{9}{Control}}\headcommand {\beamer@subsectionpages {8}{8}}
+\headcommand {\slideentry {4}{4}{1}{9/9}{Control}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\slideentry {2}{5}{2}{10/10}{Model Predictive Control}{0}}
+\headcommand {\slideentry {4}{4}{2}{10/10}{Control}{0}}
 \headcommand {\beamer@framepages {10}{10}}
-\headcommand {\slideentry {2}{5}{3}{11/11}{Model Predictive Control}{0}}
+\headcommand {\beamer@subsectionentry {0}{4}{5}{11}{Model Predictive Control}}\headcommand {\beamer@subsectionpages {9}{10}}
+\headcommand {\slideentry {4}{5}{1}{11/11}{Model Predictive Control}{0}}
 \headcommand {\beamer@framepages {11}{11}}
-\headcommand {\slideentry {2}{5}{4}{12/12}{Model Predictive Control}{0}}
+\headcommand {\slideentry {4}{5}{2}{12/12}{Model Predictive Control}{0}}
 \headcommand {\beamer@framepages {12}{12}}
-\headcommand {\beamer@partpages {1}{12}}
-\headcommand {\beamer@subsectionpages {9}{12}}
-\headcommand {\beamer@sectionpages {4}{12}}
-\headcommand {\beamer@documentpages {12}}
-\headcommand {\def \inserttotalframenumber {12}}
+\headcommand {\slideentry {4}{5}{3}{13/13}{Model Predictive Control}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\slideentry {4}{5}{4}{14/14}{Model Predictive Control}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\beamer@partpages {1}{14}}
+\headcommand {\beamer@subsectionpages {11}{14}}
+\headcommand {\beamer@sectionpages {6}{14}}
+\headcommand {\beamer@documentpages {14}}
+\headcommand {\def \inserttotalframenumber {14}}

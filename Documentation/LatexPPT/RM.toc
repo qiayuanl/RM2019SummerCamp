@@ -1,9 +1,11 @@
 \beamer@endinputifotherversion {3.36pt}
-\beamer@sectionintoc {1}{Manipulation}{3}{0}{1}
-\beamer@subsectionintoc {1}{1}{PD+feedforward}{3}{0}{1}
-\beamer@sectionintoc {2}{locomotion}{4}{0}{2}
-\beamer@subsectionintoc {2}{1}{Kinematic}{4}{0}{2}
-\beamer@subsectionintoc {2}{2}{Dynamics}{5}{0}{2}
-\beamer@subsectionintoc {2}{3}{Path Planning}{6}{0}{2}
-\beamer@subsectionintoc {2}{4}{Control}{7}{0}{2}
-\beamer@subsectionintoc {2}{5}{Model Predictive Control}{9}{0}{2}
+\beamer@sectionintoc {1}{Hardware}{3}{0}{1}
+\beamer@sectionintoc {2}{Localization}{4}{0}{2}
+\beamer@sectionintoc {3}{Manipulation}{5}{0}{3}
+\beamer@subsectionintoc {3}{1}{PD+feedforward}{5}{0}{3}
+\beamer@sectionintoc {4}{locomotion}{6}{0}{4}
+\beamer@subsectionintoc {4}{1}{Kinematic}{6}{0}{4}
+\beamer@subsectionintoc {4}{2}{Dynamics}{7}{0}{4}
+\beamer@subsectionintoc {4}{3}{Path Planning}{8}{0}{4}
+\beamer@subsectionintoc {4}{4}{Control}{9}{0}{4}
+\beamer@subsectionintoc {4}{5}{Model Predictive Control}{11}{0}{4}
